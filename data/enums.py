@@ -5,7 +5,7 @@ from typing import Optional
 class KeyCommands(Enum):
     ATTACK = 'a'
     DEFENCE = 'd'
-    PROBE = 'p'
+    PROBE = 'w'
     STATEMENT = 's'
     KILL = 'k'
     RESTART = 'r'

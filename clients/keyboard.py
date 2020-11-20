@@ -1,9 +1,11 @@
+from win32gui import GetWindowText, GetForegroundWindow
+
 import time
 from typing import Optional
 from pynput.keyboard import Controller, Key, Events, Listener
 
 from controller import response
-from data import enums
+from data import enums, consts
 from data.state import context
 
 keyboard_controller = Controller()
@@ -14,6 +16,10 @@ def new_listener() -> Listener:
 
 
 def handle_key(key: str):
+    window_name = GetWindowText(GetForegroundWindow())
+    if window_name != consts.GAME_TITLE:
+        return
+
     game_state = context.get_state_game()
     state_map = context.get_state_map()
     state_players = context.get_state_players()
@@ -26,8 +32,14 @@ def handle_key(key: str):
         if capture_keys or mode == enums.KeyCommands.KEY_CAP:
             keyboard_controller.press(Key.backspace)
             if mode == enums.KeyCommands.KEY_CAP:
-                context.set_capture_keys(not capture_keys)
-                print(f'KEY CAPTURE {"NOT " if capture_keys else ""}ENABLED')
+                capture_keys = not capture_keys
+                context.set_capture_keys(capture_keys)
+                print(f'{"DISCUSSION" if capture_keys else "GAME"} MODE')
+                if capture_keys:
+                    for k, v in [(x.value, str.lower(x.name)) for x in enums.KeyCommands if
+                                 x != enums.KeyCommands.KEY_CAP]:
+                        print(f'{k}: {v}')
+                print()
             elif mode == enums.KeyCommands.RESTART:
                 context.set_state_game(enums.GameState.RESTART)
             elif mode == enums.KeyCommands.KILL:
