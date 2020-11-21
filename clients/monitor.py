@@ -1,4 +1,7 @@
 import win32gui as gui
+from typing import Optional, List
+
+from data import consts, player
 
 # Relative row positions of players
 _ROW_POS = [
@@ -20,8 +23,19 @@ def get_window_handle(name: str) -> int:
     return gui.FindWindow(None, name)
 
 
-def get_player_colour(window_handle: int, player: int):
-    player_x, player_y = (_COL_POS[player % len(_COL_POS)], _ROW_POS[int(player / len(_COL_POS))])
+def get_players(window_handle: int) -> Optional[List[str]]:
+    players = []
+    for i in range(10):
+        match = get_player_colour(window_handle, i)
+        for p in player.player_info.values():
+            if p.colour == match:
+                players.append(p.name)
+                break
+    return players
+
+
+def get_player_colour(window_handle: int, p_i: int):
+    player_x, player_y = (_COL_POS[p_i % len(_COL_POS)], _ROW_POS[int(p_i / len(_COL_POS))])
     win_x, win_y = _get_window_loc(window_handle)
     player_rel_x, player_rel_y = _get_cursor_rel_pos(window_handle, player_x, player_y)
     return _get_pixel_color(win_x + player_rel_x, win_y + player_rel_y)

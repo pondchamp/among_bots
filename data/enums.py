@@ -9,6 +9,7 @@ class KeyCommands(Enum):
     STATEMENT = 's'
     KILL = 'k'
     RESTART = 'r'
+    REFRESH = 'x'
     KEY_CAP = '`'
 
 

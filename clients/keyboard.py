@@ -4,7 +4,7 @@ from pynput.keyboard import Controller, Key, Events, Listener
 
 from clients import monitor
 from controller import response
-from data import enums, consts, player
+from data import enums, consts
 from data.state import context
 
 keyboard_controller = Controller()
@@ -15,7 +15,9 @@ def new_listener() -> Listener:
 
 
 def handle_key(key: str):
-    get_players()  # TODO: Move this to a separate command
+    window_handle = monitor.get_window_handle(consts.GAME_TITLE)
+    if window_handle == 0:
+        return None
 
     game_state = context.get_state_game()
     state_map = context.get_state_map()
@@ -45,6 +47,11 @@ def handle_key(key: str):
                     print(f'{i}: {state_players[i]}')
                 print(f"Who died? ")
                 context.set_state_game(enums.GameState.KILL_SELECT)
+            elif mode == enums.KeyCommands.REFRESH:
+                players = monitor.get_players(window_handle)
+                players.remove(context.get_state_me())
+                if players is not None:
+                    print(players)
             else:
                 resp = response.generate_response(mode, state_map, state_players)
                 if resp != '':
@@ -74,20 +81,6 @@ def handle_key(key: str):
             return
         print('Invalid input.')
         context.set_state_game(enums.GameState.PROGRESS)
-
-
-def get_players():
-    window_handle = monitor.get_window_handle(consts.GAME_TITLE)
-    if window_handle == 0:
-        return
-    for i in range(10):
-        match = monitor.get_player_colour(window_handle, i)
-        colour = "unknown"
-        for p in player.player_info.values():
-            if p.colour == match:
-                colour = p.name
-                break
-        print(f'Player {i}: {colour}')
 
 
 def get_char() -> Optional[str]:

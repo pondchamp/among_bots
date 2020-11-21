@@ -8,9 +8,9 @@ from data.state import context
 
 def setup():
     setup_map()
-    me = setup_me()
+    setup_me()
     while True:
-        start_game(me)
+        start_game()
 
 
 def setup_map() -> enums.AUMap:
@@ -31,19 +31,19 @@ def setup_map() -> enums.AUMap:
     return set_map
 
 
-def setup_me() -> str:
+def setup_me():
     while True:
         print("Players: " + str(params.player))
         me = prefix_match('Which player are you? ', params.player)
         if me in params.player:
             print(f'Player {me} selected.', end='\n\n')
             break
-    return me
+    context.set_state_me(me)
 
 
-def setup_players(me: str) -> List[str]:
+def setup_players() -> List[str]:
     remain = params.player.copy()
-    remain.remove(me)
+    remain.remove(context.get_state_me())
     ret = []
     while True:
         print("Players in game: " + str(ret))
@@ -71,8 +71,8 @@ def setup_players(me: str) -> List[str]:
     return ret
 
 
-def start_game(me: str):
-    context.set_state_players(setup_players(me))
+def start_game():
+    context.set_state_players(setup_players())
     context.set_state_game(enums.GameState.PROGRESS)
     print('\nGAME STARTED!')
     print('Press the ` key to switch to discussion mode or back to game mode.\n')
