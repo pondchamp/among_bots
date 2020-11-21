@@ -41,17 +41,16 @@ def handle_key(key: str):
                 print()
             elif mode == enums.KeyCommands.RESTART:
                 context.set_state_game(enums.GameState.RESTART)
-            elif mode == enums.KeyCommands.KILL:
-                print(f'Remaining players:')
-                for i in range(len(state_players)):
-                    print(f'{i}: {state_players[i]}')
-                print(f"Who died? ")
-                context.set_state_game(enums.GameState.KILL_SELECT)
             elif mode == enums.KeyCommands.REFRESH:
                 players = monitor.get_players(window_handle)
-                players.remove(context.get_state_me())
-                if players is not None:
-                    print(players)
+                me = context.get_state_me()
+                if me in players:
+                    players.remove(me)
+                if players is not None and len(players) > 0:
+                    context.set_state_players(players)
+                    print(f'Set new player list: {players}')
+                else:
+                    print("Player list could not be obtained - make sure you're running this command in the voting panel.")
             else:
                 resp = response.generate_response(mode, state_map, state_players)
                 if resp != '':
@@ -60,27 +59,6 @@ def handle_key(key: str):
                         keyboard_controller.press(key)
                     time.sleep(0.1)
                     keyboard_controller.press(Key.enter)
-    elif game_state == enums.GameState.KILL_SELECT:
-        keyboard_controller.press(Key.backspace)
-        print()
-        key_int = -1
-        try:
-            key_int = int(key)
-        except ValueError:
-            pass
-        if 0 <= key_int < len(state_players):
-            d_index = state_players[key_int]
-            state_players.remove(d_index)
-            context.set_state_players(state_players)
-            print(f'Killed {d_index}.')
-            if len(state_players) == 0:
-                print('No more players remain.')
-                context.set_state_game(enums.GameState.RESTART)
-            else:
-                context.set_state_game(enums.GameState.PROGRESS)
-            return
-        print('Invalid input.')
-        context.set_state_game(enums.GameState.PROGRESS)
 
 
 def get_char() -> Optional[str]:

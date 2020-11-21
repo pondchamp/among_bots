@@ -6,7 +6,7 @@ from data.enums import AUMap
 
 class Substitutions:
     def __init__(self, players: List[str]):
-        self.players = players
+        self.players = players if players is not None and len(players) > 0 else params.player
         self.substitutions: Dict[str, Dict[AUMap, List[str]]] = {
             "p": {AUMap.COMMON: params.player},
             "l": params.location,

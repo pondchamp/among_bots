@@ -40,38 +40,7 @@ def setup_me():
     context.set_state_me(me)
 
 
-def setup_players() -> List[str]:
-    remain = params.player.copy()
-    remain.remove(context.get_state_me())
-    ret = []
-    while True:
-        print("Players in game: " + str(ret))
-        print("Players not in game: " + str(remain))
-        p_in = input("Type player to add (prepend - to remove) or Enter to finish: ")
-        if p_in == "" and len(ret) >= 1:
-            break
-        remove = False
-        if len(p_in) > 0 and p_in[0] == '-':
-            remove = True
-            p_in = p_in[1:]
-        if remove:
-            p = prefix_match("", ret, key=p_in)
-            if p != "":
-                ret.remove(p)
-                remain.append(p)
-                print(f'Player {p} removed.')
-        else:
-            p = prefix_match("", remain, key=p_in)
-            if p != "":
-                remain.remove(p)
-                ret.append(p)
-                print(f'Player {p} added.')
-        print()
-    return ret
-
-
 def start_game():
-    context.set_state_players(setup_players())
     context.set_state_game(enums.GameState.PROGRESS)
     print('\nGAME STARTED!')
     print('Press the ` key to switch to discussion mode or back to game mode.\n')

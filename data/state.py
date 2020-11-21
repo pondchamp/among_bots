@@ -28,6 +28,8 @@ class Context:
 
     def get_state_players(self) -> Optional[List[str]]:
         val = self._state_players.get()
+        if val is None:
+            return None
         return list(val)
 
     def set_state_players(self, val: Optional[List[str]]):

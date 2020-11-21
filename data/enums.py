@@ -7,7 +7,6 @@ class KeyCommands(Enum):
     DEFENCE = 'd'
     PROBE = 'w'
     STATEMENT = 's'
-    KILL = 'k'
     RESTART = 'r'
     REFRESH = 'x'
     KEY_CAP = '`'
@@ -24,7 +23,6 @@ class GameState(Enum):
     SETUP = 0
     PROGRESS = 1
     RESTART = 2
-    KILL_SELECT = 3
 
 
 class AUMap(Enum):
