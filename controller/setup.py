@@ -1,5 +1,3 @@
-from typing import List
-
 from controller.helpers import prefix_match
 from clients.keyboard import get_char, handle_key
 from data import enums, params

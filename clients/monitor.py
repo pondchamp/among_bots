@@ -2,6 +2,7 @@ import win32gui as gui
 from typing import Optional, List
 
 from data import player, consts
+from data.player import Player
 
 # Relative row positions of players
 _ROW_POS = [
@@ -18,6 +19,8 @@ _COL_POS = [
     0.515
 ]
 
+_DIFF_MIN_THRESHOLD = 10
+
 
 def get_foreground_window() -> str:
     return gui.GetWindowText(gui.GetForegroundWindow())
@@ -32,10 +35,15 @@ def get_players() -> Optional[List[str]]:
     players = []
     for i in range(10):
         match = get_player_colour(window_handle, i)
+        diff_min: Optional[int] = None
+        diff_min_player: Optional[Player] = None
         for p in player.player_info.values():
-            if p.colour == match:
-                players.append(p.name)
-                break
+            diff = sum(map(lambda a, b: abs(a-b), match, p.colour))
+            if diff_min is None or diff_min > diff:
+                diff_min = diff
+                diff_min_player = p
+        if diff_min <= _DIFF_MIN_THRESHOLD:
+            players.append(diff_min_player.name)
     return players
 
 
