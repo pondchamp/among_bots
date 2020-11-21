@@ -1,7 +1,7 @@
 import win32gui as gui
 from typing import Optional, List
 
-from data import consts, player
+from data import player
 
 # Relative row positions of players
 _ROW_POS = [

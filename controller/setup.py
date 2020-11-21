@@ -13,7 +13,7 @@ def setup():
         start_game()
 
 
-def setup_map() -> enums.AUMap:
+def setup_map():
     for curr_map in [m for m in enums.AUMap if m is not enums.AUMap.COMMON]:
         print(f'{curr_map.value}: {curr_map.name}')
 
@@ -28,7 +28,6 @@ def setup_map() -> enums.AUMap:
             pass
     set_map = context.get_state_map().name
     print(f'{set_map} selected', end='\n\n')
-    return set_map
 
 
 def setup_me():
