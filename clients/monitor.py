@@ -1,5 +1,6 @@
 import win32gui as gui
 
+# Relative row positions of players
 ROW_POS = [
     0.27,
     0.4,
@@ -8,6 +9,7 @@ ROW_POS = [
     0.79
 ]
 
+# Relative column positions of players
 COL_POS = [
     0.17,
     0.515

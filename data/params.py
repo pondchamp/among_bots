@@ -1,22 +1,7 @@
+import data.player as player
 from data.enums import AUMap
 
-
-player = [
-    "red",
-    "blue",
-    "brown",
-    "green",
-    "pink",
-    "orange",
-    "yellow",
-    "black",
-    "white",
-    "purple",
-    "cyan",
-    "lime",
-    "dark green"
-]
-
+player = player.player
 
 location = {
     -1: [
