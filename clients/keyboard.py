@@ -1,9 +1,8 @@
-from win32gui import GetWindowText, GetForegroundWindow
-
 import time
 from typing import Optional
 from pynput.keyboard import Controller, Key, Events, Listener
 
+from clients import monitor
 from controller import response
 from data import enums, consts
 from data.state import context
@@ -16,9 +15,12 @@ def new_listener() -> Listener:
 
 
 def handle_key(key: str):
-    window_name = GetWindowText(GetForegroundWindow())
-    if window_name != consts.GAME_TITLE:
+    window_handle = monitor.get_window_handle(consts.GAME_TITLE)
+    if window_handle == 0:
         return
+    monitor.get_colour_test(window_handle)  # test
+    for i in range(10):
+        monitor.get_player_colour(window_handle, i)
 
     game_state = context.get_state_game()
     state_map = context.get_state_map()
