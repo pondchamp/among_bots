@@ -1,10 +1,12 @@
-import data.player as player
+from typing import Dict, List
+
 from data.enums import AUMap
+from data.player import player
 
-player = player.player
+player = player
 
-location = {
-    -1: [
+location: Dict[AUMap, List[str]] = {
+    AUMap.COMMON: [
         "o2",
         "med bay",
         "comms",
@@ -49,8 +51,8 @@ location = {
 }
 
 # https://among-us.fandom.com/wiki/Tasks
-task = {
-    -1: [
+task: Dict[AUMap, List[str]] = {
+    AUMap.COMMON: [
         "charting course",
         "clearing asteroids",
         "emptying garbage",

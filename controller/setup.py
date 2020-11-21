@@ -14,7 +14,7 @@ def setup():
 
 
 def setup_map() -> enums.AUMap:
-    for curr_map in enums.AUMap:
+    for curr_map in [m for m in enums.AUMap if m is not enums.AUMap.COMMON]:
         print(f'{curr_map.value}: {curr_map.name}')
 
     print("Select map number: ", end="")

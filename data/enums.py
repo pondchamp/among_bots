@@ -27,6 +27,7 @@ class GameState(Enum):
 
 
 class AUMap(Enum):
+    COMMON = -1
     SKELD = 0
     POLUS = 1
     MIRA = 2
