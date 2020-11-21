@@ -19,9 +19,9 @@ def handle_key(key: str):
     if window_name != consts.GAME_TITLE:
         return None
 
-    game_state = context.get_state_game()
-    state_map = context.get_state_map()
-    state_players = context.get_state_players()
+    game_state = context.get_game()
+    state_map = context.get_map()
+    state_players = context.get_players()
 
     if game_state == enums.GameState.PROGRESS:
         mode = enums.get_key_command(key)
@@ -40,14 +40,14 @@ def handle_key(key: str):
                         print(f'{k}: {v}')
                 print()
             elif mode == enums.KeyCommands.RESTART:
-                context.set_state_game(enums.GameState.RESTART)
+                context.set_game(enums.GameState.RESTART)
             elif mode == enums.KeyCommands.REFRESH:
                 players = monitor.get_players()
-                me = context.get_state_me()
+                me = context.get_me()
                 if me in players:
                     players.remove(me)
                 if players is not None and len(players) > 0:
-                    context.set_state_players(players)
+                    context.set_players(players)
                     print(f'Set new player list: {players}')
                 else:
                     print("Player list could not be obtained - " +
@@ -70,12 +70,6 @@ def get_char() -> Optional[str]:
     return key_to_char(event.key)
 
 
-def pop_char() -> Optional[str]:
-    char = get_char()
-    keyboard_controller.press(Key.backspace)
-    return char
-
-
 def key_to_char(key: Key) -> Optional[str]:
     if not hasattr(key, 'char'):
         return None
@@ -83,7 +77,7 @@ def key_to_char(key: Key) -> Optional[str]:
 
 
 def on_release(key: Key):
-    if context.get_state_game() == enums.GameState.RESTART and key_to_char(key) == enums.KeyCommands.RESTART:
+    if context.get_game() == enums.GameState.RESTART and key_to_char(key) == enums.KeyCommands.RESTART:
         keyboard_controller.press(Key.backspace)
         return False
     return True

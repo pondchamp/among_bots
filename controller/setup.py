@@ -1,7 +1,7 @@
 from typing import List
 
 from controller.helpers import prefix_match
-from clients.keyboard import pop_char, get_char, handle_key
+from clients.keyboard import get_char, handle_key
 from data import enums, params
 from data.state import context
 
@@ -20,13 +20,13 @@ def setup_map():
     print("Select map number: ", end="")
     while True:
         try:
-            key = pop_char()
+            key = get_char()
             if key is not None:
-                context.set_state_map(enums.AUMap.__call__(int(key)))
+                context.set_map(enums.AUMap.__call__(int(key)))
                 break
         except (ValueError, TypeError):
             pass
-    set_map = context.get_state_map().name
+    set_map = context.get_map().name
     print(f'{set_map} selected', end='\n\n')
 
 
@@ -37,19 +37,19 @@ def setup_me():
         if me in params.player:
             print(f'Player {me} selected.', end='\n\n')
             break
-    context.set_state_me(me)
+    context.set_me(me)
 
 
 def start_game():
-    context.set_state_game(enums.GameState.PROGRESS)
+    context.set_game(enums.GameState.PROGRESS)
     print('\nGAME STARTED!')
     print('Press the ` key while in-game to switch to discussion mode or back to game mode.\n')
     while True:
         key = get_char()
         if key is not None:
             handle_key(key)
-            if context.get_state_game() == enums.GameState.RESTART:
+            if context.get_game() == enums.GameState.RESTART:
                 print('Restarting...')
                 context.set_capture_keys(False)
-                context.set_state_game(enums.GameState.SETUP)
+                context.set_game(enums.GameState.SETUP)
                 break
