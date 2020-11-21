@@ -6,8 +6,8 @@ from data.state import context
 
 def setup():
     setup_map()
-    setup_me()
     while True:
+        setup_me()
         start_game()
 
 

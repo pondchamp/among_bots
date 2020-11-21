@@ -1,7 +1,7 @@
 from typing import List
 import random
 import re
-import time, datetime
+import datetime
 
 from controller.substitutions import Substitutions
 from data import enums, dialogs
@@ -47,4 +47,3 @@ def wait_timer(wait_secs: int) -> bool:
         return False
     context.set_last_response(new_last_response)
     return True
-
