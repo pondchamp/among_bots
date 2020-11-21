@@ -15,8 +15,8 @@ def new_listener() -> Listener:
 
 
 def handle_key(key: str):
-    window_handle = monitor.get_window_handle(consts.GAME_TITLE)
-    if window_handle == 0:
+    window_name = monitor.get_foreground_window()
+    if window_name != consts.GAME_TITLE:
         return None
 
     game_state = context.get_state_game()
@@ -42,7 +42,7 @@ def handle_key(key: str):
             elif mode == enums.KeyCommands.RESTART:
                 context.set_state_game(enums.GameState.RESTART)
             elif mode == enums.KeyCommands.REFRESH:
-                players = monitor.get_players(window_handle)
+                players = monitor.get_players()
                 me = context.get_state_me()
                 if me in players:
                     players.remove(me)
@@ -50,7 +50,8 @@ def handle_key(key: str):
                     context.set_state_players(players)
                     print(f'Set new player list: {players}')
                 else:
-                    print("Player list could not be obtained - make sure you're running this command in the voting panel.")
+                    print("Player list could not be obtained - " +
+                          "make sure you're running this command in the voting panel with chat hidden.")
             else:
                 resp = response.generate_response(mode, state_map, state_players)
                 if resp != '':
@@ -82,7 +83,7 @@ def key_to_char(key: Key) -> Optional[str]:
 
 
 def on_release(key: Key):
-    if context.get_state_game() == enums.GameState.RESTART and hasattr(key, 'char') and key.char == 'r':
+    if context.get_state_game() == enums.GameState.RESTART and key_to_char(key) == enums.KeyCommands.RESTART:
         keyboard_controller.press(Key.backspace)
         return False
     return True

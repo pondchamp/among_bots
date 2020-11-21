@@ -1,7 +1,7 @@
 import win32gui as gui
 from typing import Optional, List
 
-from data import player
+from data import player, consts
 
 # Relative row positions of players
 _ROW_POS = [
@@ -19,11 +19,16 @@ _COL_POS = [
 ]
 
 
+def get_foreground_window() -> str:
+    return gui.GetWindowText(gui.GetForegroundWindow())
+
+
 def get_window_handle(name: str) -> int:
     return gui.FindWindow(None, name)
 
 
-def get_players(window_handle: int) -> Optional[List[str]]:
+def get_players() -> Optional[List[str]]:
+    window_handle = get_window_handle(consts.GAME_TITLE)
     players = []
     for i in range(10):
         match = get_player_colour(window_handle, i)

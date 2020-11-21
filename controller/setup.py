@@ -43,7 +43,7 @@ def setup_me():
 def start_game():
     context.set_state_game(enums.GameState.PROGRESS)
     print('\nGAME STARTED!')
-    print('Press the ` key to switch to discussion mode or back to game mode.\n')
+    print('Press the ` key while in-game to switch to discussion mode or back to game mode.\n')
     while True:
         key = get_char()
         if key is not None:
