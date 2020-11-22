@@ -6,11 +6,11 @@ from data.player import Player
 
 # Relative row positions of players
 _ROW_POS = [
-    0.27,
-    0.4,
-    0.53,
-    0.66,
-    0.79
+    0.25,
+    0.38,
+    0.51,
+    0.64,
+    0.77
 ]
 
 # Relative column positions of players
@@ -32,6 +32,7 @@ def get_window_handle(name: str) -> int:
 
 def get_players() -> Optional[List[str]]:
     window_handle = get_window_handle(consts.GAME_TITLE)
+    # _debug_monitor(window_handle)
     players = []
     for i in range(10):
         match = get_player_colour(window_handle, i)
@@ -54,16 +55,32 @@ def get_player_colour(window_handle: int, p_i: int):
     return _get_pixel_color(win_x + player_rel_x, win_y + player_rel_y)
 
 
+def _get_pixel_color(i_x, i_y) -> (int, int, int):
+    long_colour = gui.GetPixel(gui.GetDC(0), i_x, i_y)
+    i_colour = int(long_colour)
+    return i_colour & 0xff, (i_colour >> 8) & 0xff, (i_colour >> 16) & 0xff
+
+
 def _get_window_loc(window_handle: int) -> (int, int):
     return gui.ClientToScreen(window_handle, (0, 0))
 
 
 def _get_cursor_rel_pos(window_handle: int, cursor_pct_x: float, cursor_pct_y: float) -> (int, int):
-    _, _, win_len, win_hgt = gui.GetClientRect(window_handle)
+    win_len, win_hgt = _get_client_rect(window_handle)
     return int(cursor_pct_x * win_len), int(cursor_pct_y * win_hgt)
 
 
-def _get_pixel_color(i_x, i_y):
-    long_colour = gui.GetPixel(gui.GetDC(0), i_x, i_y)
-    i_colour = int(long_colour)
-    return i_colour & 0xff, (i_colour >> 8) & 0xff, (i_colour >> 16) & 0xff
+def _get_client_rect(window_handle: int) -> (int, int):
+    _, _, win_len, win_hgt = gui.GetClientRect(window_handle)
+    return win_len, win_hgt
+
+
+def _debug_monitor(window_handle: int):
+    cursor_pos = gui.GetCursorPos()
+    cursor_x, cursor_y = gui.ScreenToClient(window_handle, cursor_pos)
+    win_len, win_hgt = _get_client_rect(window_handle)
+    cursor_rel = cursor_x/win_len, cursor_y/win_hgt
+    colour = _get_pixel_color(cursor_pos[0], cursor_pos[1])
+    print()
+    print(f'PCT: {cursor_rel}')
+    print(f'COL: {colour}')
