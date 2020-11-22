@@ -4,23 +4,24 @@ from typing import Optional, List, Tuple, Dict
 from data import player, consts
 from data.player import RGB
 
-debug = True
+debug_cursor = True
+debug_match = False
 
 COORD = (int, int)
 
 # Relative row positions of players
 _ROW_POS = [
-    0.25,
-    0.38,
-    0.51,
-    0.64,
-    0.77
+    26.11,
+    38.80,
+    51.49,
+    64.18,
+    76.87
 ]
 
 # Relative column positions of players
 _COL_POS = [
-    0.17,
-    0.51
+    15.78,
+    50.00
 ]
 
 _DIFF_MIN_THRESHOLD = 15
@@ -36,13 +37,13 @@ def get_window_handle(name: str) -> int:
 
 def get_players() -> Optional[List[str]]:
     window_handle = get_window_handle(consts.GAME_TITLE)
-    if debug:
+    if debug_cursor:
         _debug_monitor(window_handle)
     diff_aggregate, players = _match_players(window_handle, player.player_colour)
-    if debug:
+    if debug_match:
         print(f'Enabled stats: {diff_aggregate}, {players}')
     diff_aggregate_disabled, players_disabled = _match_players(window_handle, player.player_disabled_colour)
-    if debug:
+    if debug_match:
         print(f'Disabled stats: {diff_aggregate_disabled}, {players_disabled}')
     voting_disabled = diff_aggregate > diff_aggregate_disabled
     print(f'{"DISCUSSION" if voting_disabled else "VOTING"} TIME')
@@ -56,7 +57,7 @@ def _match_players(window_handle: int, arr: Dict[str, Tuple[int, int, int]]) -> 
         match = _get_player_colour(window_handle, i)
         player_d, player_m = _match_player(match, arr)
         diff_aggregate += player_d
-        if debug:
+        if debug_match:
             print(f'Match: {player_m} {match} (err: {player_d})')
         if player_m is not None and player_d <= _DIFF_MIN_THRESHOLD:
             players.append(player_m)
@@ -104,7 +105,7 @@ def _get_window_loc(window_handle: int) -> COORD:
 
 def _get_cursor_rel_pos(window_handle: int, cursor_pct_x: float, cursor_pct_y: float) -> COORD:
     win_len, win_hgt = _get_client_rect(window_handle)
-    return int(cursor_pct_x * win_len), int(cursor_pct_y * win_hgt)
+    return int(cursor_pct_x / 100 * win_len), int(cursor_pct_y / 100 * win_hgt)
 
 
 def _get_client_rect(window_handle: int) -> COORD:
@@ -116,7 +117,7 @@ def _debug_monitor(window_handle: int):
     cursor_pos = gui.GetCursorPos()
     cursor_x, cursor_y = gui.ScreenToClient(window_handle, cursor_pos)
     win_len, win_hgt = _get_client_rect(window_handle)
-    cursor_rel = cursor_x / win_len, cursor_y / win_hgt
+    cursor_rel = round(cursor_x / win_len * 100, 2), round(cursor_y / win_hgt * 100, 2)
     colour = _get_pixel_colour(cursor_pos[0], cursor_pos[1])
     print()
     print(f'PCT: {cursor_rel}')
