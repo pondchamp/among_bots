@@ -2,7 +2,7 @@ from enum import Enum
 from typing import Optional
 
 
-class KeyCommands(Enum):
+class KeyCommand(Enum):
     ATTACK = 'a'
     DEFENCE = 'd'
     PROBE = 'w'
@@ -12,9 +12,9 @@ class KeyCommands(Enum):
     KEY_CAP = '`'
 
 
-def get_key_command(key: str) -> Optional[KeyCommands]:
+def get_key_command(key: str) -> Optional[KeyCommand]:
     try:
-        return KeyCommands(key[0])
+        return KeyCommand(key[0])
     except ValueError:
         return None
 
@@ -23,6 +23,12 @@ class GameState(Enum):
     SETUP = 0
     PROGRESS = 1
     RESTART = 2
+
+
+class Substitution(Enum):
+    PLAYER = 'p'
+    LOCATION = 'l'
+    TASK = 't'
 
 
 class AUMap(Enum):

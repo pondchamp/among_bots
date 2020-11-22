@@ -28,20 +28,20 @@ def handle_key(key: str):
         if mode is None:
             return
         capture_keys = context.get_capture_keys()
-        if capture_keys or mode == enums.KeyCommands.KEY_CAP:
+        if capture_keys or mode == enums.KeyCommand.KEY_CAP:
             backspace()
-            if mode == enums.KeyCommands.KEY_CAP:
+            if mode == enums.KeyCommand.KEY_CAP:
                 capture_keys = not capture_keys
                 context.set_capture_keys(capture_keys)
                 print(f'{"DISCUSSION" if capture_keys else "GAME"} MODE')
                 if capture_keys:
-                    for k, v in [(x.value, str.lower(x.name)) for x in enums.KeyCommands if
-                                 x != enums.KeyCommands.KEY_CAP]:
+                    for k, v in [(x.value, str.lower(x.name)) for x in enums.KeyCommand if
+                                 x != enums.KeyCommand.KEY_CAP]:
                         print(f'{k}: {v}')
                 print()
-            elif mode == enums.KeyCommands.RESTART:
+            elif mode == enums.KeyCommand.RESTART:
                 context.set_game(enums.GameState.RESTART)
-            elif mode == enums.KeyCommands.REFRESH:
+            elif mode == enums.KeyCommand.REFRESH:
                 players = monitor.get_players()
                 me = context.get_me()
                 if me in players:
@@ -81,7 +81,7 @@ def key_to_char(key: Key) -> Optional[str]:
 
 
 def on_release(key: Key):
-    if context.get_game() == enums.GameState.RESTART and key_to_char(key) == enums.KeyCommands.RESTART:
+    if context.get_game() == enums.GameState.RESTART and key_to_char(key) == enums.KeyCommand.RESTART:
         backspace()
         return False
     return True
