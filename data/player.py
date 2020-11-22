@@ -1,30 +1,36 @@
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 RGB = (int, int, int)
 
+BG_COL: List[Tuple[int, int, int]] = [
+    (187, 211, 238),
+    (170, 200, 229)
+]
+
 
 class Player:
-    def __init__(self, name: str, colour: RGB, dead_colour: RGB):
+    def __init__(self, name: str, colour: RGB, disabled_colour: RGB):
         self.name = name
         self.colour = colour
-        self.dead_colour = dead_colour
+        self.disabled_colour = disabled_colour
 
 
 _player_list = [
-    Player("red", (189, 64, 71), None),
-    Player("blue", (61, 87, 216), None),
-    Player("brown", (132, 108, 82), None),
-    Player("green", (60, 148, 94), None),
-    Player("pink", (222, 115, 198), None),
-    Player("orange", (226, 147, 70), None),
-    Player("yellow", (226, 234, 123), None),
-    Player("black", (94, 106, 118), None),
-    Player("white", (207, 221, 240), None),
-    Player("purple", (127, 88, 200), None),
-    Player("cyan", (89, 243, 225), None),
-    Player("lime", (107, 232, 103), None)
+    Player("red", (189, 64, 71), (129, 60, 65)),
+    Player("blue", (61, 87, 216), (51, 70, 144)),
+    Player("brown", (132, 108, 82), (89, 81, 71)),
+    Player("green", (60, 148, 94), (54, 106, 79)),
+    Player("pink", (219, 114, 196), (144, 86, 136)),
+    Player("orange", (226, 147, 70), (142, 102, 63)),
+    Player("yellow", (226, 234, 123), (85, 91, 73)),
+    Player("black", (94, 106, 118), (71, 81, 91)),
+    Player("white", (207, 221, 240), (48, 54, 61)),
+    Player("purple", (127, 88, 200), (91, 72, 138)),
+    Player("cyan", (89, 243, 225), (68, 158, 150)),
+    Player("lime", (107, 232, 103), (78, 150, 83))
 ]
 
 
 player: List[str] = [x.name for x in _player_list]
-player_info: Dict[str, Player] = {x.name: x for x in _player_list}
+player_colour: Dict[str, Tuple[int, int, int]] = {x.name: x.colour for x in _player_list}
+player_disabled_colour: Dict[str, Tuple[int, int, int]] = {x.name: x.disabled_colour for x in _player_list}
