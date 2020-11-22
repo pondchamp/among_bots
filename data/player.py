@@ -1,8 +1,7 @@
-from typing import Dict, List, Tuple
+from typing import Dict, List
+from data.types import RGB
 
-RGB = (int, int, int)
-
-BG_COL: List[Tuple[int, int, int]] = [
+BG_COL: List[RGB] = [
     (187, 211, 238),
     (170, 200, 229)
 ]
@@ -32,5 +31,5 @@ _player_list = [
 
 
 player: List[str] = [x.name for x in _player_list]
-player_colour: Dict[str, Tuple[int, int, int]] = {x.name: x.colour for x in _player_list}
-player_disabled_colour: Dict[str, Tuple[int, int, int]] = {x.name: x.disabled_colour for x in _player_list}
+player_colour: Dict[str, RGB] = {x.name: x.colour for x in _player_list}
+player_disabled_colour: Dict[str, RGB] = {x.name: x.disabled_colour for x in _player_list}

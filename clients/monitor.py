@@ -2,12 +2,10 @@ import win32gui as gui
 from typing import Optional, List, Tuple, Dict
 
 from data import player, consts
-from data.player import RGB
+from data.types import RGB, COORD
 
 debug_cursor = True
 debug_match = False
-
-COORD = (int, int)
 
 # Relative row positions of players
 _ROW_POS = [
@@ -50,7 +48,7 @@ def get_players() -> Optional[List[str]]:
     return players_disabled if voting_disabled else players
 
 
-def _match_players(window_handle: int, arr: Dict[str, Tuple[int, int, int]]) -> Optional[Tuple[int, List[str]]]:
+def _match_players(window_handle: int, arr: Dict[str, RGB]) -> Optional[Tuple[int, List[str]]]:
     players = []
     diff_aggregate = 0
     for i in range(10):
@@ -71,7 +69,7 @@ def _get_player_colour(window_handle: int, p_i: int) -> RGB:
     return _get_pixel_colour(win_x + player_rel_x, win_y + player_rel_y)
 
 
-def _match_player(match: RGB, arr: Dict[str, Tuple[int, int, int]]) -> Tuple[int, Optional[str]]:
+def _match_player(match: RGB, arr: Dict[str, RGB]) -> Tuple[int, Optional[str]]:
     diff_min: Optional[int] = None
     diff_min_player: Optional[str] = None
 
@@ -89,7 +87,7 @@ def _match_player(match: RGB, arr: Dict[str, Tuple[int, int, int]]) -> Tuple[int
     return diff_min, diff_min_player
 
 
-def _calc_colour_diff(tuple1: Tuple[int, int, int], tuple2: Tuple[int, int, int]) -> int:
+def _calc_colour_diff(tuple1: RGB, tuple2: RGB) -> int:
     return sum(map(lambda a, b: abs(a - b), tuple1, tuple2))
 
 
