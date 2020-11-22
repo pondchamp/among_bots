@@ -6,6 +6,8 @@ BG_COL: List[RGB] = [
     (170, 200, 229)
 ]
 
+DEAD: RGB = (129, 71, 58)
+
 
 class Player:
     def __init__(self, name: str, colour: RGB, disabled_colour: RGB):
@@ -21,12 +23,12 @@ _player_list = [
     Player("green", (60, 148, 94), (54, 106, 79)),
     Player("pink", (219, 114, 196), (144, 86, 136)),
     Player("orange", (226, 147, 70), (142, 102, 63)),
-    Player("yellow", (226, 234, 123), (85, 91, 73)),
+    Player("yellow", (226, 234, 123), (144, 152, 94)),
     Player("black", (94, 106, 118), (71, 81, 91)),
-    Player("white", (207, 221, 240), (48, 54, 61)),
+    Player("white", (207, 221, 240), (136, 146, 160)),
     Player("purple", (127, 88, 200), (91, 72, 138)),
     Player("cyan", (89, 243, 225), (68, 158, 150)),
-    Player("lime", (107, 232, 103), (78, 150, 83))
+    Player("lime", (107, 232, 103), (78, 150, 83)),
 ]
 
 

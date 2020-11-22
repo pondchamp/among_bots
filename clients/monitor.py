@@ -5,7 +5,7 @@ from data import player, consts
 from data.types import RGB, COORD
 
 debug_cursor = True
-debug_match = False
+debug_match = True
 
 # Relative row positions of players
 _ROW_POS = [
@@ -73,8 +73,8 @@ def _match_player(match: RGB, arr: Dict[str, RGB]) -> Tuple[int, Optional[str]]:
     diff_min: Optional[int] = None
     diff_min_player: Optional[str] = None
 
-    # Baseline at background colour
-    for b in player.BG_COL:
+    # Baseline at background/dead colour
+    for b in player.BG_COL + [player.DEAD]:
         diff = _calc_colour_diff(match, b)
         if diff_min is None or diff_min > diff:
             diff_min = diff
