@@ -29,7 +29,7 @@ def handle_key(key: str):
             return
         capture_keys = context.get_capture_keys()
         if capture_keys or mode == enums.KeyCommands.KEY_CAP:
-            keyboard_controller.press(Key.backspace)
+            backspace()
             if mode == enums.KeyCommands.KEY_CAP:
                 capture_keys = not capture_keys
                 context.set_capture_keys(capture_keys)
@@ -62,6 +62,10 @@ def handle_key(key: str):
                     keyboard_controller.press(Key.enter)
 
 
+def backspace():
+    keyboard_controller.press(Key.backspace)
+
+
 def get_char() -> Optional[str]:
     with Events() as events:
         event = events.get()
@@ -78,6 +82,6 @@ def key_to_char(key: Key) -> Optional[str]:
 
 def on_release(key: Key):
     if context.get_game() == enums.GameState.RESTART and key_to_char(key) == enums.KeyCommands.RESTART:
-        keyboard_controller.press(Key.backspace)
+        backspace()
         return False
     return True

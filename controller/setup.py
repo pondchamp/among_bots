@@ -1,5 +1,5 @@
 from controller.helpers import prefix_match
-from clients.keyboard import get_char, handle_key
+from clients.keyboard import get_char, handle_key, backspace
 from data import enums, params
 from data.state import context
 
@@ -24,6 +24,7 @@ def setup_map():
                 break
         except (ValueError, TypeError):
             pass
+    backspace()
     set_map = context.get_map().name
     print(f'{set_map} selected', end='\n\n')
 
