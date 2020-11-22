@@ -44,8 +44,10 @@ def get_players() -> Optional[List[str]]:
     if debug_match:
         print(f'Disabled stats: {diff_aggregate_disabled}, {players_disabled}')
     voting_disabled = diff_aggregate > diff_aggregate_disabled
-    print(f'{"DISCUSSION" if voting_disabled else "VOTING"} TIME')
-    return players_disabled if voting_disabled else players
+    ret = players_disabled if voting_disabled else players
+    if len(ret) > 0:
+        print(f'{"DISCUSSION" if voting_disabled else "VOTING"} TIME')
+    return ret
 
 
 def _match_players(window_handle: int, arr: Dict[str, RGB]) -> Optional[Tuple[int, List[str]]]:

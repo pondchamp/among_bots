@@ -52,6 +52,7 @@ def handle_key(key: str):
                 else:
                     print("Player list could not be obtained - " +
                           "make sure you're running this command in the voting panel with chat hidden.")
+                print()
             else:
                 resp = response.generate_response(mode, state_map, state_players)
                 if resp != '':
