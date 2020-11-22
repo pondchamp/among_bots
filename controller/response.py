@@ -33,7 +33,7 @@ def sub_placeholders(resp: str, curr_map: enums.AUMap, players: List[str]) -> st
     for sub in subs.substitutions:
         res = subs.get(curr_map, sub)
         i = random.randint(0, len(res) - 1)
-        resp = re.sub(fr"\[{sub}]", res[i], resp)
+        resp = re.sub(fr"\[{sub.value}]", res[i], resp)
     return resp
 
 
