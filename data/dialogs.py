@@ -2,7 +2,8 @@ statement = [
     "hmm",
     "ok",
     "the body is in [l]",
-    "[l]"
+    "[l]",
+    "lets just skip",
 ]
 
 
@@ -12,7 +13,7 @@ probe = [
     "where was [p]",
     "who was in [l]",
     "who did i just see",
-    "was anyone [t]"
+    "was anyone [t]",
 ]
 
 attack = [
@@ -25,7 +26,7 @@ attack = [
     "[p] was faking their tasks",
     "why weren't you doing task in [l]",
     "I'm voting [p]",
-    "[p]"
+    "[p]",
 ]
 
 defense = [
@@ -41,12 +42,11 @@ defense = [
     "i saw [p] last",
     "i saw [p] in [l]",
     "this is my first time",
-    "how do doors work",
+    "my tasks are done",
     "i was doing my tasks",
     "you weren't there, I was there",
-    "lets just skip",
     "I was doing my tasks",
     "I don't know how to do the task in [l]",
     "i was doing tasks in [l]",
-    "i was [t]"
+    "i was [t]",
 ]
