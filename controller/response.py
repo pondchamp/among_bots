@@ -4,14 +4,12 @@ import re
 import datetime
 
 from controller.substitutions import Substitutions
-from data import enums, dialogs
+from data import enums, dialogs, consts
 from data.state import context
-
-CHAT_THROTTLE_SECS = 3
 
 
 def generate_response(mode: enums.KeyCommands, curr_map: enums.AUMap, players: List[str]) -> str:
-    if not wait_timer(CHAT_THROTTLE_SECS):
+    if not wait_timer(consts.CHAT_THROTTLE_SECS):
         return ''
 
     if mode == enums.KeyCommands.ATTACK:

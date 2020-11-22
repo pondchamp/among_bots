@@ -1,1 +1,2 @@
 GAME_TITLE = 'Among Us'
+CHAT_THROTTLE_SECS = 3
