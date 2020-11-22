@@ -4,8 +4,8 @@ from typing import Optional, List, Tuple, Dict
 from data import player, consts
 from data.types import RGB, COORD
 
-debug_cursor = True
-debug_match = True
+debug_cursor = False
+debug_match = False
 
 # Relative row positions of players
 _ROW_POS = [
