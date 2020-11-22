@@ -4,6 +4,8 @@ statement = [
     "the body is in [l]",
     "[l]",
     "lets just skip",
+    "[p] is clear",
+    "[p] is safe"
 ]
 
 
@@ -32,6 +34,7 @@ attack = [
 defense = [
     "I don't know",
     "idk",
+    "no",
     "no u",
     "I wasn't there",
     "I was with [p]",
@@ -49,4 +52,6 @@ defense = [
     "I don't know how to do the task in [l]",
     "i was doing tasks in [l]",
     "i was [t]",
+    "thats not possible",
+    "it literally cannot be me"
 ]
