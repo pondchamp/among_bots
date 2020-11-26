@@ -2,11 +2,8 @@ import time
 from typing import Optional
 from pynput.keyboard import Controller, Key, Events, Listener
 
-from clients import monitor
-from controller import response
-from data import enums, consts
+from data import enums
 from data.state import context
-from clients.tts import Speaker
 
 keyboard_controller = Controller()
 
@@ -16,10 +13,6 @@ def new_listener() -> Listener:
 
 
 def handle_key(key: str) -> Optional[enums.KeyCommand]:
-    window_name = monitor.get_foreground_window()
-    if window_name != consts.GAME_TITLE:
-        return None
-
     game_state = context.get_game()
     capture_keys = context.get_capture_keys()
 

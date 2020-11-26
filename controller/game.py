@@ -1,7 +1,7 @@
 from clients import monitor, tts, keyboard
 from controller import response
 from controller.helpers import prefix_match
-from data import enums, params
+from data import enums, params, consts
 from data.state import context
 
 
@@ -46,6 +46,9 @@ def start_game():
     swap_key = enums.KeyCommand.KEY_CAP.value
     print(f'Press the {swap_key} key while in-game to enable bot commands.\n')
     while True:
+        window_name = monitor.get_foreground_window()
+        if window_name != consts.GAME_TITLE:
+            continue
         key = keyboard.get_char()
         if key is not None:
             state_map = context.get_map()
