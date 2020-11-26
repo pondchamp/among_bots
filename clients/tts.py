@@ -4,7 +4,8 @@ from threading import Thread
 
 class Speaker(Thread):
     def __init__(self, text: str):
-        self.text = text
+        self.text = text \
+            .replace('sus', 'suss')  # fix pronunciation
         Thread.__init__(self)
         self.daemon = True
         self.start()
