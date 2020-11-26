@@ -1,5 +1,6 @@
+from clients import monitor, tts, keyboard
+from controller import response
 from controller.helpers import prefix_match
-from clients.keyboard import get_char, handle_key, backspace
 from data import enums, params
 from data.state import context
 
@@ -18,13 +19,13 @@ def setup_map():
     print("Select map number: ", end="")
     while True:
         try:
-            key = get_char()
+            key = keyboard.get_char()
             if key is not None:
                 context.set_map(enums.AUMap.__call__(int(key)))
                 break
         except (ValueError, TypeError):
             pass
-    backspace()
+    keyboard.backspace()
     set_map = context.get_map().name
     print(f'{set_map} selected', end='\n\n')
 
@@ -45,11 +46,32 @@ def start_game():
     swap_key = enums.KeyCommand.KEY_CAP.value
     print(f'Press the {swap_key} key while in-game to enable bot commands.\n')
     while True:
-        key = get_char()
+        key = keyboard.get_char()
         if key is not None:
-            handle_key(key)
-            if context.get_game() == enums.GameState.RESTART:
+            state_map = context.get_map()
+            state_players = context.get_players()
+            mode = keyboard.handle_key(key)
+            if mode == enums.KeyCommand.RESTART:
+                context.set_game(enums.GameState.RESTART)
                 print('Restarting...')
                 context.set_capture_keys(False)
+                context.set_last_response(None)
                 context.set_game(enums.GameState.SETUP)
                 break
+            elif mode == enums.KeyCommand.REFRESH:
+                players = monitor.get_players()
+                me = context.get_me()
+                if me in players:
+                    players.remove(me)
+                if players is not None and len(players) > 0:
+                    context.set_players(players)
+                    print(f'Set new player list: {players}')
+                else:
+                    print("Player list could not be obtained - " +
+                          "make sure you're running this command in the voting panel with chat hidden.")
+                print()
+            elif mode is not None:
+                resp = response.generate_response(mode, state_map, state_players)
+                if resp != '':
+                    tts.Speaker(resp)
+                    keyboard.write_text(resp)

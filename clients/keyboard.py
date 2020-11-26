@@ -15,54 +15,42 @@ def new_listener() -> Listener:
     return Listener(on_release=on_release)
 
 
-def handle_key(key: str):
+def handle_key(key: str) -> Optional[enums.KeyCommand]:
     window_name = monitor.get_foreground_window()
     if window_name != consts.GAME_TITLE:
         return None
 
     game_state = context.get_game()
-    state_map = context.get_map()
-    state_players = context.get_players()
+    capture_keys = context.get_capture_keys()
 
-    if game_state == enums.GameState.PROGRESS:
-        mode = enums.get_key_command(key)
-        if mode is None:
-            return
-        capture_keys = context.get_capture_keys()
-        if capture_keys or mode == enums.KeyCommand.KEY_CAP:
-            backspace()
-            if mode == enums.KeyCommand.KEY_CAP:
-                capture_keys = not capture_keys
-                context.set_capture_keys(capture_keys)
-                print(f'KEY CAPTURE {"ENABLED" if capture_keys else "DISABLED"}')
-                if capture_keys:
-                    for k, v in [(x.value, str.lower(x.name)) for x in enums.KeyCommand if
-                                 x != enums.KeyCommand.KEY_CAP]:
-                        print(f'{k}: {v}')
-                print()
-            elif mode == enums.KeyCommand.RESTART:
-                context.set_game(enums.GameState.RESTART)
-            elif mode == enums.KeyCommand.REFRESH:
-                players = monitor.get_players()
-                me = context.get_me()
-                if me in players:
-                    players.remove(me)
-                if players is not None and len(players) > 0:
-                    context.set_players(players)
-                    print(f'Set new player list: {players}')
-                else:
-                    print("Player list could not be obtained - " +
-                          "make sure you're running this command in the voting panel with chat hidden.")
-                print()
-            else:
-                resp = response.generate_response(mode, state_map, state_players)
-                if resp != '':
-                    Speaker(resp)
-                    for key in resp:
-                        time.sleep(0.01)
-                        keyboard_controller.press(key)
-                    time.sleep(0.1)
-                    keyboard_controller.press(Key.enter)
+    if game_state != enums.GameState.PROGRESS:
+        return None
+
+    mode = enums.get_key_command(key)
+    if mode is None:
+        return None
+
+    if capture_keys or mode == enums.KeyCommand.KEY_CAP:
+        backspace()
+        if mode == enums.KeyCommand.KEY_CAP:
+            capture_keys = not capture_keys
+            context.set_capture_keys(capture_keys)
+            print(f'KEY CAPTURE {"ENABLED" if capture_keys else "DISABLED"}')
+            if capture_keys:
+                for k, v in [(x.value, str.lower(x.name)) for x in enums.KeyCommand if
+                             x != enums.KeyCommand.KEY_CAP]:
+                    print(f'{k}: {v}')
+            print()
+        else:
+            return mode
+
+
+def write_text(text: str):
+    for key in text:
+        time.sleep(0.01)
+        keyboard_controller.press(key)
+    time.sleep(0.1)
+    keyboard_controller.press(Key.enter)
 
 
 def backspace():
