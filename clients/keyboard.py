@@ -6,6 +6,7 @@ from clients import monitor
 from controller import response
 from data import enums, consts
 from data.state import context
+from clients.tts import Speaker
 
 keyboard_controller = Controller()
 
@@ -56,6 +57,7 @@ def handle_key(key: str):
             else:
                 resp = response.generate_response(mode, state_map, state_players)
                 if resp != '':
+                    Speaker(resp)
                     for key in resp:
                         time.sleep(0.01)
                         keyboard_controller.press(key)
