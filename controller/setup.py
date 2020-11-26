@@ -42,7 +42,8 @@ def setup_me():
 def start_game():
     context.set_game(enums.GameState.PROGRESS)
     print('\nGAME STARTED!')
-    print('Press the ` key while in-game to switch to discussion mode or back to game mode.\n')
+    swap_key = enums.KeyCommand.KEY_CAP.value
+    print(f'Press the {swap_key} key while in-game to enable bot commands.\n')
     while True:
         key = get_char()
         if key is not None:

@@ -34,7 +34,7 @@ def handle_key(key: str):
             if mode == enums.KeyCommand.KEY_CAP:
                 capture_keys = not capture_keys
                 context.set_capture_keys(capture_keys)
-                print(f'{"DISCUSSION" if capture_keys else "GAME"} MODE')
+                print(f'KEY CAPTURE {"ENABLED" if capture_keys else "DISABLED"}')
                 if capture_keys:
                     for k, v in [(x.value, str.lower(x.name)) for x in enums.KeyCommand if
                                  x != enums.KeyCommand.KEY_CAP]:
