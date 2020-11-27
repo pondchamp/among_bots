@@ -13,6 +13,7 @@ class Context:
         self._state_map: ContextVar[Optional[enums.AUMap]] = ContextVar("state_map", default=None)
         self._state_game: ContextVar[enums.GameState] = ContextVar("state_game", default=enums.GameState.SETUP)
         self._state_last_response: ContextVar[Optional[datetime.datetime]] = ContextVar("last_response", default=None)
+        self._state_num_impostor: ContextVar[int] = ContextVar("num_impostor", default=1)
 
     def get_capture_keys(self) -> bool:
         val = self._state_capture_keys.get()
@@ -55,6 +56,13 @@ class Context:
 
     def set_last_response(self, val: Optional[datetime.datetime]):
         self._state_last_response.set(val)
+
+    def get_num_impostor(self) -> int:
+        val = self._state_num_impostor.get()
+        return val
+
+    def set_num_impostor(self, val: int):
+        self._state_num_impostor.set(val)
 
 
 context: Optional[Context] = None

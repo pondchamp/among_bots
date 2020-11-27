@@ -9,6 +9,7 @@ def setup():
     setup_map()
     while True:
         setup_me()
+        setup_impostor()
         start_game()
 
 
@@ -35,9 +36,24 @@ def setup_me():
         print("Players: " + str(params.player))
         me = prefix_match('Which player are you? ', params.player)
         if me in params.player:
-            print(f'Player {me} selected.', end='\n\n')
             break
+    print(f'Player {me} selected.', end='\n\n')
     context.set_me(me)
+
+
+def setup_impostor():
+    print("Number of impostors: ", end="")
+    while True:
+        try:
+            key = keyboard.get_char()
+            if key is not None:
+                context.set_num_impostor(int(key))
+                break
+        except (ValueError, TypeError):
+            pass
+    keyboard.backspace()
+    set_imp = context.get_num_impostor()
+    print(f'{set_imp} impostor', end='\n\n')
 
 
 def start_game():
@@ -46,8 +62,7 @@ def start_game():
     swap_key = enums.KeyCommand.KEY_CAP.value
     print(f'Press the {swap_key} key while in-game to enable bot commands.\n')
     while True:
-        window_name = monitor.get_foreground_window()
-        if window_name != consts.GAME_TITLE:
+        if not _in_game():
             continue
         key = keyboard.get_char()
         if key is not None:
@@ -55,26 +70,39 @@ def start_game():
             state_players = context.get_players()
             mode = keyboard.handle_key(key)
             if mode == enums.KeyCommand.RESTART:
-                context.set_game(enums.GameState.RESTART)
-                print('Restarting...')
-                context.set_capture_keys(False)
-                context.set_last_response(None)
-                context.set_game(enums.GameState.SETUP)
+                _restart_game()
                 break
             elif mode == enums.KeyCommand.REFRESH:
-                players = monitor.get_players()
-                me = context.get_me()
-                if me in players:
-                    players.remove(me)
-                if players is not None and len(players) > 0:
-                    context.set_players(players)
-                    print(f'Set new player list: {players}')
-                else:
-                    print("Player list could not be obtained - " +
-                          "make sure you're running this command in the voting panel with chat hidden.")
-                print()
+                _refresh_players()
             elif mode is not None:
                 resp = response.generate_response(mode, state_map, state_players)
                 if resp != '':
                     tts.Speaker(resp)
                     keyboard.write_text(resp)
+
+
+def _restart_game():
+    context.set_game(enums.GameState.RESTART)
+    print('Restarting...')
+    context.set_capture_keys(False)
+    context.set_last_response(None)
+    context.set_game(enums.GameState.SETUP)
+
+
+def _refresh_players():
+    players = monitor.get_players()
+    me = context.get_me()
+    if me in players:
+        players.remove(me)
+    if players is not None and len(players) > 0:
+        context.set_players(players)
+        print(f'Set new player list: {players}')
+    else:
+        print("Player list could not be obtained - " +
+              "make sure you're running this command in the voting panel with chat hidden.")
+    print()
+
+
+def _in_game() -> bool:
+    window_name = monitor.get_foreground_window()
+    return window_name == consts.GAME_TITLE
