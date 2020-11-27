@@ -11,9 +11,9 @@ from data.sus_score import PlayerSus, SCORE_SUS, SCORE_SAFE
 
 def setup():
     setup_map()
+    setup_impostor()
     while True:
         setup_me()
-        setup_impostor()
         start_game()
 
 
@@ -108,9 +108,10 @@ def _refresh_players():
             players_score.append(PlayerSus(player=p, sus_score=SCORE_SUS))
 
         # Pick safe player
-        i = random.randint(0, len(players) - 1)
-        p = players.pop(i)
-        players_score.append(PlayerSus(player=p, sus_score=SCORE_SAFE))
+        if len(players) > 0:
+            i = random.randint(0, len(players) - 1)
+            p = players.pop(i)
+            players_score.append(PlayerSus(player=p, sus_score=SCORE_SAFE))
 
         players_score += [PlayerSus(player=p, sus_score=0.5) for p in players]
 
