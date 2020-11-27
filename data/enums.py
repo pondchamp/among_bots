@@ -3,12 +3,12 @@ from typing import Optional
 
 
 class KeyCommand(Enum):
-    ATTACK = '1'
-    DEFENCE = '2'
-    PROBE = '3'
-    STATEMENT = '4'
-    RESTART = '5'
-    REFRESH = '6'
+    REFRESH = '1'
+    ATTACK = '2'
+    DEFENCE = '3'
+    PROBE = '4'
+    STATEMENT = '5'
+    RESTART = '6'
     KEY_CAP = '`'
 
 

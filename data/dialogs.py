@@ -16,6 +16,7 @@ probe = [
     "who was in [l]",
     "who did i just see",
     "was anyone [t]",
+    "where",
 ]
 
 attack = [
