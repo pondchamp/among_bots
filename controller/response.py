@@ -6,25 +6,30 @@ import datetime
 from controller.substitute import SubstituteHelper
 from data import enums, dialogs, consts
 from data.state import context
+from data.sus_score import PlayerSus, SusScore
 
 
-def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, players: List[str]) -> str:
+def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, players: List[PlayerSus]) -> str:
     if not wait_timer(consts.CHAT_THROTTLE_SECS):
         return ''
 
+    players = players if players is not None else []
+    player_select: List[str] = [p.player for p in players]
     if mode == enums.KeyCommand.ATTACK:
         mode_arr = dialogs.attack
+        player_select = [p.player for p in players if p.get_sus() == SusScore.SUS]
     elif mode == enums.KeyCommand.DEFENCE:
         mode_arr = dialogs.defense
     elif mode == enums.KeyCommand.PROBE:
         mode_arr = dialogs.probe
     elif mode == enums.KeyCommand.STATEMENT:
         mode_arr = dialogs.statement
+        player_select = [p.player for p in players if p.get_sus() == SusScore.SAFE]
     else:
         return ''
 
     i = random.randint(0, len(mode_arr) - 1)
-    resp_sub = sub_placeholders(mode_arr[i], curr_map, players)
+    resp_sub = sub_placeholders(mode_arr[i], curr_map, player_select)
     return resp_sub
 
 

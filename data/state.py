@@ -3,13 +3,14 @@ from typing import List, Optional
 import datetime
 
 from data import enums
+from data.sus_score import PlayerSus
 
 
 class Context:
     def __init__(self):
         self._state_capture_keys: ContextVar[bool] = ContextVar("capture_keys", default=False)
         self._state_me: ContextVar[Optional[str]] = ContextVar("state_me", default=None)
-        self._state_players: ContextVar[Optional[List[str]]] = ContextVar("state_players", default=None)
+        self._state_players: ContextVar[Optional[List[PlayerSus]]] = ContextVar("state_players", default=None)
         self._state_map: ContextVar[Optional[enums.AUMap]] = ContextVar("state_map", default=None)
         self._state_game: ContextVar[enums.GameState] = ContextVar("state_game", default=enums.GameState.SETUP)
         self._state_last_response: ContextVar[Optional[datetime.datetime]] = ContextVar("last_response", default=None)
@@ -29,11 +30,11 @@ class Context:
     def set_me(self, val: Optional[str]):
         self._state_me.set(val)
 
-    def get_players(self) -> Optional[List[str]]:
+    def get_players(self) -> Optional[List[PlayerSus]]:
         val = self._state_players.get()
         return val
 
-    def set_players(self, val: Optional[List[str]]):
+    def set_players(self, val: Optional[List[PlayerSus]]):
         self._state_players.set(val)
 
     def get_map(self) -> Optional[enums.AUMap]:

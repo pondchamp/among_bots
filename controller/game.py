@@ -1,8 +1,12 @@
+import random
+from typing import List
+
 from clients import monitor, tts, keyboard
 from controller import response
 from controller.helpers import prefix_match
 from data import enums, params, consts
 from data.state import context
+from data.sus_score import PlayerSus, SCORE_SUS, SCORE_SAFE
 
 
 def setup():
@@ -95,8 +99,23 @@ def _refresh_players():
     if me in players:
         players.remove(me)
     if players is not None and len(players) > 0:
-        context.set_players(players)
-        print(f'Set new player list: {players}')
+        players_score: List[PlayerSus] = []
+
+        # Pick sus player/s
+        for _ in range(context.get_num_impostor()):
+            i = random.randint(0, len(players) - 1)
+            p = players.pop(i)
+            players_score.append(PlayerSus(player=p, sus_score=SCORE_SUS))
+
+        # Pick safe player
+        i = random.randint(0, len(players) - 1)
+        p = players.pop(i)
+        players_score.append(PlayerSus(player=p, sus_score=SCORE_SAFE))
+
+        players_score += [PlayerSus(player=p, sus_score=0.5) for p in players]
+
+        context.set_players(players_score)
+        print(f'Set new player list: {[f"{p.player}:{p.get_sus().name}" for p in players_score]}')
     else:
         print("Player list could not be obtained - " +
               "make sure you're running this command in the voting panel with chat hidden.")
