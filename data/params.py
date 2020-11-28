@@ -63,6 +63,7 @@ location: Dict[AUMap, List[str]] = {
 
 # https://among-us.fandom.com/wiki/Tasks
 task: Dict[AUMap, List[str]] = {
+    AUMap.COMMON: [],
     AUMap.SKELD: [
         _jtl("aligning engines", ["upper engine", "lower engine"]),
         _jtl("calibrating distributor", ["electrical"]),
