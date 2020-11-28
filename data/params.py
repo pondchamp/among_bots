@@ -10,7 +10,7 @@ player = player
 def _jtl(tsk: str, loc_list: Optional[List[str]]):  # join task location
     if loc_list is None or len(loc_list) == 0:
         return tsk
-    loc = loc_list[random.randint(0, len(loc_list))]
+    loc = random.choice(loc_list)
     if loc in ["outside"]:
         return f'{tsk} {loc}'
     return f'{tsk} in {loc}'
