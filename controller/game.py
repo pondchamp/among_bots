@@ -103,13 +103,13 @@ def _refresh_players():
 
         # Pick sus player/s
         for _ in range(context.get_num_impostor()):
-            i = random.randint(0, len(players) - 1)
+            i = random.randint(0, len(players))
             p = players.pop(i)
             players_score.append(PlayerSus(player=p, sus_score=SCORE_SUS))
 
         # Pick safe player
         if len(players) > 0:
-            i = random.randint(0, len(players) - 1)
+            i = random.randint(0, len(players))
             p = players.pop(i)
             players_score.append(PlayerSus(player=p, sus_score=SCORE_SAFE))
 

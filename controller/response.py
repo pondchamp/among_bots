@@ -28,7 +28,7 @@ def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, players: Li
     else:
         return ''
 
-    i = random.randint(0, len(mode_arr) - 1)
+    i = random.randint(0, len(mode_arr))
     resp_sub = sub_placeholders(mode_arr[i], curr_map, player_select)
     return resp_sub
 
@@ -37,7 +37,7 @@ def sub_placeholders(resp: str, curr_map: enums.AUMap, players: List[str]) -> st
     subs = SubstituteHelper(players)
     for sub in subs.substitutions:
         res = subs.get(curr_map, sub)
-        i = random.randint(0, len(res) - 1)
+        i = random.randint(0, len(res))
         resp = re.sub(fr"\[{sub.value}]", res[i], resp)
     return resp
 
