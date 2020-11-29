@@ -60,13 +60,15 @@ def setup_impostor():
         try:
             key = keyboard.get_char()
             if key is not None:
-                context.set_num_impostor(int(key))
-                break
+                key_int = int(key)
+                if 1 <= key_int <= 3:
+                    context.set_num_impostor(key_int)
+                    break
         except (ValueError, TypeError):
             pass
     keyboard.backspace()
     set_imp = context.get_num_impostor()
-    print(f'{set_imp} impostor', end='\n\n')
+    print(f'{set_imp} impostor{"s" if set_imp > 1 else ""}', end='\n\n')
 
 
 def start_game():
