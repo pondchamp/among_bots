@@ -134,7 +134,7 @@ def _refresh_players():
 def print_commands():
     for x in [x for x in enums.KeyCommand if x != enums.KeyCommand.KEY_CAP]:
         k = x.value
-        v = str.lower(x.name).replace('_', ' ')
+        v = str.title(x.name).replace('_', ' ')
         current = None
         if x == enums.KeyCommand.CHANGE_PLAYER:
             current = context.get_me()
@@ -142,7 +142,7 @@ def print_commands():
             current = context.get_num_impostor()
         elif x == enums.KeyCommand.CHANGE_MAP:
             current = context.get_map().name
-        print(f'{k}: {v}{f" (Current: {current})" if current is not None else ""}')
+        print(f'{k}: {v}{f" (Current: {str(current).title()})" if current is not None else ""}')
 
 
 def _in_game() -> bool:
