@@ -92,6 +92,9 @@ def start_game():
                 setup_me()
             elif mode == enums.KeyCommand.REFRESH:
                 _refresh_players()
+            elif mode == enums.KeyCommand.HELP:
+                print_commands()
+                print()
             elif mode is not None:
                 resp = response.generate_response(mode, state_map, state_players)
                 if resp != '':
@@ -127,6 +130,20 @@ def _refresh_players():
         print("Player list could not be obtained - " +
               "make sure you're running this command in the voting panel with chat hidden.")
     print()
+
+
+def print_commands():
+    for x in [x for x in enums.KeyCommand if x != enums.KeyCommand.KEY_CAP]:
+        k = x.value
+        v = str.lower(x.name).replace('_', ' ')
+        current = None
+        if x == enums.KeyCommand.CHANGE_PLAYER:
+            current = context.get_me()
+        elif x == enums.KeyCommand.CHANGE_IMPOSTOR_COUNT:
+            current = context.get_num_impostor()
+        elif x == enums.KeyCommand.CHANGE_MAP:
+            current = context.get_map().name
+        print(f'{k}: {v}{f" (Current: {current})" if current is not None else ""}')
 
 
 def _in_game() -> bool:
