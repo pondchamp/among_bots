@@ -3,7 +3,7 @@ from typing import List
 
 from clients import monitor, tts, keyboard
 from controller import response
-from controller.helpers import prefix_match
+from controller.helpers import num_to_key, key_to_num
 from data import enums, params, consts
 from data.state import context
 from data.sus_score import PlayerSus, SCORE_SUS, SCORE_SAFE
@@ -19,14 +19,17 @@ def setup():
 
 def setup_map():
     for curr_map in [m for m in enums.AUMap if m is not enums.AUMap.COMMON]:
-        print(f'{curr_map.value}: {curr_map.name}')
+        print(f'{curr_map.value + 1}: {curr_map.name}')
 
     print("Select map number: ", end="")
     while True:
         try:
             key = keyboard.get_char()
             if key is not None:
-                context.set_map(enums.AUMap.__call__(int(key)))
+                key_int = int(key)
+                if key_int <= 0:
+                    continue
+                context.set_map(enums.AUMap.__call__(key_int - 1))
                 break
         except (ValueError, TypeError):
             pass
@@ -36,11 +39,17 @@ def setup_map():
 
 
 def setup_me():
+    print("Players:")
+    for i in range(len(params.player)):
+        print(f'{num_to_key(i + 1)}: {params.player[i]}')
+    print("Select your player colour: ", end="")
     while True:
-        print("Players: " + str(params.player))
-        me = prefix_match('Which player are you? ', params.player)
-        if me in params.player:
-            break
+        key = keyboard.get_char()
+        if key is not None:
+            colour = key_to_num(key)
+            if colour is not None:
+                me = params.player[colour - 1]
+                break
     print(f'Player {me} selected.', end='\n\n')
     context.set_me(me)
 
