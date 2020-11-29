@@ -30,12 +30,24 @@ def handle_key(key: str) -> Optional[enums.KeyCommand]:
             context.set_capture_keys(capture_keys)
             print(f'KEY CAPTURE {"ENABLED" if capture_keys else "DISABLED"}')
             if capture_keys:
-                for k, v in [(x.value, str.lower(x.name).replace('_', ' ')) for x in enums.KeyCommand if
-                             x != enums.KeyCommand.KEY_CAP]:
-                    print(f'{k}: {v}')
+                print_commands()
             print()
         else:
             return mode
+
+
+def print_commands():
+    for x in [x for x in enums.KeyCommand if x != enums.KeyCommand.KEY_CAP]:
+        k = x.value
+        v = str.lower(x.name).replace('_', ' ')
+        current = None
+        if x == enums.KeyCommand.CHANGE_PLAYER:
+            current = context.get_me()
+        elif x == enums.KeyCommand.CHANGE_IMPOSTOR_COUNT:
+            current = context.get_num_impostor()
+        elif x == enums.KeyCommand.CHANGE_MAP:
+            current = context.get_map().name
+        print(f'{k}: {v}{f" (Current: {current})" if current is not None else ""}')
 
 
 def write_text(text: str):
