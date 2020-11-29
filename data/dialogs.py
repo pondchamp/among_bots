@@ -29,6 +29,7 @@ attack = [
     "why weren't you doing task in [l]",
     "I'm voting [p]",
     "[p]",
+    "why was [p] near the body",
 ]
 
 defense = [

@@ -9,7 +9,7 @@ keyboard_controller = Controller()
 
 
 def new_listener() -> Listener:
-    return Listener(on_release=on_release)
+    return Listener()
 
 
 def handle_key(key: str) -> Optional[enums.KeyCommand]:
@@ -30,7 +30,7 @@ def handle_key(key: str) -> Optional[enums.KeyCommand]:
             context.set_capture_keys(capture_keys)
             print(f'KEY CAPTURE {"ENABLED" if capture_keys else "DISABLED"}')
             if capture_keys:
-                for k, v in [(x.value, str.lower(x.name)) for x in enums.KeyCommand if
+                for k, v in [(x.value, str.lower(x.name).replace('_', ' ')) for x in enums.KeyCommand if
                              x != enums.KeyCommand.KEY_CAP]:
                     print(f'{k}: {v}')
             print()
@@ -62,10 +62,3 @@ def key_to_char(key: Key) -> Optional[str]:
     if not hasattr(key, 'char'):
         return None
     return key.char
-
-
-def on_release(key: Key):
-    if context.get_game() == enums.GameState.RESTART and key_to_char(key) == enums.KeyCommand.RESTART:
-        backspace()
-        return False
-    return True

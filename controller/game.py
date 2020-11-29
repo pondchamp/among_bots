@@ -82,9 +82,12 @@ def start_game():
             state_map = context.get_map()
             state_players = context.get_players()
             mode = keyboard.handle_key(key)
-            if mode == enums.KeyCommand.RESTART:
-                _restart_game()
-                break
+            if mode == enums.KeyCommand.CHANGE_IMPOSTOR_COUNT:
+                setup_impostor()
+            elif mode == enums.KeyCommand.CHANGE_MAP:
+                setup_map()
+            elif mode == enums.KeyCommand.CHANGE_PLAYER:
+                setup_me()
             elif mode == enums.KeyCommand.REFRESH:
                 _refresh_players()
             elif mode is not None:
@@ -92,14 +95,6 @@ def start_game():
                 if resp != '':
                     tts.Speaker(resp)
                     keyboard.write_text(resp)
-
-
-def _restart_game():
-    context.set_game(enums.GameState.RESTART)
-    print('Restarting...')
-    context.set_capture_keys(False)
-    context.set_last_response(None)
-    context.set_game(enums.GameState.SETUP)
 
 
 def _refresh_players():

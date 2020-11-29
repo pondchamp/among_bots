@@ -8,7 +8,9 @@ class KeyCommand(Enum):
     DEFENCE = '3'
     PROBE = '4'
     STATEMENT = '5'
-    RESTART = '6'
+    CHANGE_PLAYER = '6'
+    CHANGE_IMPOSTOR_COUNT = '7'
+    CHANGE_MAP = '8'
     KEY_CAP = '`'
 
 
@@ -22,7 +24,6 @@ def get_key_command(key: str) -> Optional[KeyCommand]:
 class GameState(Enum):
     SETUP = 0
     PROGRESS = 1
-    RESTART = 2
 
 
 class Substitution(Enum):
