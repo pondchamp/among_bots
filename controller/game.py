@@ -132,6 +132,7 @@ def _refresh_players():
 
 
 def print_commands():
+    print("COMMANDS")
     for x in [x for x in enums.KeyCommand if x != enums.KeyCommand.KEY_CAP]:
         k = x.value
         v = str.title(x.name).replace('_', ' ')
