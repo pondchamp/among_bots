@@ -14,11 +14,7 @@ def new_listener() -> Listener:
 
 
 def handle_key(key: str) -> Optional[enums.KeyCommand]:
-    game_state = context.get_game()
     capture_keys = context.get_capture_keys()
-
-    if game_state != enums.GameState.PROGRESS:
-        return None
 
     mode = enums.get_key_command(key)
     if mode is None:

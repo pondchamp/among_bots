@@ -72,7 +72,6 @@ def setup_impostor():
 
 
 def start_game():
-    context.set_game(enums.GameState.PROGRESS)
     print('\nGAME STARTED!')
     swap_key = enums.KeyCommand.KEY_CAP.value
     print(f'Press the {swap_key} key while in-game to enable bot commands.\n')

@@ -12,7 +12,6 @@ class Context:
         self._state_me: ContextVar[Optional[str]] = ContextVar("state_me", default=None)
         self._state_players: ContextVar[Optional[List[PlayerSus]]] = ContextVar("state_players", default=None)
         self._state_map: ContextVar[Optional[enums.AUMap]] = ContextVar("state_map", default=None)
-        self._state_game: ContextVar[enums.GameState] = ContextVar("state_game", default=enums.GameState.SETUP)
         self._state_last_response: ContextVar[Optional[datetime.datetime]] = ContextVar("last_response", default=None)
         self._state_num_impostor: ContextVar[int] = ContextVar("num_impostor", default=1)
 
@@ -43,13 +42,6 @@ class Context:
 
     def set_map(self, val: Optional[enums.AUMap]):
         self._state_map.set(val)
-
-    def get_game(self) -> enums.GameState:
-        val = self._state_game.get()
-        return enums.GameState.__call__(val)
-
-    def set_game(self, val: enums.GameState):
-        self._state_game.set(val)
 
     def get_last_response(self) -> Optional[datetime.datetime]:
         val = self._state_last_response.get()

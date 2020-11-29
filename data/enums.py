@@ -22,11 +22,6 @@ def get_key_command(key: str) -> Optional[KeyCommand]:
         return None
 
 
-class GameState(Enum):
-    SETUP = 0
-    PROGRESS = 1
-
-
 class Substitution(Enum):
     PLAYER = 'p'
     LOCATION = 'l'
