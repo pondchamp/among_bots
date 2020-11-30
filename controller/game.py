@@ -50,6 +50,7 @@ def setup_me():
             if colour is not None:
                 me = params.player[colour - 1]
                 break
+    keyboard.backspace()
     print(f'Player {me} selected.', end='\n\n')
     context.set_me(me)
 
@@ -91,6 +92,7 @@ def start_game():
                 setup_me()
             elif mode == enums.KeyCommand.REFRESH:
                 _refresh_players()
+                context.set_chat_turns(0)
             elif mode == enums.KeyCommand.HELP:
                 print_commands()
                 print()
@@ -99,6 +101,9 @@ def start_game():
                 if resp != '':
                     tts.Speaker(resp)
                     keyboard.write_text(resp)
+                    chat_turns = context.get_chat_turns()
+                    print(f"Response #{chat_turns}: {resp}")
+                    context.set_chat_turns(chat_turns + 1)
 
 
 def _refresh_players():

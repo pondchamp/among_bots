@@ -28,6 +28,10 @@ def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, players: Li
     else:
         return ''
 
+    curr_turns = context.get_chat_turns()
+    pri_arr = [x.text for x in mode_arr if x.max_turns is not None and x.max_turns >= curr_turns]
+    mode_arr = pri_arr if len(pri_arr) > 0 else [x.text for x in mode_arr if x.max_turns is None]
+
     i = random.randint(0, len(mode_arr) - 1)
     resp_sub = sub_placeholders(mode_arr[i], curr_map, player_select)
     return resp_sub
