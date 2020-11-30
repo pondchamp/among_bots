@@ -25,6 +25,7 @@ probe: List[Dialog] = [
     Dialog("who did i just see", max_turns=1),
     Dialog("was anyone [t]"),
     Dialog("where", max_turns=0),
+    Dialog("??", max_turns=0),
 ]
 
 attack: List[Dialog] = [
