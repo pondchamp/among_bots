@@ -37,7 +37,7 @@ attack: List[Dialog] = [
     Dialog("why weren't you doing task in [l]"),
     Dialog("I'm voting [p]"),
     Dialog("[p]", max_turns=0),
-    Dialog("why was [p] near the body"),
+    Dialog("why was [p] near the body", max_turns=0),
 ]
 
 defense = [

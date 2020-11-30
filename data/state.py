@@ -1,5 +1,5 @@
 from contextvars import ContextVar
-from typing import List, Optional
+from typing import List, Tuple, Optional
 import datetime
 
 from data import enums
@@ -13,6 +13,8 @@ class Context:
         self._state_me: ContextVar[Optional[str]] = ContextVar("state_me", default=None)
         self._state_map: ContextVar[Optional[enums.AUMap]] = ContextVar("state_map", default=None)
         self._state_num_impostor: ContextVar[int] = ContextVar("num_impostor", default=1)
+        self._state_is_impostor: ContextVar[Tuple[bool, Optional[List[str]]]] = \
+            ContextVar("is_impostor", default=(False, None))
         self._state_chat_turns: ContextVar[int] = ContextVar("chat_turns", default=0)
 
         self._state_players: ContextVar[Optional[List[PlayerSus]]] = ContextVar("state_players", default=None)
@@ -45,6 +47,13 @@ class Context:
 
     def set_num_impostor(self, val: int):
         self._state_num_impostor.set(val)
+
+    def get_is_impostor(self) -> Tuple[bool, Optional[List[str]]]:
+        val = self._state_is_impostor.get()
+        return val
+
+    def set_is_impostor(self, val: Tuple[bool, Optional[List[str]]]):
+        self._state_is_impostor.set(val)
 
     def get_chat_turns(self) -> int:
         val = self._state_chat_turns.get()

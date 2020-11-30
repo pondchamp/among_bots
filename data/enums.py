@@ -11,6 +11,7 @@ class KeyCommand(Enum):
     CHANGE_PLAYER = '6'
     CHANGE_IMPOSTOR_COUNT = '7'
     CHANGE_MAP = '8'
+    IMPOSTOR_MODE = '9'
     HELP = '0'
     KEY_CAP = '`'
 

@@ -39,19 +39,7 @@ def setup_map():
 
 
 def setup_me():
-    print("Players:")
-    for i in range(len(params.player)):
-        print(f'{num_to_key(i + 1)}: {params.player[i]}')
-    print("Select your player colour: ", end="")
-    while True:
-        key = keyboard.get_char()
-        if key is not None:
-            colour = key_to_num(key)
-            if colour is not None:
-                me = params.player[colour - 1]
-                break
-    keyboard.backspace()
-    print(f'Player {me} selected.', end='\n\n')
+    me = _select_player(params.player)
     context.set_me(me)
 
 
@@ -90,6 +78,8 @@ def start_game():
                 setup_map()
             elif mode == enums.KeyCommand.CHANGE_PLAYER:
                 setup_me()
+            elif mode == enums.KeyCommand.IMPOSTOR_MODE:
+                _toggle_impostors()
             elif mode == enums.KeyCommand.REFRESH:
                 _refresh_players()
                 context.set_chat_turns(0)
@@ -104,6 +94,21 @@ def start_game():
                     chat_turns = context.get_chat_turns()
                     print(f"Response #{chat_turns}: {resp}")
                     context.set_chat_turns(chat_turns + 1)
+
+
+def _toggle_impostors():
+    (is_imp, _) = context.get_is_impostor()
+    is_imp = not is_imp
+    imp_col = []
+    if is_imp:
+        me = context.get_me()
+        num_imp = context.get_num_impostor()
+        num_imp -= 1
+        for _ in range(num_imp):
+            imp = _select_player([p for p in params.player if p != me and p not in imp_col])
+            imp_col.append(imp)
+    context.set_is_impostor((is_imp, imp_col if is_imp else None))
+    print(f"IMPOSTOR MODE {'ENABLED' if is_imp else 'DISABLED'}")
 
 
 def _refresh_players():
@@ -136,6 +141,22 @@ def _refresh_players():
     print()
 
 
+def _select_player(player_list: List[str], player_type: str = "player") -> str:
+    print("Players:")
+    for i in range(len(player_list)):
+        print(f'{num_to_key(i + 1)}: {player_list[i]}')
+    print(f"Select colour of {player_type}: ", end="")
+    while True:
+        key = keyboard.get_char()
+        if key is not None:
+            colour = key_to_num(key)
+            if colour is not None:
+                keyboard.backspace()
+                player = player_list[colour - 1]
+                print(f'Player {player} selected.', end='\n\n')
+                return player
+
+
 def print_commands():
     print("COMMANDS")
     for x in [x for x in enums.KeyCommand if x != enums.KeyCommand.KEY_CAP]:
@@ -148,6 +169,8 @@ def print_commands():
             current = context.get_num_impostor()
         elif x == enums.KeyCommand.CHANGE_MAP:
             current = context.get_map().name
+        elif x == enums.KeyCommand.IMPOSTOR_MODE:
+            current = context.get_is_impostor()[0]
         print(f'{k}: {v}{f" (Current: {str(current).title()})" if current is not None else ""}')
 
 
