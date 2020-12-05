@@ -2,7 +2,7 @@ import time
 from typing import Optional
 from pynput.keyboard import Controller, Key, Events, Listener
 
-from controller.game import print_commands
+from clients.pcap import game_state
 from data import enums
 from data.state import context
 
@@ -57,3 +57,12 @@ def key_to_char(key: Key) -> Optional[str]:
     if not hasattr(key, 'char'):
         return None
     return key.char
+
+
+def print_commands():
+    print("COMMANDS")
+    for x in [x for x in enums.KeyCommand if x != enums.KeyCommand.KEY_CAP]:
+        k = x.value
+        v = str.title(x.name).replace('_', ' ')
+        current = None
+        print(f'{k}: {v}{f" (Current: {str(current).title()})" if current is not None else ""}')

@@ -10,10 +10,16 @@ from data.sus_score import PlayerSus, SusScore
 
 
 def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, players: List[PlayerSus]) -> str:
+    if not curr_map:
+        print('Game state not loaded - rejoin the lobby to sync game settings.')
+        return ''
+    if not players:
+        print('Wait until discussion time before attempting to chat.')
+        return ''
+
     if not wait_timer(consts.CHAT_THROTTLE_SECS):
         return ''
 
-    players = players if players is not None else []
     player_select: List[str] = [p.player for p in players]
     if mode == enums.KeyCommand.ATTACK:
         mode_arr = dialogs.attack

@@ -1,5 +1,6 @@
 from clients.keyboard import new_listener
-from controller.game import setup
+from controller.game import start_game
 
-new_listener().start()
-setup()
+if __name__ == "__main__":
+    new_listener().start()
+    start_game()
