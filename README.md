@@ -3,3 +3,5 @@
 A chatbot created in Python for Among Us shenanigans.
 
 Check me out on Twitch! https://twitch.tv/julescodes
+
+Works on Windows only. Install [Npcap](https://nmap.org/npcap/) before running this code.

@@ -1,63 +1,20 @@
 import random
-from typing import List
+from typing import List, Optional
 
 from clients import monitor, tts, keyboard
+from clients.pcap import GameState
 from controller import response
 from controller.helpers import num_to_key, key_to_num
 from data import enums, params, consts
 from data.state import context
 from data.sus_score import PlayerSus, SCORE_SUS, SCORE_SAFE
 
+game_state = GameState()
+
 
 def setup():
-    setup_map()
-    setup_impostor()
     while True:
-        setup_me()
         start_game()
-
-
-def setup_map():
-    for curr_map in [m for m in enums.AUMap if m is not enums.AUMap.COMMON]:
-        print(f'{curr_map.value + 1}: {curr_map.name}')
-
-    print("Select map number: ", end="")
-    while True:
-        try:
-            key = keyboard.get_char()
-            if key is not None:
-                key_int = int(key)
-                if key_int <= 0:
-                    continue
-                context.set_map(enums.AUMap.__call__(key_int - 1))
-                break
-        except (ValueError, TypeError):
-            pass
-    keyboard.backspace()
-    set_map = context.get_map().name
-    print(f'{set_map} selected', end='\n\n')
-
-
-def setup_me():
-    me = _select_player(params.player)
-    context.set_me(me)
-
-
-def setup_impostor():
-    print("Number of impostors: ", end="")
-    while True:
-        try:
-            key = keyboard.get_char()
-            if key is not None:
-                key_int = int(key)
-                if 1 <= key_int <= 3:
-                    context.set_num_impostor(key_int)
-                    break
-        except (ValueError, TypeError):
-            pass
-    keyboard.backspace()
-    set_imp = context.get_num_impostor()
-    print(f'{set_imp} impostor{"s" if set_imp > 1 else ""}', end='\n\n')
 
 
 def start_game():
@@ -69,19 +26,12 @@ def start_game():
             continue
         key = keyboard.get_char()
         if key is not None:
-            state_map = context.get_map()
-            state_players = context.get_players()
+            state_map = game_state.get_map()
+            state_players = _get_player_sus()
             mode = keyboard.handle_key(key)
-            if mode == enums.KeyCommand.CHANGE_IMPOSTOR_COUNT:
-                setup_impostor()
-            elif mode == enums.KeyCommand.CHANGE_MAP:
-                setup_map()
-            elif mode == enums.KeyCommand.CHANGE_PLAYER:
-                setup_me()
-            elif mode == enums.KeyCommand.IMPOSTOR_MODE:
+            if mode == enums.KeyCommand.IMPOSTOR_MODE:
                 _toggle_impostors()
             elif mode == enums.KeyCommand.REFRESH:
-                _refresh_players()
                 context.set_chat_turns(0)
             elif mode == enums.KeyCommand.HELP:
                 print_commands()
@@ -101,8 +51,8 @@ def _toggle_impostors():
     is_imp = not is_imp
     imp_col = []
     if is_imp:
-        me = context.get_me()
-        num_imp = context.get_num_impostor()
+        me = game_state.get_me()
+        num_imp = game_state.get_impostor_count()
         num_imp -= 1
         for _ in range(num_imp):
             imp = _select_player([p for p in params.player if p != me and p not in imp_col])
@@ -111,16 +61,16 @@ def _toggle_impostors():
     print(f"IMPOSTOR MODE {'ENABLED' if is_imp else 'DISABLED'}")
 
 
-def _refresh_players():
-    players = monitor.get_players()
-    me = context.get_me()
+def _get_player_sus() -> Optional[List[PlayerSus]]:
+    players = game_state.get_players()
+    me = game_state.get_me()
     if me in players:
         players.remove(me)
     if players is not None and len(players) > 0:
         players_score: List[PlayerSus] = []
 
         # Pick sus player/s
-        for _ in range(context.get_num_impostor()):
+        for _ in range(game_state.get_impostor_count()):
             i = random.randint(0, len(players) - 1)
             p = players.pop(i)
             players_score.append(PlayerSus(player=p, sus_score=SCORE_SUS))
@@ -133,12 +83,13 @@ def _refresh_players():
 
         players_score += [PlayerSus(player=p, sus_score=0.5) for p in players]
 
-        context.set_players(players_score)
         print(f'Set new player list: {[f"{p.player}:{p.get_sus().name}" for p in players_score]}')
+        return players_score
     else:
         print("Player list could not be obtained - " +
               "make sure you're running this command in the voting panel with chat hidden.")
     print()
+    return None
 
 
 def _select_player(player_list: List[str], player_type: str = "player") -> str:
@@ -158,18 +109,16 @@ def _select_player(player_list: List[str], player_type: str = "player") -> str:
 
 
 def print_commands():
+    print(game_state.get_me())
+    if game_state.get_map():
+        print(game_state.get_map().name)
+    print(game_state.get_impostor_count())
     print("COMMANDS")
     for x in [x for x in enums.KeyCommand if x != enums.KeyCommand.KEY_CAP]:
         k = x.value
         v = str.title(x.name).replace('_', ' ')
         current = None
-        if x == enums.KeyCommand.CHANGE_PLAYER:
-            current = context.get_me()
-        elif x == enums.KeyCommand.CHANGE_IMPOSTOR_COUNT:
-            current = context.get_num_impostor()
-        elif x == enums.KeyCommand.CHANGE_MAP:
-            current = context.get_map().name
-        elif x == enums.KeyCommand.IMPOSTOR_MODE:
+        if x == enums.KeyCommand.IMPOSTOR_MODE:
             current = context.get_is_impostor()[0]
         print(f'{k}: {v}{f" (Current: {str(current).title()})" if current is not None else ""}')
 

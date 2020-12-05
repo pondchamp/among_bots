@@ -29,7 +29,7 @@ probe: List[Dialog] = [
 ]
 
 attack: List[Dialog] = [
-    Dialog("where was [p]", max_turns=0),
+    Dialog("where was [p]", max_turns=2),
     Dialog("[p] seems sus"),
     Dialog("[p] is sus"),
     Dialog("[p] is definitely impostor", max_turns=0),
@@ -38,7 +38,9 @@ attack: List[Dialog] = [
     Dialog("why weren't you doing task in [l]"),
     Dialog("I'm voting [p]"),
     Dialog("[p]", max_turns=0),
-    Dialog("why was [p] near the body", max_turns=0),
+    Dialog("why was [p] near the body"),
+    Dialog("i saw [p] vent in [l]"),
+    Dialog("vote [p]"),
 ]
 
 defense = [

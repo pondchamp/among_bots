@@ -1,7 +1,5 @@
 from enum import Enum
 
-from data.player import Player
-
 # Dumb scores for naive solution
 SCORE_SUS = 1.0
 SCORE_SAFE = 0.0
