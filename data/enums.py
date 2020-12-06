@@ -52,4 +52,3 @@ class ResponseFlags(Enum):
     BODY_FOUND_OTHER = 1
     EMERGENCY_MEET_ME = 2
     EMERGENCY_MEET_OTHER = 3
-    EMERGENCY_EVENT = 4
