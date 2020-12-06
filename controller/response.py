@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import List
 import random
 import re
@@ -9,7 +10,8 @@ from data.state import context
 from data.sus_score import PlayerSus, SusScore
 
 
-def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, players: List[PlayerSus]) -> str:
+def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, players: List[PlayerSus],
+                      flags: List[enums.ResponseFlags]) -> str:
     if not curr_map:
         print('Game state not loaded - rejoin the lobby to sync game settings.')
         return ''
