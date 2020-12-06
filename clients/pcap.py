@@ -1,4 +1,5 @@
 # Kudos: https://github.com/jordam/amongUsParser
+from lib.amongUsParser import parse
 from lib.amongUsParser.gameEngine import gameState, playerClass
 from scapy.all import *
 from scapy.layers.inet import UDP
@@ -6,6 +7,8 @@ from scapy.layers.inet import UDP
 from data import enums
 from data.state import context
 from data.sus_score import PlayerSus, SCORE_SUS, SCORE_SAFE
+
+debug = True
 
 
 def _get_player_colour(p: playerClass) -> str:
@@ -28,6 +31,9 @@ class GameState(Thread):
 
     def pkt_callback(self, pkt):
         self._game.proc(pkt[UDP].payload.load, pkt.time)
+        tree = parse(pkt[UDP].payload.load)
+        if debug and tree.children[0].commandName == 'ReliableData':
+            tree.pprint()
 
     def get_me(self) -> Optional[playerClass]:
         return self._game.players[self._game.selfClientID] if self._game.selfClientID else None
