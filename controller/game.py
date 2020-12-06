@@ -19,7 +19,7 @@ def start_game():
                 keyboard.print_commands()
                 print()
             elif mode is not None:
-                resp = response.generate_response(mode, context.get_player_sus(), game_state.get_map())
+                resp = response.generate_response(mode, game_state.get_map(), context.get_player_sus())
                 if resp != '':
                     tts.Speaker(resp)
                     keyboard.write_text(resp)
