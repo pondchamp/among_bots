@@ -14,7 +14,7 @@ def _get_player_colour(p: playerClass) -> str:
 
 class GameState(Thread):
     def __init__(self):
-        self.game: gameState = gameState({
+        self._game: gameState = gameState({
             'StartMeeting': self.start_meeting_callback
         })
         Thread.__init__(self)
@@ -27,29 +27,29 @@ class GameState(Thread):
               store=0)
 
     def pkt_callback(self, pkt):
-        self.game.proc(pkt[UDP].payload.load, pkt.time)
+        self._game.proc(pkt[UDP].payload.load, pkt.time)
 
     def get_me(self) -> Optional[playerClass]:
-        return self.game.players[self.game.selfClientID] if self.game.selfClientID else None
+        return self._game.players[self._game.selfClientID] if self._game.selfClientID else None
 
     def get_me_colour(self) -> Optional[str]:
         me = self.get_me()
         return _get_player_colour(me) if me else None
 
     def get_map(self) -> Optional[enums.AUMap]:
-        if self.game.gameSettings:
-            au_map = self.game.gameSettings['MapId']
+        if self._game.gameSettings:
+            au_map = self._game.gameSettings['MapId']
             return enums.AUMap.__call__(au_map)
         return None
 
     def get_impostor_count(self) -> Optional[int]:
-        if self.game.gameSettings:
-            return self.game.gameSettings['NumImpostors']
+        if self._game.gameSettings:
+            return self._game.gameSettings['NumImpostors']
         return None
 
     def get_players(self) -> Optional[List[str]]:
-        if self.game.players:
-            return [_get_player_colour(p) for p in self.game.players.values()
+        if self._game.players:
+            return [_get_player_colour(p) for p in self._game.players.values()
                     if p.alive and p.playerId != self.get_me().playerId]
         return None
 
@@ -58,8 +58,8 @@ class GameState(Thread):
         return me.infected if me else None
 
     def get_impostor_list(self) -> Optional[List[str]]:
-        if self.get_is_impostor() and self.game.players:  # Only show if I'm impostor (no cheating!)
-            return [_get_player_colour(p) for p in self.game.players.values()
+        if self.get_is_impostor() and self._game.players:  # Only show if I'm impostor (no cheating!)
+            return [_get_player_colour(p) for p in self._game.players.values()
                     if p.infected and p.playerId != self.get_me().playerId]
 
     def start_meeting_callback(self, _):
