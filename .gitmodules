@@ -1,0 +1,3 @@
+[submodule "lib/amongUsParser"]
+	path = lib/amongUsParser
+	url = https://github.com/pondchamp/amongUsParser
