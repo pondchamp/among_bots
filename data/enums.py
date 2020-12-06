@@ -3,17 +3,17 @@ from typing import Optional
 
 
 class KeyCommand(Enum):
-    ATTACK = '1'
-    DEFENCE = '2'
-    PROBE = '3'
-    STATEMENT = '4'
-    HELP = '0'
+    ATTACK = 'f1'
+    DEFENCE = 'f2'
+    PROBE = 'f3'
+    STATEMENT = 'f4'
+    HELP = 'esc'
     KEY_CAP = '`'
 
 
 def get_key_command(key: str) -> Optional[KeyCommand]:
     try:
-        return KeyCommand(key[0])
+        return KeyCommand(key)
     except ValueError:
         return None
 
