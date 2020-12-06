@@ -8,7 +8,7 @@ from data import enums
 from data.state import context
 from data.sus_score import PlayerSus, SCORE_SUS, SCORE_SAFE
 
-debug = True
+debug = False
 
 
 def _get_player_colour(p: playerClass) -> str:
