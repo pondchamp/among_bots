@@ -37,7 +37,9 @@ def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, players: Li
         return ''
 
     curr_turns = context.get_chat_turns()
-    pri_arr = [x.text for x in mode_arr if x.max_turns is not None and x.max_turns >= curr_turns]
+    pri_arr = [x.text for x in mode_arr
+               if x.max_turns and x.max_turns >= curr_turns
+               and x.flags and len(set(flags) & set(x.flags)) > 0]  # List intersect
     mode_arr = pri_arr if len(pri_arr) > 0 else [x.text for x in mode_arr if x.max_turns is None]
 
     i = random.randint(0, len(mode_arr) - 1)
