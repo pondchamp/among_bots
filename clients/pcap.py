@@ -1,10 +1,12 @@
 # Kudos: https://github.com/jordam/amongUsParser
+
 from lib.amongUsParser import parse
 from lib.amongUsParser.gameEngine import gameState, playerClass
 from scapy.all import *
 from scapy.layers.inet import UDP
 
 from data import enums
+from data.interpreter import Interpreter
 from data.state import context
 from data.sus_score import PlayerSus, SCORE_SUS, SCORE_SAFE
 
@@ -81,9 +83,8 @@ class GameState(Thread):
 
     @staticmethod
     def chat_callback(state):
-        player = state['player'].name.decode("utf-8")
-        message = state['message'].decode("utf-8")
-        print(player, ":", message)
+        interpreter = Interpreter(game_state, state['player'], state['message'].decode("utf-8"))
+        print(interpreter.interpret())
 
     def set_player_sus(self):
         players = self.get_players()
