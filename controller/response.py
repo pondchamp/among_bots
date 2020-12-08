@@ -1,4 +1,3 @@
-from enum import Enum
 from typing import List
 import random
 import re
