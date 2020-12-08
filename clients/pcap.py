@@ -105,11 +105,10 @@ class GameState(Thread):
             players_score += [PlayerSus(player=p, sus_score=0.5) for p in players]
 
             context.set_player_sus(players_score)
-            print(f'Set new player list: {[f"{p.player}:{p.get_sus().name}" for p in players_score]}')
+            # print(f'Set new player list: {[f"{p.player}:{p.get_sus().name}" for p in players_score]}')
         else:
             print("Player list could not be obtained - " +
                   "make sure you're running this command in the voting panel with chat hidden.")
-        print()
 
 
 game_state: GameState = GameState()
