@@ -18,7 +18,8 @@ def _get_player_colour(p: playerClass) -> str:
 class GameState(Thread):
     def __init__(self):
         self._game: gameState = gameState({
-            'StartMeeting': self.start_meeting_callback
+            'StartMeeting': self.start_meeting_callback,
+            'Chat': self.chat_callback,
         })
         Thread.__init__(self)
         self.daemon = True
@@ -77,6 +78,12 @@ class GameState(Thread):
     def start_meeting_callback(self, _):
         context.set_chat_turns(0)
         self.set_player_sus()
+
+    @staticmethod
+    def chat_callback(state):
+        player = state['player'].name.decode("utf-8")
+        message = state['message'].decode("utf-8")
+        print(player, ":", message)
 
     def set_player_sus(self):
         players = self.get_players()
