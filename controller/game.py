@@ -12,8 +12,6 @@ def start_game():
     swap_key = enums.KeyCommand.KEY_CAP.value
     print(f'Press the {swap_key} key while in-game to enable bot commands.\n')
     while True:
-        if not _in_game():
-            continue
         key = keyboard.get_char()
         if key is not None:
             mode = keyboard.handle_key(key)
@@ -24,6 +22,8 @@ def start_game():
                 flags = _get_response_flags()
                 resp = response.generate_response(mode, game_state.get_map(), context.get_player_sus(), flags)
                 if resp != '':
+                    if not _in_game():
+                        continue
                     tts.Speaker(resp)
                     keyboard.write_text(resp)
                     chat_turns = context.get_chat_turns()
@@ -39,8 +39,8 @@ def _in_game() -> bool:
 def _get_response_flags() -> List[enums.ResponseFlags]:
     flags = []
     me = game_state.get_me()
-    reason = game_state._game.meetingReason
-    start_by = game_state._game.meetingStartedBy
+    reason = game_state.get_meeting_reason()
+    start_by = game_state.get_meeting_started_by()
     if reason and start_by:
         if reason == 'Button':
             if start_by.playerId == me.playerId:

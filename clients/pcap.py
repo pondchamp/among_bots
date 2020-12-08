@@ -68,6 +68,12 @@ class GameState(Thread):
             return [_get_player_colour(p) for p in self._game.players.values()
                     if p.infected and p.playerId != self.get_me().playerId]
 
+    def get_meeting_started_by(self):
+        return self._game.meetingStartedBy
+
+    def get_meeting_reason(self):
+        return self._game.meetingReason
+
     def start_meeting_callback(self, _):
         context.set_chat_turns(0)
         self.set_player_sus()
