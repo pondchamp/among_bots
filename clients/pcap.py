@@ -57,9 +57,10 @@ class GameState(Thread):
         return None
 
     def get_players(self) -> Optional[List[str]]:
+        me_id = self.get_me().playerId if self.get_me() is not None else -1
         if self._game.players:
             return [_get_player_colour(p) for p in self._game.players.values()
-                    if p.alive and p.playerId != self.get_me().playerId]
+                    if p.alive and p.playerId != me_id]
         return None
 
     def get_is_impostor(self) -> Optional[bool]:
