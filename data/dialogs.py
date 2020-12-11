@@ -47,6 +47,7 @@ attack: List[Dialog] = [
     Dialog("i saw [p] vent in [l]", max_turns=1, flags=[enums.ResponseFlags.EMERGENCY_MEET_ME]),
     Dialog("vote [p]"),
     Dialog("why is [p] stalking me", max_turns=0, flags=[enums.ResponseFlags.EMERGENCY_MEET_ME]),
+    Dialog("self report"),
 ]
 
 defense = [

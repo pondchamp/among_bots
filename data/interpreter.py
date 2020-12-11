@@ -29,7 +29,7 @@ class Interpreter:
         if self._find(me_colour.name.lower()) \
                 or self._find(me_name.lower()):
             verb = "mentioned"
-            if self._find("sus"):
+            if self._find("sus|vote") or self.message.lower() == me_colour.name.lower():
                 verb = "sussed"
             elif self._find("safe"):
                 verb = "vouched for"

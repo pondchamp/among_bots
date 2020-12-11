@@ -40,8 +40,6 @@ def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, players: Li
                 if x.max_turns is not None and x.max_turns >= curr_turns
                 and x.flags is not None and len(set(flags) & set(x.flags)) > 0],
                [x.text for x in mode_arr
-                if x.flags is not None and len(set(flags) & set(x.flags)) > 0],
-               [x.text for x in mode_arr
                 if x.max_turns is not None and x.max_turns >= curr_turns],
                [x.text for x in mode_arr if x.max_turns is None]]
     for arr in pri_arr:
