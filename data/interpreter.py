@@ -8,7 +8,7 @@ class Interpreter:
         self.game_state = game_state
         self.player = player
         self.message = message
-        self.message_lower = re.sub(r'[^\w\s]', '', self.message.lower())
+        self.message_lower = re.sub(r'[^\w\s]', '', self.message.strip().lower())
 
     def interpret(self) -> str:
         me = self.game_state.get_me()
@@ -29,7 +29,7 @@ class Interpreter:
         if self._find(me_colour.name.lower()) \
                 or self._find(me_name.lower()):
             verb = "mentioned"
-            if self._find("sus|vote") or self.message.lower() == me_colour.name.lower():
+            if self._find("sus|vote") or self.message_lower == me_colour.name.lower():
                 verb = "sussed"
             elif self._find("safe"):
                 verb = "vouched for"
