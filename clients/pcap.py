@@ -39,7 +39,7 @@ class GameState(Thread):
             tree.pprint()
 
     def get_me(self) -> Optional[playerClass]:
-        return self._game.players[self._game.selfClientID] if self._game.selfClientID else None
+        return self._game.players[self._game.selfClientID] if self._game.selfClientID in self._game.players else None
 
     def get_me_colour(self) -> Optional[str]:
         me = self.get_me()
