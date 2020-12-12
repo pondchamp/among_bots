@@ -66,6 +66,8 @@ def _get_response_flags() -> List[enums.ResponseFlags]:
 
 
 def wait_timer(wait_secs: int) -> bool:
+    if context.get_debug():
+        return True
     last_response = context.get_last_response()
     wait_time = datetime.timedelta(seconds=wait_secs)
     new_last_response = datetime.datetime.now()
