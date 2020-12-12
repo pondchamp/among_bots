@@ -7,7 +7,7 @@ from data.sus_score import PlayerSus
 class Context:
     def __init__(self):
         self._state_capture_keys: bool = False
-        self._state_chat_turns: int = 0
+        self._state_chat_turns: List[str] = []
         self._state_last_response: Optional[datetime.datetime] = None
         self._state_player_sus: Optional[List[PlayerSus]] = None
 
@@ -17,10 +17,10 @@ class Context:
     def set_capture_keys(self, val: bool):
         self._state_capture_keys = val
 
-    def get_chat_turns(self) -> int:
+    def get_chat_turns(self) -> List[str]:
         return self._state_chat_turns
 
-    def set_chat_turns(self, val: int):
+    def set_chat_turns(self, val: List[str]):
         self._state_chat_turns = val
 
     def get_last_response(self) -> Optional[datetime.datetime]:

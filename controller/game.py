@@ -1,3 +1,4 @@
+import datetime
 from typing import List
 
 from clients import monitor, tts, keyboard
@@ -19,6 +20,8 @@ def start_game():
                 keyboard.print_commands()
                 print()
             elif mode is not None:
+                if not wait_timer(consts.CHAT_THROTTLE_SECS):
+                    continue
                 flags = _get_response_flags()
                 resp = response.generate_response(mode, game_state.get_map(), context.get_player_sus(), flags)
                 if resp != '':
@@ -26,9 +29,10 @@ def start_game():
                         continue
                     tts.Speaker(resp)
                     keyboard.write_text(resp)
-                    chat_turns = context.get_chat_turns()
+                    chat_turns = len(context.get_chat_turns())
                     print(f"Response #{chat_turns}: {resp}")
-                    context.set_chat_turns(chat_turns + 1)
+                else:
+                    print(f"No responses currently available for this option.")
 
 
 def _in_game() -> bool:
@@ -54,3 +58,13 @@ def _get_response_flags() -> List[enums.ResponseFlags]:
                 flags.append(enums.ResponseFlags.BODY_FOUND_OTHER)
 
     return flags
+
+
+def wait_timer(wait_secs: int) -> bool:
+    last_response = context.get_last_response()
+    wait_time = datetime.timedelta(seconds=wait_secs)
+    new_last_response = datetime.datetime.now()
+    if last_response is not None and last_response + wait_time > new_last_response:
+        return False
+    context.set_last_response(new_last_response)
+    return True

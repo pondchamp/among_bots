@@ -79,7 +79,7 @@ class GameState(Thread):
         return self._game.meetingReason
 
     def start_meeting_callback(self, _):
-        context.set_chat_turns(0)
+        context.set_chat_turns([])
         self.set_player_sus()
 
     @staticmethod

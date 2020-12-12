@@ -15,7 +15,6 @@ statement: List[Dialog] = [
     Dialog("ok"),
     Dialog("the body is in [l]", max_turns=0),
     Dialog("[l]", max_turns=0),
-    Dialog("lets just skip"),
     Dialog("[p] is clear"),
     Dialog("[p] is safe"),
     Dialog("the body is in [l]", flags=[enums.ResponseFlags.BODY_FOUND_ME]),
@@ -47,7 +46,7 @@ attack: List[Dialog] = [
     Dialog("i saw [p] vent in [l]", max_turns=1, flags=[enums.ResponseFlags.EMERGENCY_MEET_ME]),
     Dialog("vote [p]"),
     Dialog("why is [p] stalking me", max_turns=0, flags=[enums.ResponseFlags.EMERGENCY_MEET_ME]),
-    Dialog("self report"),
+    Dialog("self report", flags=[enums.ResponseFlags.BODY_FOUND_OTHER]),
 ]
 
 defense = [
@@ -75,4 +74,5 @@ defense = [
     Dialog("i was [t]", max_turns=0),
     Dialog("thats not possible"),
     Dialog("it literally cannot be me"),
+    Dialog("lets just skip"),
 ]

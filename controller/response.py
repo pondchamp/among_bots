@@ -1,10 +1,9 @@
 from typing import List
 import random
 import re
-import datetime
 
 from controller.substitute import SubstituteHelper
-from data import enums, dialogs, consts
+from data import enums, dialogs
 from data.state import context
 from data.sus_score import PlayerSus, SusScore
 
@@ -16,9 +15,6 @@ def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, players: Li
         return ''
     if not players:
         print('Wait until discussion time before attempting to chat.')
-        return ''
-
-    if not wait_timer(consts.CHAT_THROTTLE_SECS):
         return ''
 
     player_select: List[str] = [p.player for p in players]
@@ -35,7 +31,8 @@ def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, players: Li
     else:
         return ''
 
-    curr_turns = context.get_chat_turns()
+    chat_turns = context.get_chat_turns()
+    curr_turns = len(chat_turns)
     pri_arr = [[x.text for x in mode_arr
                 if x.max_turns is not None and x.max_turns >= curr_turns
                 and x.flags is not None and len(set(flags) & set(x.flags)) > 0],
@@ -47,8 +44,16 @@ def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, players: Li
             mode_arr = arr
             break
 
-    i = random.randint(0, len(mode_arr) - 1)
-    resp_sub = sub_placeholders(mode_arr[i], curr_map, player_select)
+    resp_sub = ''
+    while resp_sub == '':
+        if len(mode_arr) == 0:
+            break
+        r = mode_arr[random.randint(0, len(mode_arr) - 1)]
+        if r not in chat_turns:
+            chat_turns.append(r)
+            context.set_chat_turns(chat_turns)
+            resp_sub = sub_placeholders(r, curr_map, player_select)
+        mode_arr.remove(r)
     return resp_sub
 
 
@@ -59,13 +64,3 @@ def sub_placeholders(resp: str, curr_map: enums.AUMap, players: List[str]) -> st
         i = random.randint(0, len(res) - 1)
         resp = re.sub(fr"\[{sub.value}]", res[i], resp)
     return resp
-
-
-def wait_timer(wait_secs: int) -> bool:
-    last_response = context.get_last_response()
-    wait_time = datetime.timedelta(seconds=wait_secs)
-    new_last_response = datetime.datetime.now()
-    if last_response is not None and last_response + wait_time > new_last_response:
-        return False
-    context.set_last_response(new_last_response)
-    return True
