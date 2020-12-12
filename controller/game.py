@@ -23,7 +23,7 @@ def start_game():
                 debug = context.get_debug()
                 debug = not debug
                 context.set_debug(debug)
-                print(f'DEBUG MODE {"ENABLED" if debug else "DISA"}')
+                print(f'DEBUG MODE {"ENABLED" if debug else "DISABLED"}')
             elif mode is not None:
                 if not wait_timer(consts.CHAT_THROTTLE_SECS):
                     continue
