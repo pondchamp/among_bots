@@ -2,7 +2,7 @@ from typing import List
 import random
 import re
 
-from clients.pcap import GameState  # Use static methods only!
+from clients.pcap import game_state  # Use static methods only!
 from controller.substitute import SubstituteHelper
 from data import enums, dialogs, params
 from data.state import context
@@ -15,6 +15,7 @@ def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, players: Li
     if not curr_map:
         if debug:
             print('DEBUG: defaulting to Skeld')
+            game_state.set_map(enums.AUMap.SKELD)
             curr_map = enums.AUMap.SKELD
         else:
             print('Game state not loaded - rejoin the lobby to sync game settings.')
@@ -22,7 +23,7 @@ def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, players: Li
     if not players:
         if debug:
             print('DEBUG: defaulting to all players')
-            GameState.set_player_sus(params.player)
+            game_state.set_player_sus(params.player)
             players = context.get_player_sus()
         else:
             print('Wait until discussion time before attempting to chat.')
@@ -42,16 +43,16 @@ def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, players: Li
     else:
         return ''
 
-    chat_turns = context.get_chat_log()
-    curr_turns = context.get_chat_turns()
+    chat_log = context.get_chat_log()
+    chat_turns = context.get_chat_turns()
     pri_arr = [[x.text for x in mode_arr
-                if x.max_turns is not None and x.max_turns >= curr_turns
+                if x.max_turns is not None and x.max_turns >= chat_turns
                 and x.flags is not None and len(set(flags) & set(x.flags)) > 0],
                [x.text for x in mode_arr
                 if x.max_turns is None
                 and x.flags is not None and len(set(flags) & set(x.flags)) > 0],
                [x.text for x in mode_arr
-                if x.max_turns is not None and x.max_turns >= curr_turns],
+                if x.max_turns is not None and x.max_turns >= chat_turns],
                [x.text for x in mode_arr if x.max_turns is None]]
     for arr in pri_arr:
         if len(arr) > 0:
@@ -62,12 +63,12 @@ def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, players: Li
     m = mode_arr.copy()
     while resp_sub == '':
         if len(m) == 0:
-            chat_turns = []
+            chat_log = []
             context.chat_log_clear()
             m = mode_arr.copy()
             continue
         r = m[random.randint(0, len(m) - 1)]
-        if r not in chat_turns:
+        if r not in chat_log:
             context.chat_log_append(r)
             resp_sub = sub_placeholders(r, curr_map, player_select)
         m.remove(r)

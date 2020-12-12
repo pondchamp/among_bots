@@ -51,6 +51,10 @@ class GameState(Thread):
             return enums.AUMap.__call__(au_map)
         return None
 
+    # DEBUG METHOD
+    def set_map(self, val: enums.AUMap):
+        self._game.gameSettings['MapId'] = val
+
     def get_impostor_count(self) -> Optional[int]:
         if self._game.gameSettings:
             return self._game.gameSettings['NumImpostors']
