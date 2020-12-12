@@ -1,10 +1,7 @@
 import random
 from typing import Dict, List, Optional
 
-from data.enums import AUMap
-from data.player import player
-
-player = player
+from data.enums import AUMap, PlayerColour
 
 
 def _jtl(tsk: str, loc_list: Optional[List[str]]):  # join task location
@@ -133,3 +130,5 @@ task: Dict[AUMap, List[str]] = {
         _jtl("watering plants", ["storage", "greenhouse"])
     ]
 }
+
+player: List[str] = [x.name.lower() for x in PlayerColour]

@@ -6,11 +6,18 @@ from data.sus_score import PlayerSus
 
 class Context:
     def __init__(self):
+        self._state_debug: bool = False
         self._state_capture_keys: bool = False
         self._state_chat_turns: int = 0
         self._state_chat_log: List[str] = []
         self._state_last_response: Optional[datetime.datetime] = None
         self._state_player_sus: Optional[List[PlayerSus]] = None
+
+    def get_debug(self) -> bool:
+        return self._state_debug
+
+    def set_debug(self, val: bool):
+        self._state_debug = val
 
     def get_capture_keys(self) -> bool:
         return self._state_capture_keys

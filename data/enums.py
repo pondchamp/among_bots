@@ -7,6 +7,7 @@ class KeyCommand(Enum):
     DEFENCE = 'f2'
     PROBE = 'f3'
     STATEMENT = 'f4'
+    DEBUG = 'f8'
     HELP = 'esc'
     KEY_CAP = '`'
 

@@ -80,21 +80,21 @@ class GameState(Thread):
 
     def start_meeting_callback(self, _):
         context.chat_log_reset()
-        self.set_player_sus()
+        self.set_player_sus(self.get_players(), self.get_impostor_list())
 
     @staticmethod
     def chat_callback(state):
         interpreter = Interpreter(game_state, state['player'], state['message'].decode("utf-8"))
         print(interpreter.interpret())
 
-    def set_player_sus(self):
-        players = self.get_players()
+    @staticmethod
+    def set_player_sus(players, imp_list=None):
         if players is not None and len(players) > 0:
             players_score: List[PlayerSus] = []
 
             # Pick safe player/s
-            imp_list = self.get_impostor_list()
-            for i in ([players.index(p) for p in imp_list] if imp_list else [random.randint(0, len(players) - 1)]):
+            default_index = [random.randint(0, len(players) - 1)]
+            for i in ([players.index(p) for p in imp_list] if imp_list is not None else default_index):
                 p = players.pop(i)
                 players_score.append(PlayerSus(player=p, sus_score=SCORE_SAFE))
 

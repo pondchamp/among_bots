@@ -2,20 +2,31 @@ from typing import List
 import random
 import re
 
+from clients.pcap import GameState  # Use static methods only!
 from controller.substitute import SubstituteHelper
-from data import enums, dialogs
+from data import enums, dialogs, params
 from data.state import context
 from data.sus_score import PlayerSus, SusScore
 
 
 def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, players: List[PlayerSus],
                       flags: List[enums.ResponseFlags]) -> str:
+    debug = context.get_debug()
     if not curr_map:
-        print('Game state not loaded - rejoin the lobby to sync game settings.')
-        return ''
+        if debug:
+            print('DEBUG: defaulting to Skeld')
+            curr_map = enums.AUMap.SKELD
+        else:
+            print('Game state not loaded - rejoin the lobby to sync game settings.')
+            return ''
     if not players:
-        print('Wait until discussion time before attempting to chat.')
-        return ''
+        if debug:
+            print('DEBUG: defaulting to all players')
+            GameState.set_player_sus(params.player)
+            players = context.get_player_sus()
+        else:
+            print('Wait until discussion time before attempting to chat.')
+            return ''
 
     player_select: List[str] = [p.player for p in players]
     if mode == enums.KeyCommand.ATTACK:
@@ -35,6 +46,9 @@ def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, players: Li
     curr_turns = context.get_chat_turns()
     pri_arr = [[x.text for x in mode_arr
                 if x.max_turns is not None and x.max_turns >= curr_turns
+                and x.flags is not None and len(set(flags) & set(x.flags)) > 0],
+               [x.text for x in mode_arr
+                if x.max_turns is None
                 and x.flags is not None and len(set(flags) & set(x.flags)) > 0],
                [x.text for x in mode_arr
                 if x.max_turns is not None and x.max_turns >= curr_turns],

@@ -19,18 +19,23 @@ def start_game():
             if mode == enums.KeyCommand.HELP:
                 keyboard.print_commands()
                 print()
+            elif mode == enums.KeyCommand.DEBUG:
+                debug = context.get_debug()
+                debug = not debug
+                context.set_debug(debug)
+                print(f'DEBUG MODE {"ENABLED" if debug else "DISA"}')
             elif mode is not None:
                 if not wait_timer(consts.CHAT_THROTTLE_SECS):
                     continue
                 flags = _get_response_flags()
                 resp = response.generate_response(mode, game_state.get_map(), context.get_player_sus(), flags)
                 if resp != '':
+                    chat_turns = context.get_chat_turns()
+                    print(f"Response #{chat_turns}: {resp}")
                     if not _in_game():
                         continue
                     tts.Speaker(resp)
                     keyboard.write_text(resp)
-                    chat_turns = context.get_chat_turns()
-                    print(f"Response #{chat_turns}: {resp}")
                 else:
                     print(f"No responses currently available for this option.")
 
