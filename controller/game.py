@@ -29,7 +29,7 @@ def start_game():
                         continue
                     tts.Speaker(resp)
                     keyboard.write_text(resp)
-                    chat_turns = len(context.get_chat_turns())
+                    chat_turns = context.get_chat_turns()
                     print(f"Response #{chat_turns}: {resp}")
                 else:
                     print(f"No responses currently available for this option.")

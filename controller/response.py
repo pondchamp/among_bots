@@ -31,8 +31,8 @@ def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, players: Li
     else:
         return ''
 
-    chat_turns = context.get_chat_turns()
-    curr_turns = len(chat_turns)
+    chat_turns = context.get_chat_log()
+    curr_turns = context.get_chat_turns()
     pri_arr = [[x.text for x in mode_arr
                 if x.max_turns is not None and x.max_turns >= curr_turns
                 and x.flags is not None and len(set(flags) & set(x.flags)) > 0],
@@ -45,15 +45,18 @@ def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, players: Li
             break
 
     resp_sub = ''
+    m = mode_arr.copy()
     while resp_sub == '':
-        if len(mode_arr) == 0:
-            break
-        r = mode_arr[random.randint(0, len(mode_arr) - 1)]
+        if len(m) == 0:
+            chat_turns = []
+            context.chat_log_clear()
+            m = mode_arr.copy()
+            continue
+        r = m[random.randint(0, len(m) - 1)]
         if r not in chat_turns:
-            chat_turns.append(r)
-            context.set_chat_turns(chat_turns)
+            context.chat_log_append(r)
             resp_sub = sub_placeholders(r, curr_map, player_select)
-        mode_arr.remove(r)
+        m.remove(r)
     return resp_sub
 
 
