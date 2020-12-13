@@ -8,7 +8,7 @@ from scapy.layers.inet import UDP
 from data import enums
 from data.interpreter import Interpreter
 from data.state import context
-from data.sus_score import PlayerSus, SCORE_SUS, SCORE_SAFE
+from data.sus_score import PlayerSus, SCORE_SUS, SCORE_SAFE, SusScore
 
 debug = False
 
@@ -98,8 +98,8 @@ class GameState(Thread):
 
             # Pick safe player/s
             default_index = [random.randint(0, len(players) - 1)]
-            for i in ([players.index(p) for p in imp_list] if imp_list is not None else default_index):
-                p = players.pop(i)
+            for p in (imp_list if imp_list is not None else players[default_index]):
+                players.remove(p)
                 players_score.append(PlayerSus(player=p, sus_score=SCORE_SAFE))
 
             # Pick sus player
@@ -110,7 +110,8 @@ class GameState(Thread):
             players_score += [PlayerSus(player=p, sus_score=0.5) for p in players]
 
             context.set_player_sus(players_score)
-            print(f'Set new player list: {[f"{p.player}:{p.get_sus().name}" for p in players_score]}')
+            print('Set new player list:',
+                  [f"{p.player}:{p.get_sus().name}" for p in players_score if p.get_sus() != SusScore.IDK])
         else:
             print("Player list could not be obtained - " +
                   "make sure you're running this command in the voting panel with chat hidden.")
