@@ -20,7 +20,9 @@ class Speaker(Thread):
         try:
             client = texttospeech.TextToSpeechClient()
             if self.emphasis:
-                self.text = '<prosody volume="x-loud" range="10st" pitch="2st">' + self.text + "</prosody>"
+                self.text = '<prosody volume="x-loud" range="10st" pitch="+2st">' + self.text + "</prosody>"
+            else:
+                self.text = '<prosody pitch="-2st">' + self.text + "</prosody>"
             self.text = f'<speak>{self.text}</speak>'
             synthesis_input = texttospeech.SynthesisInput(ssml=self.text)
             voice = texttospeech.VoiceSelectionParams(
