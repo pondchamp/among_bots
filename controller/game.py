@@ -25,20 +25,31 @@ def start_game():
                 debug = not debug
                 context.set_debug(debug)
                 print(f'DEBUG MODE {"ENABLED" if debug else "DISABLED"}')
+            elif mode == enums.KeyCommand.REPEAT:
+                last_phrase = context.get_last_phrase()
+                if last_phrase is not None:
+                    _output_phrase(last_phrase)
+                else:
+                    print('No chat history to repeat.')
             elif mode is not None:
                 if not wait_timer(consts.CHAT_THROTTLE_SECS):
                     continue
                 flags = _get_response_flags()
                 resp = response.generate_response(mode, game_state.get_map(), context.get_player_sus(), flags)
                 if resp != '':
-                    chat_turns = context.get_chat_turns()
-                    print(f"Response #{chat_turns}: {resp}")
-                    if not _in_game():
-                        continue
-                    tts.Speaker(resp, emphasis=keyboard.caps_enabled())
-                    keyboard.write_text(_strip(resp))
+                    _output_phrase(resp)
                 else:
                     print(f"No responses currently available for this option.")
+
+
+def _output_phrase(resp: str):
+    chat_turns = context.get_chat_turns()
+    print(f"Response #{chat_turns}: {resp}")
+    context.set_last_phrase(resp)
+    if not _in_game():
+        return
+    tts.Speaker(resp, emphasis=keyboard.caps_enabled())
+    keyboard.write_text(_strip(resp))
 
 
 def _in_game() -> bool:

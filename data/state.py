@@ -10,6 +10,7 @@ class Context:
         self._state_capture_keys: bool = False
         self._state_chat_turns: int = 0
         self._state_chat_log: List[str] = []
+        self._state_last_phrase: Optional[str] = None
         self._state_last_response: Optional[datetime.datetime] = None
         self._state_player_sus: Optional[List[PlayerSus]] = None
 
@@ -47,6 +48,12 @@ class Context:
 
     def set_last_response(self, val: Optional[datetime.datetime]):
         self._state_last_response = val
+
+    def get_last_phrase(self) -> Optional[str]:
+        return self._state_last_phrase
+
+    def set_last_phrase(self, val: Optional[str]):
+        self._state_last_phrase = val
 
     def get_player_sus(self) -> Optional[List[PlayerSus]]:
         return self._state_player_sus
