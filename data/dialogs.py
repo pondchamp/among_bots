@@ -21,31 +21,31 @@ statement: List[Dialog] = [
 ]
 
 probe: List[Dialog] = [
-    Dialog("where was the body", max_turns=0, flags=[enums.ResponseFlags.BODY_FOUND_OTHER]),
-    Dialog("was anyone in [l]"),
-    Dialog("where was [p]"),
-    Dialog("who was in [l]"),
-    Dialog("who did i just see", max_turns=1, flags=[enums.ResponseFlags.BODY_FOUND_ME]),
-    Dialog("was anyone [t]"),
-    Dialog("where", max_turns=0, flags=[enums.ResponseFlags.BODY_FOUND_OTHER]),
+    Dialog("where was the body?", max_turns=0, flags=[enums.ResponseFlags.BODY_FOUND_OTHER]),
+    Dialog("was anyone in [l]?"),
+    Dialog("where was [p]?"),
+    Dialog("who was in [l]?"),
+    Dialog("who did i just see?", max_turns=1, flags=[enums.ResponseFlags.BODY_FOUND_ME]),
+    Dialog("was anyone [t]?"),
+    Dialog("where?", max_turns=0, flags=[enums.ResponseFlags.BODY_FOUND_OTHER]),
     Dialog("??", max_turns=0, flags=[enums.ResponseFlags.EMERGENCY_MEET_OTHER]),
-    Dialog("what", max_turns=0, flags=[enums.ResponseFlags.EMERGENCY_MEET_OTHER]),
+    Dialog("what?", max_turns=0, flags=[enums.ResponseFlags.EMERGENCY_MEET_OTHER]),
 ]
 
 attack: List[Dialog] = [
-    Dialog("where was [p]", max_turns=2),
+    Dialog("where was [p]?", max_turns=1),
     Dialog("[p] seems sus"),
     Dialog("[p] is sus"),
     Dialog("[p] is definitely impostor", max_turns=0),
     Dialog("I saw [p] vent", max_turns=0),
     Dialog("[p] was faking their tasks"),
-    Dialog("why weren't you doing task in [l]"),
+    Dialog("why weren't you doing task in [l]?"),
     Dialog("I'm voting [p]"),
     Dialog("[p]", max_turns=0),
-    Dialog("why was [p] near the body", flags=[enums.ResponseFlags.BODY_FOUND_OTHER]),
+    Dialog("why was [p] near the body?", flags=[enums.ResponseFlags.BODY_FOUND_OTHER]),
     Dialog("i saw [p] vent in [l]", max_turns=1, flags=[enums.ResponseFlags.EMERGENCY_MEET_ME]),
     Dialog("vote [p]"),
-    Dialog("why is [p] stalking me", max_turns=0, flags=[enums.ResponseFlags.EMERGENCY_MEET_ME]),
+    Dialog("why is [p] stalking me?", max_turns=0, flags=[enums.ResponseFlags.EMERGENCY_MEET_ME]),
     Dialog("self report", flags=[enums.ResponseFlags.BODY_FOUND_OTHER]),
 ]
 
@@ -57,7 +57,7 @@ defense = [
     Dialog("I wasn't there"),
     Dialog("I was with [p]"),
     Dialog("[p] and i were in [l]"),
-    Dialog("what"),
+    Dialog("what?"),
     Dialog("i didnt vent"),
     Dialog("i was in [l]"),
     Dialog("i saw [p] last"),

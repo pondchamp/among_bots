@@ -128,3 +128,5 @@ dmypy.json
 
 # PyCharm
 .idea/
+
+creds.json

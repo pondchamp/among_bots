@@ -1,4 +1,5 @@
 import datetime
+import re
 from typing import List
 
 from clients import monitor, tts, keyboard
@@ -34,8 +35,8 @@ def start_game():
                     print(f"Response #{chat_turns}: {resp}")
                     if not _in_game():
                         continue
-                    tts.Speaker(resp)
-                    keyboard.write_text(resp)
+                    tts.Speaker(resp, emphasis=keyboard.caps_enabled())
+                    keyboard.write_text(_strip(resp))
                 else:
                     print(f"No responses currently available for this option.")
 
@@ -75,3 +76,7 @@ def wait_timer(wait_secs: int) -> bool:
         return False
     context.set_last_response(new_last_response)
     return True
+
+
+def _strip(text: str) -> str:
+    return re.sub(r'[^a-z]$', '', text)

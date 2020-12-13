@@ -1,6 +1,8 @@
 import time
 from typing import Optional
 from pynput.keyboard import Controller, Key, Events, Listener
+from win32api import GetKeyState
+from win32con import VK_CAPITAL
 
 from data import enums
 from data.state import context
@@ -10,6 +12,10 @@ keyboard_controller = Controller()
 
 def new_listener() -> Listener:
     return Listener()
+
+
+def caps_enabled() -> bool:
+    return bool(GetKeyState(VK_CAPITAL))
 
 
 def handle_key(key: str) -> Optional[enums.KeyCommand]:
