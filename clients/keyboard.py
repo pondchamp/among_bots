@@ -40,7 +40,7 @@ def handle_key(key: str) -> Optional[enums.KeyCommand]:
 
 def write_text(text: str):
     for key in text:
-        time.sleep(0.01)
+        time.sleep(0.05)
         keyboard_controller.press(key)
     time.sleep(0.1)
     keyboard_controller.press(Key.enter)
