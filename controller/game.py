@@ -5,8 +5,9 @@ from typing import List
 from clients import monitor, tts, keyboard
 from clients.pcap import game_state
 from controller import response
-from data import enums, consts
+from data import enums, consts, params
 from data.state import context
+from data.sus_score import SusScore
 
 
 def start_game():
@@ -34,6 +35,23 @@ def start_game():
             elif mode is not None:
                 if not wait_timer(consts.CHAT_THROTTLE_SECS):
                     continue
+                debug = context.get_debug()
+                if not game_state.get_map():
+                    if debug:
+                        print('DEBUG: defaulting to Skeld')
+                        game_state.set_map(enums.AUMap.SKELD)
+                        curr_map = enums.AUMap.SKELD
+                    else:
+                        print('Game state not loaded - rejoin the lobby to sync game settings.')
+                        return ''
+                if not context.get_player_sus():
+                    if debug:
+                        print('DEBUG: defaulting to all players')
+                        game_state.set_player_sus(params.player)
+                        game_state.set_player_loc()
+                    else:
+                        print('Wait until discussion time before attempting to chat.')
+                        return ''
                 flags = _get_response_flags()
                 resp = response.generate_response(mode, game_state.get_map(), context.get_player_sus(), flags)
                 if resp != '':
@@ -68,11 +86,14 @@ def _get_response_flags() -> List[enums.ResponseFlags]:
                 flags.append(enums.ResponseFlags.EMERGENCY_MEET_ME)
             else:
                 flags.append(enums.ResponseFlags.EMERGENCY_MEET_OTHER)
-        else:
+        else:  # Body found
             if start_by.playerId == me.playerId:
                 flags.append(enums.ResponseFlags.BODY_FOUND_ME)
             else:
                 flags.append(enums.ResponseFlags.BODY_FOUND_OTHER)
+                player_colour = game_state.get_player_from_id(start_by.playerId)
+                if player_colour in [p.player for p in context.get_player_sus() if p.get_sus() == SusScore.SUS]:
+                    flags.append(enums.ResponseFlags.SELF_REPORT)
 
     return flags
 

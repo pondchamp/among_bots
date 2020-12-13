@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, Dict
 import datetime
 
 from data.sus_score import PlayerSus
@@ -13,6 +13,7 @@ class Context:
         self._state_last_phrase: Optional[str] = None
         self._state_last_response: Optional[datetime.datetime] = None
         self._state_player_sus: Optional[List[PlayerSus]] = None
+        self._state_player_loc: Optional[Dict[str, str]] = None
 
     def get_debug(self) -> bool:
         return self._state_debug
@@ -60,6 +61,12 @@ class Context:
 
     def set_player_sus(self, val: Optional[List[PlayerSus]]):
         self._state_player_sus = val
+
+    def get_player_loc(self) -> Optional[Dict[str, str]]:
+        return self._state_player_loc
+
+    def set_player_loc(self, val: Optional[Dict[str, str]]):
+        self._state_player_loc = val
 
 
 context: Optional[Context] = None

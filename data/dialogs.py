@@ -13,11 +13,11 @@ class Dialog:
 statement: List[Dialog] = [
     Dialog("hmm"),
     Dialog("ok"),
-    Dialog("the body is in [l]", max_turns=0),
-    Dialog("[l]", max_turns=0),
+    Dialog("the body is in [lb]", max_turns=0),
+    Dialog("[lb]", max_turns=0),
     Dialog("[p] is clear"),
     Dialog("[p] is safe"),
-    Dialog("the body is in [l]", flags=[enums.ResponseFlags.BODY_FOUND_ME]),
+    Dialog("the body is in [lb]", flags=[enums.ResponseFlags.BODY_FOUND_ME]),
 ]
 
 probe: List[Dialog] = [
@@ -43,10 +43,10 @@ attack: List[Dialog] = [
     Dialog("I'm voting [p]"),
     Dialog("[p]", max_turns=0),
     Dialog("why was [p] near the body?", flags=[enums.ResponseFlags.BODY_FOUND_OTHER]),
-    Dialog("i saw [p] vent in [l]", max_turns=1, flags=[enums.ResponseFlags.EMERGENCY_MEET_ME]),
+    Dialog("i saw [p] vent in [lm]", max_turns=1, flags=[enums.ResponseFlags.EMERGENCY_MEET_ME]),
     Dialog("vote [p]"),
     Dialog("why is [p] stalking me?", max_turns=0, flags=[enums.ResponseFlags.EMERGENCY_MEET_ME]),
-    Dialog("self report", flags=[enums.ResponseFlags.BODY_FOUND_OTHER]),
+    Dialog("self report", flags=[enums.ResponseFlags.SELF_REPORT]),
 ]
 
 defense = [
@@ -56,10 +56,10 @@ defense = [
     Dialog("no u"),
     Dialog("I wasn't there"),
     Dialog("I was with [p]"),
-    Dialog("[p] and i were in [l]"),
+    Dialog("[p] and i were in [lm]"),
     Dialog("what?"),
     Dialog("i didnt vent"),
-    Dialog("i was in [l]"),
+    Dialog("i was in [lm]"),
     Dialog("i saw [p] last"),
     Dialog("i saw [p] in [l]"),
     Dialog("this is my first time"),
@@ -69,8 +69,8 @@ defense = [
     Dialog("you weren't there, I was there"),
     Dialog("I was doing my tasks", max_turns=0),
     Dialog("I'm done with my tasks", max_turns=0),
-    Dialog("I don't know how to do the task in [l]", max_turns=0),
-    Dialog("i was doing tasks in [l]", max_turns=0),
+    Dialog("I don't know how to do the task in [lm]", max_turns=0),
+    Dialog("i was doing tasks in [lm]", max_turns=0),
     Dialog("i was [t]", max_turns=0),
     Dialog("thats not possible"),
     Dialog("it literally cannot be me"),

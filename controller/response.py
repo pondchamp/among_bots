@@ -11,24 +11,6 @@ from data.sus_score import PlayerSus, SusScore
 
 def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, players: List[PlayerSus],
                       flags: List[enums.ResponseFlags]) -> str:
-    debug = context.get_debug()
-    if not curr_map:
-        if debug:
-            print('DEBUG: defaulting to Skeld')
-            game_state.set_map(enums.AUMap.SKELD)
-            curr_map = enums.AUMap.SKELD
-        else:
-            print('Game state not loaded - rejoin the lobby to sync game settings.')
-            return ''
-    if not players:
-        if debug:
-            print('DEBUG: defaulting to all players')
-            game_state.set_player_sus(params.player)
-            players = context.get_player_sus()
-        else:
-            print('Wait until discussion time before attempting to chat.')
-            return ''
-
     player_select: List[str] = [p.player for p in players]
     if mode == enums.KeyCommand.ATTACK:
         mode_arr = dialogs.attack

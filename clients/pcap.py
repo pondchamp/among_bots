@@ -5,7 +5,7 @@ from lib.amongUsParser.gameEngine import gameState, playerClass
 from scapy.all import *
 from scapy.layers.inet import UDP
 
-from data import enums
+from data import enums, params
 from data.interpreter import Interpreter
 from data.state import context
 from data.sus_score import PlayerSus, SCORE_SUS, SCORE_SAFE, SusScore
@@ -67,6 +67,11 @@ class GameState(Thread):
                     if p.alive and p.playerId != me_id]
         return None
 
+    def get_player_from_id(self, player_id: int) -> Optional[str]:
+        if player_id not in self._game.playerIdMap:
+            return None
+        return _get_player_colour(self._game.playerIdMap[player_id])
+
     def get_is_impostor(self) -> Optional[bool]:
         me = self.get_me()
         return me.infected if me else None
@@ -85,6 +90,7 @@ class GameState(Thread):
     def start_meeting_callback(self, _):
         context.chat_log_reset()
         self.set_player_sus(self.get_players(), self.get_impostor_list())
+        self.set_player_loc()
 
     @staticmethod
     def chat_callback(state):
@@ -97,8 +103,8 @@ class GameState(Thread):
             players_score: List[PlayerSus] = []
 
             # Pick safe player/s
-            default_index = [random.randint(0, len(players) - 1)]
-            for p in (imp_list if imp_list is not None else players[default_index]):
+            default_index = random.randint(0, len(players) - 1)
+            for p in (imp_list if imp_list is not None else [players[default_index]]):
                 players.remove(p)
                 players_score.append(PlayerSus(player=p, sus_score=SCORE_SAFE))
 
@@ -115,6 +121,20 @@ class GameState(Thread):
         else:
             print("Player list could not be obtained - " +
                   "make sure you're running this command in the voting panel with chat hidden.")
+
+    def set_player_loc(self):
+        locations = params.location[self.get_map()]
+        me_loc = locations[random.randint(0, len(locations) - 1)]
+        locations.remove(me_loc)
+        body_loc = locations[random.randint(0, len(locations) - 1)]
+        locations.remove(body_loc)
+        loc_dict = {
+            'me': me_loc,
+            'body': body_loc,
+        }
+        context.set_player_loc(loc_dict)
+        print('Set new location list:',
+              [f'{k}: {v}' for k, v in loc_dict.items()])
 
 
 game_state: GameState = GameState()

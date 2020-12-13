@@ -2,6 +2,7 @@ from typing import Dict, List
 
 from data import params
 from data.enums import AUMap, Substitution
+from data.state import context
 
 
 class SubstituteHelper:
@@ -10,6 +11,8 @@ class SubstituteHelper:
         self.substitutions: Dict[Substitution, Dict[AUMap, List[str]]] = {
             Substitution.PLAYER: {AUMap.COMMON: params.player},
             Substitution.LOCATION: params.location,
+            Substitution.LOCATION_ME: {AUMap.COMMON: [context.get_player_loc()['me']]},
+            Substitution.LOCATION_BODY: {AUMap.COMMON: [context.get_player_loc()['body']]},
             Substitution.TASK: params.task
         }
 

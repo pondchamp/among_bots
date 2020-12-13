@@ -23,6 +23,8 @@ def get_key_command(key: str) -> Optional[KeyCommand]:
 class Substitution(Enum):
     PLAYER = 'p'
     LOCATION = 'l'
+    LOCATION_ME = 'lm'
+    LOCATION_BODY = 'lb'
     TASK = 't'
 
 
@@ -54,3 +56,4 @@ class ResponseFlags(Enum):
     BODY_FOUND_OTHER = 1
     EMERGENCY_MEET_ME = 2
     EMERGENCY_MEET_OTHER = 3
+    SELF_REPORT = 4
