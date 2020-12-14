@@ -40,7 +40,6 @@ def start_game():
                     if debug:
                         print('DEBUG: defaulting to Skeld')
                         game_state.set_map(enums.AUMap.SKELD)
-                        curr_map = enums.AUMap.SKELD
                     else:
                         print('Game state not loaded - rejoin the lobby to sync game settings.')
                         return ''
