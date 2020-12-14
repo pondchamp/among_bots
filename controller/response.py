@@ -2,9 +2,8 @@ from typing import List
 import random
 import re
 
-from clients.pcap import game_state  # Use static methods only!
 from controller.substitute import SubstituteHelper
-from data import enums, dialogs, params
+from data import enums, dialogs
 from data.state import context
 from data.sus_score import PlayerSus, SusScore
 
