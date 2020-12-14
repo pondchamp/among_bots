@@ -36,24 +36,19 @@ def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, players: Li
                [x.text for x in mode_arr
                 if x.max_turns is not None and x.max_turns >= chat_turns],
                [x.text for x in mode_arr if x.max_turns is None]]
-    for arr in pri_arr:
-        if len(arr) > 0:
-            mode_arr = arr
+    pri_arr_filtered = [[x for x in pri_arr[i] if x not in chat_log] for i in range(len(pri_arr))]
+    select_arr = -1
+    for i in range(len(pri_arr)):
+        if len(pri_arr_filtered[i]) > 0:
+            select_arr = i
             break
-
-    resp_sub = ''
-    m = mode_arr.copy()
-    while resp_sub == '':
-        if len(m) == 0:
-            chat_log = []
-            context.chat_log_clear()
-            m = mode_arr.copy()
-            continue
-        r = m[random.randint(0, len(m) - 1)]
-        if r not in chat_log:
-            context.chat_log_append(r)
-            resp_sub = sub_placeholders(r, curr_map, player_select)
-        m.remove(r)
+    if select_arr == -1:
+        context.chat_log_clear()
+        pri_arr_filtered = pri_arr
+    m = pri_arr_filtered[select_arr]
+    r = m[random.randint(0, len(m) - 1)]
+    context.chat_log_append(r)
+    resp_sub = sub_placeholders(r, curr_map, player_select)
     return resp_sub
 
 

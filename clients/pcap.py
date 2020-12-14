@@ -119,8 +119,7 @@ class GameState(Thread):
             print('Set new player list:',
                   [f"{p.player}:{p.get_sus().name}" for p in players_score if p.get_sus() != SusScore.IDK])
         else:
-            print("Player list could not be obtained - " +
-                  "make sure you're running this command in the voting panel with chat hidden.")
+            print("Player list could not be obtained.")
 
     def set_player_loc(self):
         if self.get_map() is None:

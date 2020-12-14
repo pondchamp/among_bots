@@ -13,11 +13,10 @@ class Dialog:
 statement: List[Dialog] = [
     Dialog("hmm"),
     Dialog("ok"),
-    Dialog("the body is in [lb]", max_turns=0),
-    Dialog("[lb]", max_turns=0),
+    Dialog("[lb]", max_turns=0, flags=[enums.ResponseFlags.BODY_FOUND_ME]),
     Dialog("[p] is clear"),
     Dialog("[p] is safe"),
-    Dialog("the body is in [lb]", flags=[enums.ResponseFlags.BODY_FOUND_ME]),
+    Dialog("the body is in [lb]", max_turns=0, flags=[enums.ResponseFlags.BODY_FOUND_ME]),
 ]
 
 probe: List[Dialog] = [

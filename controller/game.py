@@ -111,4 +111,4 @@ def wait_timer(wait_secs: int) -> bool:
 
 
 def _strip(text: str) -> str:
-    return re.sub(r'[^a-z]$', '', text)
+    return re.sub(r'[^a-z0-9]$', '', text)
