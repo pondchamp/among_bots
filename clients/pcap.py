@@ -1,4 +1,6 @@
 # Kudos: https://github.com/jordam/amongUsParser
+from datetime import datetime, timedelta
+import pickle
 
 from lib.amongUsParser import parse
 from lib.amongUsParser.gameEngine import gameState, playerClass
@@ -19,7 +21,9 @@ def _get_player_colour(p: playerClass) -> str:
 
 class GameState(Thread):
     def __init__(self):
+        self.state_loaded = False
         self._game: gameState = gameState({
+            'Event': self.event_callback,
             'StartMeeting': self.start_meeting_callback,
             'Chat': self.chat_callback,
         })
@@ -96,6 +100,53 @@ class GameState(Thread):
     def chat_callback(state):
         interpreter = Interpreter(game_state, state['player'], state['message'].decode("utf-8"))
         print(interpreter.interpret())
+
+    def event_callback(self, _):
+        if not game_state._game.gameId:
+            return
+        root_dir = tempfile.gettempdir() + '\\among_bots'
+        if not os.path.exists(root_dir):
+            os.makedirs(root_dir)
+        self.cleanup_states(root_dir)
+        self.update_state(root_dir)
+
+    @staticmethod
+    def cleanup_states(root_dir: str):
+        for file in os.listdir(root_dir):
+            file_path = os.path.join(root_dir, file)
+            last_mod = datetime.fromtimestamp(os.stat(file_path).st_mtime)
+            time_since_mod = datetime.now() - last_mod
+            expiry = timedelta(hours=1)
+            if time_since_mod > expiry:
+                os.remove(file_path)
+
+    @staticmethod
+    def update_state(root_dir: str):
+        game_id = game_state._game.gameId
+        file_path = root_dir + '\\' + str(game_id)
+        if not game_state.state_loaded and os.path.exists(file_path):
+            with open(file_path, "rb") as fp:
+                try:
+                    state: gameState = pickle.load(fp)
+                except EOFError:
+                    return
+            state.callbackDict = game_state._game.callbackDict
+            # Update self client ID details
+            state.players[game_state._game.selfClientID] = state.players[state.selfClientID]
+            del state.players[state.selfClientID]
+            state.selfClientID = game_state._game.selfClientID
+            for i in state.players.keys():
+                state.players[i].gameState = game_state._game
+            game_state._game = state
+            with open(file_path, "wb") as fp:
+                pickle.dump(state, fp)
+            print('Game state reloaded for game ID', game_id)
+        else:
+            with open(file_path, "wb") as fp:
+                pickle.dump(game_state._game, fp)
+            if not game_state.state_loaded:
+                print('Game state created for game ID', game_id)
+        game_state.state_loaded = True
 
     @staticmethod
     def set_player_sus(players, imp_list=None):
