@@ -3,7 +3,7 @@ from datetime import timedelta
 import pickle
 
 from lib.amongUsParser import parse
-from lib.amongUsParser.gameEngine import gameState, playerClass
+from lib.amongUsParser.gameEngine import GameEngine, PlayerClass
 from scapy.all import *
 from scapy.layers.inet import UDP
 
@@ -15,14 +15,14 @@ from data.sus_score import PlayerSus, SCORE_SUS, SCORE_SAFE, SusScore
 debug = False
 
 
-def _get_player_colour(p: playerClass) -> str:
+def _get_player_colour(p: PlayerClass) -> str:
     return enums.PlayerColour.__call__(p.color).name.lower()
 
 
 class GameState(Thread):
     def __init__(self):
         self.curr_lobby: int = 0
-        self._game: gameState = gameState({
+        self._game: GameEngine = GameEngine({
             'Event': self.event_callback,
             'StartMeeting': self.start_meeting_callback,
             'Chat': self.chat_callback,
@@ -42,7 +42,7 @@ class GameState(Thread):
         if debug and tree.children[0].commandName == 'ReliableData':
             tree.pprint()
 
-    def get_me(self) -> Optional[playerClass]:
+    def get_me(self) -> Optional[PlayerClass]:
         return self._game.players[self._game.selfClientID] if self._game.selfClientID in self._game.players else None
 
     def get_me_colour(self) -> Optional[str]:
@@ -127,7 +127,7 @@ class GameState(Thread):
         if game_state.curr_lobby != game_id and os.path.exists(file_path):
             with open(file_path, "rb") as fp:
                 try:
-                    state: gameState = pickle.load(fp)
+                    state: GameEngine = pickle.load(fp)
                 except EOFError:
                     return
             state.callbackDict = game_state._game.callbackDict
@@ -136,7 +136,7 @@ class GameState(Thread):
             del state.players[state.selfClientID]
             state.selfClientID = game_state._game.selfClientID
             for i in state.players.keys():
-                state.players[i].gameState = game_state._game
+                state.players[i].game_state = game_state._game
             game_state._game = state
             with open(file_path, "wb") as fp:
                 pickle.dump(state, fp)
