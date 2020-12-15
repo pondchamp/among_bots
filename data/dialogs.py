@@ -4,7 +4,8 @@ from data import enums
 
 
 class Dialog:
-    def __init__(self, text: str, min_turns: Optional[int] = None, max_turns: Optional[int] = None, flags: List[enums.ResponseFlags] = None):
+    def __init__(self, text: str, min_turns: Optional[int] = None, max_turns: Optional[int] = None,
+                 flags: List[enums.ResponseFlags] = None):
         self.text = text
         self.max_turns = max_turns
         self.min_turns = min_turns
