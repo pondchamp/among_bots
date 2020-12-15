@@ -175,7 +175,7 @@ class GameState(Thread):
     def set_player_loc(self):
         if self.get_map() is None:
             return
-        locations = params.location[self.get_map()]
+        locations = params.location[self.get_map()].copy()
         me_loc = locations[random.randint(0, len(locations) - 1)]
         locations.remove(me_loc)
         body_loc = locations[random.randint(0, len(locations) - 1)]
