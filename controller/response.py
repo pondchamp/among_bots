@@ -26,15 +26,9 @@ def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, players: Li
 
     chat_log = context.get_chat_log()
     chat_turns = context.get_chat_turns()
-    pri_arr = [[x.text for x in mode_arr
-                if x.max_turns is not None and x.max_turns >= chat_turns
-                and x.flags is not None and len(set(flags) & set(x.flags)) > 0],
-               [x.text for x in mode_arr
-                if x.max_turns is None
-                and x.flags is not None and len(set(flags) & set(x.flags)) > 0],
-               [x.text for x in mode_arr
-                if x.max_turns is not None and x.max_turns >= chat_turns],
-               [x.text for x in mode_arr if x.max_turns is None]]
+    pri_arr = [[x.text for x in mode_arr if _dialog_turns_valid(x, chat_turns) and _dialog_flags_match(x, flags)],
+               [x.text for x in mode_arr if _dialog_flags_match(x, flags)],
+               [x.text for x in mode_arr if _dialog_turns_valid(x, chat_turns)]]
     pri_arr_filtered = [[x for x in pri_arr[i] if x not in chat_log] for i in range(len(pri_arr))]
     select_arr = -1
     for i in range(len(pri_arr)):
@@ -58,3 +52,12 @@ def sub_placeholders(resp: str, curr_map: enums.AUMap, players: List[str]) -> st
         i = random.randint(0, len(res) - 1)
         resp = re.sub(fr"\[{sub.value}]", res[i], resp)
     return resp
+
+
+def _dialog_turns_valid(dialog: dialogs.Dialog, chat_turns: int) -> bool:
+    return (dialog.max_turns is None or dialog.max_turns >= chat_turns) \
+       and (dialog.min_turns is None or dialog.min_turns <= chat_turns)
+
+
+def _dialog_flags_match(dialog: dialogs.Dialog, flags: List[enums.ResponseFlags]) -> bool:
+    return dialog.flags is not None and len(set(flags) & set(dialog.flags)) > 0

@@ -4,9 +4,10 @@ from data import enums
 
 
 class Dialog:
-    def __init__(self, text: str, max_turns: Optional[int] = None, flags: List[enums.ResponseFlags] = None):
+    def __init__(self, text: str, min_turns: Optional[int] = None, max_turns: Optional[int] = None, flags: List[enums.ResponseFlags] = None):
         self.text = text
         self.max_turns = max_turns
+        self.min_turns = min_turns
         self.flags = flags
 
 
@@ -17,6 +18,7 @@ statement: List[Dialog] = [
     Dialog("[p] is clear"),
     Dialog("[p] is safe"),
     Dialog("the body is in [lb]", max_turns=0, flags=[enums.ResponseFlags.BODY_FOUND_ME]),
+    Dialog("I saw a vent but didn't see who"),
 ]
 
 probe: List[Dialog] = [
@@ -38,7 +40,7 @@ attack: List[Dialog] = [
     Dialog("[p] is definitely impostor", max_turns=0),
     Dialog("I saw [p] vent", max_turns=0),
     Dialog("[p] was faking their tasks"),
-    Dialog("why weren't you doing task in [l]?"),
+    Dialog("why weren't you doing task in [l]?", min_turns=1),
     Dialog("I'm voting [p]"),
     Dialog("[p]", max_turns=0),
     Dialog("why was [p] near the body?", flags=[enums.ResponseFlags.BODY_FOUND_OTHER]),
@@ -46,13 +48,14 @@ attack: List[Dialog] = [
     Dialog("vote [p]"),
     Dialog("why is [p] stalking me?", max_turns=0, flags=[enums.ResponseFlags.EMERGENCY_MEET_ME]),
     Dialog("self report", flags=[enums.ResponseFlags.SELF_REPORT]),
+    Dialog("I don't buy [p]'s story", min_turns=1),
 ]
 
 defense = [
-    Dialog("I don't know"),
-    Dialog("idk"),
-    Dialog("no"),
-    Dialog("no u"),
+    Dialog("I don't know", min_turns=1),
+    Dialog("idk", min_turns=1),
+    Dialog("no", min_turns=1),
+    Dialog("no u", min_turns=1),
     Dialog("I wasn't there"),
     Dialog("I was with [p]"),
     Dialog("[p] and i were in [lm]"),
@@ -61,7 +64,7 @@ defense = [
     Dialog("i was in [lm]"),
     Dialog("i saw [p] last"),
     Dialog("i saw [p] in [l]"),
-    Dialog("this is my first time"),
+    Dialog("this is my first time", min_turns=3),
     Dialog("my tasks are done"),
     Dialog("task check", max_turns=0, flags=[enums.ResponseFlags.EMERGENCY_MEET_ME]),
     Dialog("i was doing my tasks"),
@@ -73,5 +76,5 @@ defense = [
     Dialog("i was [t]", max_turns=0),
     Dialog("thats not possible"),
     Dialog("it literally cannot be me"),
-    Dialog("lets just skip"),
+    Dialog("lets just skip", min_turns=2),
 ]
