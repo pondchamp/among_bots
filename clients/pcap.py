@@ -141,7 +141,7 @@ class GameState(Thread):
             with open(file_path, "wb") as fp:
                 pickle.dump(state, fp)
             print('Game state reloaded for game ID', game_id)
-        else:
+        elif game_state._game is not None:
             with open(file_path, "wb") as fp:
                 pickle.dump(game_state._game, fp)
             if not game_state.state_loaded:
