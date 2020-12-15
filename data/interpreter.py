@@ -21,7 +21,9 @@ class Interpreter:
             self.message = '[DEAD CHAT HIDDEN]'
 
         player_name = self.player.name.decode("utf-8")
-        player_colour: enums.PlayerColour = enums.PlayerColour.__call__(self.player.color).name
+        player_colour: str = 'Unknown'
+        if self.player.color:
+            player_colour = enums.PlayerColour.__call__(self.player.color).name
         me_name = me.name.decode("utf-8")
         me_colour: enums.PlayerColour = enums.PlayerColour.__call__(me.color)
 

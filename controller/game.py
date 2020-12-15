@@ -41,8 +41,8 @@ def start_game():
                         print('DEBUG: defaulting to Skeld')
                         game_state.set_map(enums.AUMap.SKELD)
                     else:
-                        print('Game state not loaded - rejoin the lobby to sync game settings.')
-                        return ''
+                        print('Game state not loaded - wait for next discussion time or game round.')
+                        continue
                 if not context.get_player_sus():
                     if debug:
                         print('DEBUG: defaulting to all players')
@@ -50,7 +50,7 @@ def start_game():
                         game_state.set_player_loc()
                     else:
                         print('Wait until discussion time before attempting to chat.')
-                        return ''
+                        continue
                 flags = _get_response_flags()
                 resp = response.generate_response(mode, game_state.get_map(), context.get_player_sus(), flags)
                 if resp != '':
