@@ -1,5 +1,5 @@
 # Kudos: https://github.com/jordam/amongUsParser
-from datetime import datetime, timedelta
+from datetime import timedelta
 import pickle
 
 from lib.amongUsParser import parse
@@ -21,7 +21,7 @@ def _get_player_colour(p: playerClass) -> str:
 
 class GameState(Thread):
     def __init__(self):
-        self.state_loaded = False
+        self.curr_lobby: int = 0
         self._game: gameState = gameState({
             'Event': self.event_callback,
             'StartMeeting': self.start_meeting_callback,
@@ -124,7 +124,7 @@ class GameState(Thread):
     def update_state(root_dir: str):
         game_id = game_state._game.gameId
         file_path = root_dir + '\\' + str(game_id)
-        if not game_state.state_loaded and os.path.exists(file_path):
+        if game_state.curr_lobby != game_id and os.path.exists(file_path):
             with open(file_path, "rb") as fp:
                 try:
                     state: gameState = pickle.load(fp)
@@ -144,9 +144,9 @@ class GameState(Thread):
         elif game_state._game is not None:
             with open(file_path, "wb") as fp:
                 pickle.dump(game_state._game, fp)
-            if not game_state.state_loaded:
+            if game_state.curr_lobby != game_id:
                 print('Game state created for game ID', game_id)
-        game_state.state_loaded = True
+        game_state.curr_lobby = game_id
 
     @staticmethod
     def set_player_sus(players, imp_list=None):
