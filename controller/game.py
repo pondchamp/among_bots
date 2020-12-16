@@ -11,9 +11,10 @@ from data.sus_score import SusScore
 
 
 def start_game():
-    print('\nGAME STARTED!')
+    print('\nKEY CAPTURE ENABLED')
     swap_key = enums.KeyCommand.KEY_CAP.value
-    print(f'Press the {swap_key} key while in-game to enable bot commands.\n')
+    print(f'Press the {swap_key} key while in-game to disable key capture.\n')
+    keyboard.print_commands()
     while True:
         key = keyboard.get_char()
         if key is not None:

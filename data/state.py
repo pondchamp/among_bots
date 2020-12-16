@@ -7,7 +7,7 @@ from data.sus_score import PlayerSus
 class Context:
     def __init__(self):
         self._state_debug: bool = False
-        self._state_capture_keys: bool = False
+        self._state_capture_keys: bool = True
         self._state_chat_turns: int = 0
         self._state_chat_log: List[str] = []
         self._state_last_phrase: Optional[str] = None
