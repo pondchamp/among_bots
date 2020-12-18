@@ -57,3 +57,4 @@ class ResponseFlags(Enum):
     EMERGENCY_MEET_ME = 2
     EMERGENCY_MEET_OTHER = 3
     SELF_REPORT = 4
+    SELF_IMPOSTOR = 5

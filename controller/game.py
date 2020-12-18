@@ -80,6 +80,8 @@ def _get_response_flags() -> List[enums.ResponseFlags]:
     me = game_state.get_me()
     reason = game_state.get_meeting_reason()
     start_by = game_state.get_meeting_started_by()
+    if me.infected:
+        flags.append(enums.ResponseFlags.SELF_IMPOSTOR)
     if reason and start_by:
         if reason == 'Button':
             if me and start_by.playerId == me.playerId:
