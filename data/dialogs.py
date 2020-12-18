@@ -43,7 +43,7 @@ attack: List[Dialog] = [
     Dialog("[p] was faking their tasks"),
     Dialog("why weren't you doing task in [l]?", min_turns=1),
     Dialog("I'm voting [p]"),
-    Dialog("[p]", max_turns=0),
+    Dialog("[p]", max_turns=0, flags=[enums.ResponseFlags.BODY_FOUND_ME]),
     Dialog("why was [p] near the body?",
            flags=[enums.ResponseFlags.BODY_FOUND_OTHER, enums.ResponseFlags.BODY_FOUND_ME]),
     Dialog("i saw [p] vent in [lm]", max_turns=1, flags=[enums.ResponseFlags.EMERGENCY_MEET_ME]),
