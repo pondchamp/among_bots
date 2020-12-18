@@ -132,12 +132,13 @@ class GameState(Thread):
                     return
             state.callbackDict = game_state._game.callbackDict
             # Update self client ID details
-            state.players[game_state._game.selfClientID] = state.players[state.selfClientID]
-            del state.players[state.selfClientID]
-            state.selfClientID = game_state._game.selfClientID
-            for i in state.players.keys():
-                state.players[i].game_state = game_state._game
-            game_state._game = state
+            if game_state._game.selfClientID:
+                state.players[game_state._game.selfClientID] = state.players[state.selfClientID]
+                del state.players[state.selfClientID]
+                state.selfClientID = game_state._game.selfClientID
+                for i in state.players.keys():
+                    state.players[i].game_state = game_state._game
+                game_state._game = state
             with open(file_path, "wb") as fp:
                 pickle.dump(state, fp)
             print('Game state reloaded for game ID', game_id)

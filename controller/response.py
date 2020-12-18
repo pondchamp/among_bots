@@ -26,9 +26,13 @@ def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, players: Li
 
     chat_log = context.get_chat_log()
     chat_turns = context.get_chat_turns()
-    pri_arr = [[x.text for x in mode_arr if _dialog_turns_valid(x, chat_turns) and _dialog_flags_match(x, flags)],
-               [x.text for x in mode_arr if _dialog_flags_match(x, flags)],
+    pri_arr = [[x.text for x in mode_arr if _dialog_flags_match(x, flags) and _dialog_turns_valid(x, chat_turns)],
+               [x.text for x in mode_arr if _dialog_flags_match(x, flags)
+                and x.min_turns is None and x.max_turns is None],
                [x.text for x in mode_arr if x.flags is None and x.min_turns is None and x.max_turns is None]]
+    print("Flags:", flags)
+    print("Chat turn:", chat_turns)
+    print(pri_arr)
     pri_arr_filtered = [[x for x in pri_arr[i] if x not in chat_log] for i in range(len(pri_arr))]
     select_arr = -1
     for i in range(len(pri_arr)):

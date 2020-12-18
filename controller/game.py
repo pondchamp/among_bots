@@ -82,12 +82,12 @@ def _get_response_flags() -> List[enums.ResponseFlags]:
     start_by = game_state.get_meeting_started_by()
     if reason and start_by:
         if reason == 'Button':
-            if start_by.playerId == me.playerId:
+            if me and start_by.playerId == me.playerId:
                 flags.append(enums.ResponseFlags.EMERGENCY_MEET_ME)
             else:
                 flags.append(enums.ResponseFlags.EMERGENCY_MEET_OTHER)
         else:  # Body found
-            if start_by.playerId == me.playerId:
+            if me and start_by.playerId == me.playerId:
                 flags.append(enums.ResponseFlags.BODY_FOUND_ME)
             else:
                 flags.append(enums.ResponseFlags.BODY_FOUND_OTHER)

@@ -13,7 +13,7 @@ class Interpreter:
     def interpret(self) -> str:
         me = self.game_state.get_me()
         if not me:
-            print('Player info not loaded - please leave and rejoin the lobby.')
+            print('Player info not loaded.')
             return self.message
         if self.player.playerId == me.playerId:
             return self.message
@@ -24,6 +24,9 @@ class Interpreter:
         player_colour: str = 'Unknown'
         if self.player.color:
             player_colour = enums.PlayerColour.__call__(self.player.color).name
+        if not me.name:
+            print('Self info not loaded.')
+            return self.message
         me_name = me.name.decode("utf-8")
         me_colour: enums.PlayerColour = enums.PlayerColour.__call__(me.color)
 
@@ -31,7 +34,7 @@ class Interpreter:
         if self._find(me_colour.name.lower()) \
                 or self._find(me_name.lower()):
             verb = "mentioned"
-            if self._find("sus|vote") or self.message_lower == me_colour.name.lower():
+            if self._find("sus|vote|vent") or self.message_lower == me_colour.name.lower():
                 verb = "sussed"
             elif self._find("safe"):
                 verb = "vouched for"
