@@ -10,13 +10,13 @@ class Interpreter:
         self.message = message
         self.message_lower = re.sub(r'[^\w\s]', '', self.message.strip().lower())
 
-    def interpret(self) -> str:
+    def interpret(self) -> Optional[str]:
         me = self.game_state.get_me()
         if not me:
             print('Player info not loaded.')
             return self.message
         if self.player.playerId == me.playerId:
-            return self.message
+            return None
         if me.alive and not self.player.alive:
             self.message = '[DEAD CHAT HIDDEN]'
 

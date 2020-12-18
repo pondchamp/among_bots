@@ -99,7 +99,9 @@ class GameState(Thread):
     @staticmethod
     def chat_callback(state):
         interpreter = Interpreter(game_state, state['player'], state['message'].decode("utf-8"))
-        print(interpreter.interpret())
+        interpret = interpreter.interpret()
+        if interpret is not None:
+            print(interpret)
 
     def event_callback(self, _):
         if not game_state._game.gameId:
