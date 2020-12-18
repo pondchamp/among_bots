@@ -20,6 +20,8 @@ statement: List[Dialog] = [
     Dialog("[p] is safe"),
     Dialog("the body is in [lb]", max_turns=0, flags=[enums.ResponseFlags.BODY_FOUND_ME]),
     Dialog("I saw a vent but didn't see who"),
+    Dialog("i saw [p] last"),
+    Dialog("i saw [p] in [l]"),
 ]
 
 probe: List[Dialog] = [
@@ -43,7 +45,7 @@ attack: List[Dialog] = [
     Dialog("[p] was faking their tasks"),
     Dialog("why weren't you doing task in [l]?", min_turns=1),
     Dialog("I'm voting [p]"),
-    Dialog("[p]", max_turns=0, flags=[enums.ResponseFlags.BODY_FOUND_ME]),
+    Dialog("[p]", max_turns=0, flags=[enums.ResponseFlags.BODY_FOUND_OTHER, enums.ResponseFlags.BODY_FOUND_ME]),
     Dialog("why was [p] near the body?",
            flags=[enums.ResponseFlags.BODY_FOUND_OTHER, enums.ResponseFlags.BODY_FOUND_ME]),
     Dialog("i saw [p] vent in [lm]", max_turns=1, flags=[enums.ResponseFlags.EMERGENCY_MEET_ME]),
@@ -64,8 +66,6 @@ defense = [
     Dialog("what?"),
     Dialog("i didnt vent"),
     Dialog("i was in [lm]"),
-    Dialog("i saw [p] last"),
-    Dialog("i saw [p] in [l]"),
     Dialog("this is my first time", min_turns=3),
     Dialog("my tasks are done"),
     Dialog("task check", max_turns=0, flags=[enums.ResponseFlags.EMERGENCY_MEET_ME]),
