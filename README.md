@@ -20,10 +20,10 @@ A chatbot created in Python for Among Us shenanigans.
 
 1. In Command Prompt, clone this repository into your directory of choice:
 ```cmd
-git clone https://github.com/pondchamp/among_bots.git
-cd among_bots
-git submodule init
-git submodule update
+C:\...> git clone https://github.com/pondchamp/among_bots.git
+C:\...> cd among_bots
+C:\...\among_bots> git submodule init
+C:\...\among_bots> git submodule update
 ```
 
 2. Open the root folder of this repo in PyCharm Community as a project.
