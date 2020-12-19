@@ -45,11 +45,11 @@ def start_game():
                     else:
                         print('Game state not loaded - wait for next discussion time or game round.')
                         continue
+                me = helpers.get_me().name.lower()
                 if len(context.trust_map_score_get()) == 0:
                     if debug:
                         print('DEBUG: defaulting to all players')
                         players = params.player
-                        me = helpers.get_me().name.lower()
                         context.trust_map_players_set(players)
                         context.trust_map_score_set(me, players[random.randint(0, len(players) - 1)], -0.5)
                         game_state.set_player_loc()
