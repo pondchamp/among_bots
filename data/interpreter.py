@@ -33,7 +33,7 @@ class Interpreter:
         me_colour: enums.PlayerColour = enums.PlayerColour.__call__(me.color)
 
         verb = None
-        if self._find(me_colour.name.lower()) \
+        if self._find(rf'\b{me_colour.name.lower()}\b') \
                 or self._find(me_name.lower()):
             verb = "mentioned"
             if self._find("sus|vote|vent|it'?s") or self.message_lower == me_colour.name.lower():
