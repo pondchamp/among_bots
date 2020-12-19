@@ -23,6 +23,7 @@ class GameState(Thread):
         self._game: GameEngine = GameEngine({
             'Event': self.event_callback,
             'StartMeeting': self.start_meeting_callback,
+            'StartGame': self.start_game_callback,
             'Chat': self.chat_callback,
         })
         Thread.__init__(self)
@@ -62,11 +63,11 @@ class GameState(Thread):
             return self._game.gameSettings['NumImpostors']
         return None
 
-    def get_players(self) -> Optional[List[str]]:
+    def get_players(self, include_me=False) -> Optional[List[str]]:
         me_id = self.get_me().playerId if self.get_me() is not None else -1
         if self._game.players:
             return [_get_player_colour(p) for p in self._game.players.values()
-                    if p.alive and p.playerId != me_id]
+                    if p.alive and (include_me or p.playerId != me_id)]
         return None
 
     def get_player_from_id(self, player_id: int) -> Optional[str]:
@@ -93,6 +94,15 @@ class GameState(Thread):
         context.chat_log_reset()
         self.set_player_sus(self.get_players(), self.get_impostor_list())
         self.set_player_loc()
+        context.set_trust_map_players(self.get_players(include_me=True))
+        if consts.debug_chat:
+            print("Trust map:")
+            for x in context.get_trust_map():
+                print(x, "\t:", context.get_trust_map()[x])
+
+    @staticmethod
+    def start_game_callback(_):
+        context.reset_trust_map_players()
 
     @staticmethod
     def chat_callback(state):
@@ -136,16 +146,17 @@ class GameState(Thread):
                 state.players[game_state._game.selfClientID] = state.players[state.selfClientID]
                 del state.players[state.selfClientID]
                 state.selfClientID = game_state._game.selfClientID
-                for i in state.players.keys():
-                    state.players[i].game_state = game_state._game
-                game_state._game = state
+            for i in state.players.keys():
+                state.players[i].game_state = game_state._game
+            game_state._game = state
             with open(file_path, "wb") as fp:
                 pickle.dump(state, fp)
-            print('Game state reloaded for game ID', game_id)
+            if consts.debug_net:
+                print('Game state reloaded for game ID', game_id)
         elif game_state._game is not None:
             with open(file_path, "wb") as fp:
                 pickle.dump(game_state._game, fp)
-            if game_state.curr_lobby != game_id:
+            if consts.debug_net and game_state.curr_lobby != game_id:
                 print('Game state created for game ID', game_id)
         game_state.curr_lobby = game_id
 

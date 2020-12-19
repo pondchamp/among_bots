@@ -2,6 +2,7 @@ from typing import Optional, List, Dict
 import datetime
 
 from data.sus_score import PlayerSus
+from data.trust import TrustMap
 
 
 class Context:
@@ -14,6 +15,7 @@ class Context:
         self._state_last_response: Optional[datetime.datetime] = None
         self._state_player_sus: Optional[List[PlayerSus]] = None
         self._state_player_loc: Optional[Dict[str, str]] = None
+        self._state_trust_map: TrustMap = TrustMap()
 
     def get_debug(self) -> bool:
         return self._state_debug
@@ -67,6 +69,18 @@ class Context:
 
     def set_player_loc(self, val: Optional[Dict[str, str]]):
         self._state_player_loc = val
+
+    def get_trust_map(self) -> Dict:
+        return self._state_trust_map.get_map()
+
+    def set_trust_map_players(self, players: List[str]):
+        self._state_trust_map.update_players(players)
+
+    def reset_trust_map_players(self):
+        self._state_trust_map.update_players([])
+
+    def set_trust_map_score(self, p1: str, p2: str, score: int):
+        self._state_trust_map.update_score(p1, p2, score)
 
 
 context: Optional[Context] = None
