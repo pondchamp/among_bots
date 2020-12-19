@@ -7,12 +7,10 @@ from lib.amongUsParser.gameEngine import GameEngine, PlayerClass
 from scapy.all import *
 from scapy.layers.inet import UDP
 
-from data import enums, params
+from data import enums, params, consts
 from data.interpreter import Interpreter
 from data.state import context
 from data.sus_score import PlayerSus, SCORE_SUS, SCORE_SAFE, SusScore
-
-debug = False
 
 
 def _get_player_colour(p: PlayerClass) -> str:
@@ -39,7 +37,7 @@ class GameState(Thread):
     def pkt_callback(self, pkt):
         self._game.proc(pkt[UDP].payload.load, pkt.time)
         tree = parse(pkt[UDP].payload.load)
-        if debug and tree.children[0].commandName == 'ReliableData':
+        if consts.log_debug and tree.children[0].commandName == 'ReliableData':
             tree.pprint()
 
     def get_me(self) -> Optional[PlayerClass]:
