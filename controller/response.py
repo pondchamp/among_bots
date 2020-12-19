@@ -33,7 +33,7 @@ def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, players: Li
     pri_arr_filtered = [[x for x in pri_arr[i] if x not in chat_log] for i in range(len(pri_arr))]
     if consts.debug_chat:
         print("Past messages:", chat_log)
-        print("Flags:", flags)
+        print("Flags:", [x.name for x in flags])
         print("Dialogs:", pri_arr)
     select_arr = -1
     for i in range(len(pri_arr)):
