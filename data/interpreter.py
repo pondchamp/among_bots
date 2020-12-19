@@ -29,10 +29,15 @@ class Interpreter:
             return f'{player_name} ({player_colour}): [DEAD CHAT HIDDEN]'
 
         target_name = target_colour = None
-        for p in self.game_state.get_players(include_me=True):
+        players = {enums.PlayerColour.__call__(p.color).name.lower(): p
+                   for p in self.game_state.get_players(include_me=True)}
+        if "purple" in players:
+            players["purp"] = players["purple"]
+        for alias in players:
+            p = players[alias]
             name = p.name.decode("utf-8")
             colour = enums.PlayerColour.__call__(p.color)
-            if self._find(rf'\b{colour.name.lower()}\b') \
+            if self._find(rf'\b{alias}\b') \
                     or self._find(name.lower()):
                 target_name = name
                 target_colour = colour
