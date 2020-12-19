@@ -93,12 +93,12 @@ class GameState(Thread):
     def start_meeting_callback(self, _):
         context.chat_log_reset()
         imp_list = self.get_impostor_list()
+        self.set_player_sus(self.get_players(), imp_list)
         imp_list = imp_list if imp_list is not None else []
         me = self.get_me_colour()
         if imp_list is not None:
             for i in imp_list:
                 context.set_trust_map_score(me, i, 1)
-        self.set_player_sus(self.get_players(), self.get_impostor_list())
         self.set_player_loc()
         context.set_trust_map_players(self.get_players(include_me=True))
         if consts.debug_chat:
