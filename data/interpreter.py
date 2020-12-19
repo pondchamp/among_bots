@@ -17,7 +17,7 @@ class Interpreter:
         me = self.game_state.get_me()
         if not me:
             print('Player info not loaded.')
-            return self.message
+            return None
         if not self.game_state.get_game_started() or self.player.playerId == me.playerId:
             return None
 
@@ -27,10 +27,6 @@ class Interpreter:
             player_colour = enums.PlayerColour.__call__(self.player.color).name.lower()
         if me.alive and not self.player.alive:
             return f'{player_name} ({player_colour}): [DEAD CHAT HIDDEN]'
-
-        if not me.name:
-            print('Self info not loaded.')
-            return self.message
 
         target_name = target_colour = None
         for p in self.game_state.get_players(include_me=True):

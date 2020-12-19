@@ -184,8 +184,9 @@ class GameState(Thread):
             # Pick safe player/s
             default_index = random.randint(0, len(players) - 1)
             for p in (imp_list if imp_list is not None else [players[default_index]]):
-                players.remove(p)
-                players_score.append(PlayerSus(player=p, sus_score=SCORE_SAFE))
+                if p in players:
+                    players.remove(p)
+                    players_score.append(PlayerSus(player=p, sus_score=SCORE_SAFE))
 
             # Pick sus player
             i = random.randint(0, len(players) - 1)
