@@ -1,7 +1,8 @@
 # Among Us Chatbot
 
-A chatbot created in Python for Among Us shenanigans.
 #### _Check me out on Twitch! https://twitch.tv/julescodes_
+
+A chatbot created in Python for Among Us shenanigans.
 
 ## Prerequisites
 * Windows 10
