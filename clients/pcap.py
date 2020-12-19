@@ -100,9 +100,17 @@ class GameState(Thread):
             for x in context.get_trust_map():
                 print(x, "\t:", context.get_trust_map()[x])
 
-    @staticmethod
-    def start_game_callback(_):
+    def start_game_callback(self, _):
         context.reset_trust_map_players()
+        context.set_trust_map_players(self.get_players(include_me=True))
+        me = self.get_me_colour()
+        imp_list = self.get_impostor_list()
+        imp_list = imp_list if imp_list is not None else []
+        if imp_list is not None:
+            for i in imp_list:
+                context.set_trust_map_score(me, i, 1)
+        players = [x for x in self.get_players() if x not in imp_list and x != me]
+        context.set_trust_map_score(me, players[random.randint(0, len(players) - 1)], -1)
 
     @staticmethod
     def chat_callback(state):
