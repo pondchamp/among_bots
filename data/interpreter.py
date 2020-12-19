@@ -53,7 +53,8 @@ class Interpreter:
                 verb = "vouched for"
                 offset = 1
         if verb:
-            context.trust_map_score_offset(player_colour, target_colour.name.lower(), offset)
+            if player_colour != 'Unknown' and target_colour != 'Unknown':
+                context.trust_map_score_offset(player_colour, target_colour.name.lower(), offset)
             print('>>', player_name, verb, target_name, "!", '<<')
             if consts.debug_chat:
                 print("Trust map:")

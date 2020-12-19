@@ -101,22 +101,22 @@ class GameState(Thread):
         imp_list = self.get_impostor_list()
         self.set_player_sus(self.get_players_colour(), imp_list)
         me = self.get_me_colour()
-        if imp_list is not None:
-            for i in imp_list:
-                context.trust_map_score_set(me, i, 1)
-        self.set_player_loc()
         context.trust_map_players_set(self.get_players_colour(include_me=True))
+        if len(context.get_trust_map()) == 0:
+            players = [x for x in self.get_players_colour() if x != me]
+            context.trust_map_score_set(me, players[random.randint(0, len(players) - 1)], -1)
+            if imp_list is not None:
+                for i in imp_list:
+                    context.trust_map_score_set(me, i, 1)
+        self.set_player_loc()
         if consts.debug_chat:
             print("Trust map:")
             for x in context.get_trust_map():
                 print(x, "\t:", context.get_trust_map()[x])
 
-    def start_game_callback(self, _):
+    @staticmethod
+    def start_game_callback(_):
         context.trust_map_players_reset()
-        context.trust_map_players_set(self.get_players_colour(include_me=True))
-        me = self.get_me_colour()
-        players = [x for x in self.get_players_colour() if x != me]
-        context.trust_map_score_set(me, players[random.randint(0, len(players) - 1)], -1)
 
     @staticmethod
     def chat_callback(state):

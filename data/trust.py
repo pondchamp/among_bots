@@ -15,8 +15,6 @@ class TrustMap:
         if len(self._map) == 0:  # initialise
             for p1 in players:
                 self._map[p1] = {}
-                for p2 in players:
-                    self._map[p1][p2] = 0
         else:  # update
             for p1 in self._map.copy().keys():
                 if p1 not in players:
@@ -27,7 +25,11 @@ class TrustMap:
                         del self._map[p1][p2]
 
     def update_score(self, p1: str, p2: str, score: int):
+        if p2 not in self._map[p1]:
+            self._map[p1][p2] = 0
         self._map[p1][p2] = score
 
     def offset_score(self, p1: str, p2: str, offset: int):
+        if p2 not in self._map[p1]:
+            self._map[p1][p2] = 0
         self._map[p1][p2] += offset
