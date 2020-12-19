@@ -93,6 +93,9 @@ class GameState(Thread):
     def get_meeting_reason(self):
         return self._game.meetingReason
 
+    def get_game_started(self):
+        return self._game.gameHasStarted
+
     def start_meeting_callback(self, _):
         context.chat_log_reset()
         imp_list = self.get_impostor_list()

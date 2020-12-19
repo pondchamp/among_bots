@@ -47,7 +47,7 @@ class Interpreter:
                 verb = "sussed"
             elif self._find("safe"):
                 verb = "vouched for"
-        if verb:
+        if self.game_state.get_game_started() and verb:
             print('>>', player_name, verb, target_name, "!", '<<')
 
         return f'{player_name} ({player_colour}): {self.message}'
