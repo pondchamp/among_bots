@@ -58,12 +58,6 @@ class Interpreter:
             if player_colour != 'Unknown' and target_colour != 'Unknown':
                 context.trust_map_score_offset(player_colour, target_colour.name.lower(), offset)
             print('>>', player_colour, verb, target_colour.name.lower(), "!", '<<')
-            if consts.debug_chat:
-                print("Trust map:")
-                for x in context.get_trust_map():
-                    print(x, "\t:", context.get_trust_map()[x])
-                print("Aggregate:", context.trust_map_score_get())
-
         return f'{player_name} ({player_colour}): {self.message}'
 
     def _find(self, pattern: str) -> bool:

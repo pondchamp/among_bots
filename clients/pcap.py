@@ -124,6 +124,13 @@ class GameState(Thread):
         interpret = interpreter.interpret()
         if interpret is not None:
             print(interpret)
+            if consts.debug_chat:
+                print("Trust map:")
+                for x in context.get_trust_map():
+                    print(x, "\t:", context.get_trust_map()[x])
+                print("Aggregate:", context.trust_map_score_get())
+            print()
+
 
     def event_callback(self, _):
         if not game_state._game.gameId:
