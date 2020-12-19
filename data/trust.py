@@ -46,7 +46,8 @@ class TrustMap:
         for p1 in self._map.keys():
             for p2 in self._map[p1].keys():
                 out[p2] += self._map[p1][p2]
-                max_abs = max(max_abs, abs(out[p2]))
+        for p in out:
+            max_abs = max(max_abs, abs(out[p]))
         if max_abs != 0.0 and max_abs != 1.0:
             for p in out:
                 out[p] /= max_abs
