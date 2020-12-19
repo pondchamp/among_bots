@@ -8,20 +8,20 @@ from data.state import context
 from data.trust import SusScore
 
 
-def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap,
+def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, me: str,
                       flags: List[enums.ResponseFlags]) -> str:
     players = context.trust_map_score_get()
-    player_select = [p for p in players]
+    player_select = [p for p in players if p != me]
     if mode == enums.KeyCommand.ATTACK:
         mode_arr = dialogs.attack
-        player_select = [p for p in players if players[p] == SusScore.SUS]
+        player_select = [p for p in player_select if players[p] == SusScore.SUS.value]
     elif mode == enums.KeyCommand.DEFENCE:
         mode_arr = dialogs.defense
     elif mode == enums.KeyCommand.PROBE:
         mode_arr = dialogs.probe
     elif mode == enums.KeyCommand.STATEMENT:
         mode_arr = dialogs.statement
-        player_select = [p for p in players if players[p] == SusScore.SAFE]
+        player_select = [p for p in player_select if players[p] == SusScore.SAFE.value]
     else:
         return ''
 
@@ -33,6 +33,7 @@ def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap,
                [x.text for x in mode_arr if x.flags is None and x.min_turns is None and x.max_turns is None]]
     pri_arr_filtered = [[x for x in pri_arr[i] if x not in chat_log] for i in range(len(pri_arr))]
     if consts.debug_chat:
+        print()
         print("Scores:", players)
         print("Past messages:", chat_log)
         print("Flags:", [x.name for x in flags])

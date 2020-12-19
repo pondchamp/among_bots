@@ -57,7 +57,7 @@ def start_game():
                         print('Wait until discussion time before attempting to chat.')
                         continue
                 flags = _get_response_flags()
-                resp = response.generate_response(mode, game_state.get_map(), flags)
+                resp = response.generate_response(mode, game_state.get_map(), me, flags)
                 if resp != '':
                     _output_phrase(resp)
                 else:
@@ -99,7 +99,7 @@ def _get_response_flags() -> List[enums.ResponseFlags]:
                 flags.append(enums.ResponseFlags.BODY_FOUND_OTHER)
                 player_colour = game_state.get_player_from_id(start_by.playerId)
                 trust_scores = context.trust_map_score_get()
-                if player_colour in [p for p in trust_scores if trust_scores[p] == SusScore.SUS]:
+                if player_colour in [p for p in trust_scores if trust_scores[p] == SusScore.SUS.value]:
                     flags.append(enums.ResponseFlags.SELF_REPORT)
 
     return flags
