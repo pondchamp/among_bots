@@ -1,4 +1,6 @@
 import re
+from typing import Optional
+
 from data import enums
 from lib.amongUsParser.gameEngine import PlayerClass
 
