@@ -1,5 +1,16 @@
+import os
 from enum import Enum
-from typing import List, Optional
+from typing import Optional
+
+from data.enums import PlayerColour
+
+
+def get_me() -> PlayerColour:
+    file_path = os.environ['USERPROFILE'] + r'\AppData\LocalLow\Innersloth\Among Us\playerPrefs'
+    with open(file_path, 'r') as f:
+        contents = f.read()
+        me_colour = contents.split(',')[2]
+        return PlayerColour.__call__(int(me_colour))
 
 
 class NumKey(Enum):

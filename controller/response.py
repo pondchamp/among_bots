@@ -5,22 +5,23 @@ import re
 from controller.substitute import SubstituteHelper
 from data import enums, dialogs, consts
 from data.state import context
-from data.sus_score import PlayerSus, SusScore
+from data.trust import SusScore
 
 
-def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, players: List[PlayerSus],
+def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap,
                       flags: List[enums.ResponseFlags]) -> str:
-    player_select: List[str] = [p.player for p in players]
+    players = context.trust_map_score_get()
+    player_select = [p for p in players]
     if mode == enums.KeyCommand.ATTACK:
         mode_arr = dialogs.attack
-        player_select = [p.player for p in players if p.get_sus() == SusScore.SUS]
+        player_select = [p for p in players if players[p] == SusScore.SUS]
     elif mode == enums.KeyCommand.DEFENCE:
         mode_arr = dialogs.defense
     elif mode == enums.KeyCommand.PROBE:
         mode_arr = dialogs.probe
     elif mode == enums.KeyCommand.STATEMENT:
         mode_arr = dialogs.statement
-        player_select = [p.player for p in players if p.get_sus() == SusScore.SAFE]
+        player_select = [p for p in players if players[p] == SusScore.SAFE]
     else:
         return ''
 
@@ -32,6 +33,7 @@ def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, players: Li
                [x.text for x in mode_arr if x.flags is None and x.min_turns is None and x.max_turns is None]]
     pri_arr_filtered = [[x for x in pri_arr[i] if x not in chat_log] for i in range(len(pri_arr))]
     if consts.debug_chat:
+        print("Scores:", players)
         print("Past messages:", chat_log)
         print("Flags:", [x.name for x in flags])
         print("Dialogs:", pri_arr)

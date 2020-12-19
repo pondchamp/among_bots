@@ -1,7 +1,6 @@
 from typing import Optional, List, Dict
 import datetime
 
-from data.sus_score import PlayerSus
 from data.trust import TrustMap
 
 
@@ -13,7 +12,6 @@ class Context:
         self._state_chat_log: List[str] = []
         self._state_last_phrase: Optional[str] = None
         self._state_last_response: Optional[datetime.datetime] = None
-        self._state_player_sus: Optional[List[PlayerSus]] = None
         self._state_player_loc: Optional[Dict[str, str]] = None
         self._state_trust_map: TrustMap = TrustMap()
 
@@ -57,12 +55,6 @@ class Context:
 
     def set_last_phrase(self, val: Optional[str]):
         self._state_last_phrase = val
-
-    def get_player_sus(self) -> Optional[List[PlayerSus]]:
-        return self._state_player_sus
-
-    def set_player_sus(self, val: Optional[List[PlayerSus]]):
-        self._state_player_sus = val
 
     def get_player_loc(self) -> Optional[Dict[str, str]]:
         return self._state_player_loc

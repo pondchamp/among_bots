@@ -10,7 +10,6 @@ from scapy.layers.inet import UDP
 from data import enums, params, consts
 from data.interpreter import Interpreter
 from data.state import context
-from data.sus_score import PlayerSus, SCORE_SUS, SCORE_SAFE, SusScore
 
 
 def _get_player_colour(p: PlayerClass) -> str:
@@ -99,12 +98,11 @@ class GameState(Thread):
     def start_meeting_callback(self, _):
         context.chat_log_reset()
         imp_list = self.get_impostor_list()
-        self.set_player_sus(self.get_players_colour(), imp_list)
-        me = self.get_me_colour()
         prev_player_len = len(context.get_trust_map())
         context.trust_map_players_set(self.get_players_colour(include_me=True))
         context.trust_map_score_scale(0.5)
         if prev_player_len == 0 and self.get_me().alive:
+            me = self.get_me_colour()
             players = [x for x in self.get_players_colour() if x != me]
             context.trust_map_score_set(me, players[random.randint(0, len(players) - 1)], -0.5)
             if imp_list is not None:
@@ -175,31 +173,6 @@ class GameState(Thread):
             if consts.debug_net and game_state.curr_lobby != game_id:
                 print('Game state created for game ID', game_id)
         game_state.curr_lobby = game_id
-
-    @staticmethod
-    def set_player_sus(players, imp_list=None):
-        if players is not None and len(players) > 0:
-            players_score: List[PlayerSus] = []
-
-            # Pick safe player/s
-            default_index = random.randint(0, len(players) - 1)
-            for p in (imp_list if imp_list is not None else [players[default_index]]):
-                if p in players:
-                    players.remove(p)
-                    players_score.append(PlayerSus(player=p, sus_score=SCORE_SAFE))
-
-            # Pick sus player
-            i = random.randint(0, len(players) - 1)
-            p = players.pop(i)
-            players_score.append(PlayerSus(player=p, sus_score=SCORE_SUS))
-
-            players_score += [PlayerSus(player=p, sus_score=0.5) for p in players]
-
-            context.set_player_sus(players_score)
-            print('Set new player list:',
-                  [f"{p.player}:{p.get_sus().name}" for p in players_score if p.get_sus() != SusScore.IDK])
-        else:
-            print("Player list could not be obtained.")
 
     def set_player_loc(self):
         if self.get_map() is None:

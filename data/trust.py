@@ -1,4 +1,10 @@
+from enum import Enum
 from typing import List, Dict
+
+
+class SusScore(Enum):
+    SUS = -1.0
+    SAFE = 1.0
 
 
 class TrustMap:
