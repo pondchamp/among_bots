@@ -31,7 +31,7 @@ def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, players: Li
                 and x.min_turns is None and x.max_turns is None],
                [x.text for x in mode_arr if x.flags is None and x.min_turns is None and x.max_turns is None]]
     pri_arr_filtered = [[x for x in pri_arr[i] if x not in chat_log] for i in range(len(pri_arr))]
-    if consts.log_debug:
+    if consts.debug_chat:
         print("Past messages:", chat_log)
         print("Chat turn:", chat_turns)
         print("Dialogs:", pri_arr)
