@@ -11,7 +11,7 @@ class Interpreter:
         self.game_state = game_state
         self.player = player
         self.message = message
-        self.message_lower = re.sub(r'[^\w\s]', '', self.message.strip().lower())
+        self.message_lower = re.sub(r'[^\w\s?]', '', self.message.strip().lower())
 
     def interpret(self) -> Optional[str]:
         me = self.game_state.get_me()
@@ -20,13 +20,14 @@ class Interpreter:
             return self.message
         if not self.game_state.get_game_started() or self.player.playerId == me.playerId:
             return None
-        if me.alive and not self.player.alive:
-            self.message = '[DEAD CHAT HIDDEN]'
 
         player_name = self.player.name.decode("utf-8")
         player_colour: str = 'Unknown'
-        if self.player.color:
+        if self.player.color is not False:
             player_colour = enums.PlayerColour.__call__(self.player.color).name.lower()
+        if me.alive and not self.player.alive:
+            return f'{player_name} ({player_colour}): [DEAD CHAT HIDDEN]'
+
         if not me.name:
             print('Self info not loaded.')
             return self.message
@@ -46,20 +47,21 @@ class Interpreter:
         if target_name is not None:
             verb = "mentioned"
             offset = -0.5
-            if self._find("sus|vote|vent|it'?s?") or self.message_lower == target_colour.name.lower():
+            if self._find(r"\b(sus|vote|vent|it'?s?)\b") or self.message_lower == target_colour.name.lower():
                 verb = "sussed"
                 offset = -1
-            elif self._find("safe|not"):
+            elif self._find(r"\b(safe|not|good|clear(ed)?)\b"):
                 verb = "vouched for"
                 offset = 1
         if verb:
             if player_colour != 'Unknown' and target_colour != 'Unknown':
                 context.trust_map_score_offset(player_colour, target_colour.name.lower(), offset)
-            print('>>', player_name, verb, target_name, "!", '<<')
+            print('>>', player_colour, verb, target_colour.name.lower(), "!", '<<')
             if consts.debug_chat:
                 print("Trust map:")
                 for x in context.get_trust_map():
                     print(x, "\t:", context.get_trust_map()[x])
+                print("Aggregate:", context.trust_map_score_get())
 
         return f'{player_name} ({player_colour}): {self.message}'
 

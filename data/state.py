@@ -79,11 +79,17 @@ class Context:
     def trust_map_players_reset(self):
         self._state_trust_map.update_players([])
 
-    def trust_map_score_offset(self, p1: str, p2: str, offset: int):
+    def trust_map_score_offset(self, p1: str, p2: str, offset: float):
         self._state_trust_map.offset_score(p1, p2, offset)
 
-    def trust_map_score_set(self, p1: str, p2: str, score: int):
+    def trust_map_score_set(self, p1: str, p2: str, score: float):
         self._state_trust_map.update_score(p1, p2, score)
+
+    def trust_map_score_scale(self, ratio: float):
+        self._state_trust_map.scale_scores(ratio)
+
+    def trust_map_score_get(self) -> Dict:
+        return self._state_trust_map.aggregate_scores()
 
 
 context: Optional[Context] = None

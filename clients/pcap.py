@@ -101,10 +101,12 @@ class GameState(Thread):
         imp_list = self.get_impostor_list()
         self.set_player_sus(self.get_players_colour(), imp_list)
         me = self.get_me_colour()
+        prev_player_len = len(context.get_trust_map())
         context.trust_map_players_set(self.get_players_colour(include_me=True))
-        if len(context.get_trust_map()) == 0:
+        context.trust_map_score_scale(0.5)
+        if prev_player_len == 0 and self.get_me().alive:
             players = [x for x in self.get_players_colour() if x != me]
-            context.trust_map_score_set(me, players[random.randint(0, len(players) - 1)], -1)
+            context.trust_map_score_set(me, players[random.randint(0, len(players) - 1)], -0.5)
             if imp_list is not None:
                 for i in imp_list:
                     context.trust_map_score_set(me, i, 1)
