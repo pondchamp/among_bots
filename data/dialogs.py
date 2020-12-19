@@ -15,13 +15,14 @@ class Dialog:
 statement: List[Dialog] = [
     Dialog("hmm"),
     Dialog("ok"),
-    Dialog("[lb]", max_turns=0, flags=[RF.BODY_FOUND_ME]),
+    Dialog("[lb]", max_turns=0, flags=[RF.BODY_FOUND_ME, RF.EMERGENCY_MEET_ME]),
     Dialog("[p] is clear"),
     Dialog("[p] is safe"),
     Dialog("the body is in [lb]", max_turns=0, flags=[RF.BODY_FOUND_ME]),
     Dialog("I saw a vent but didn't see who", flags=[RF.BODY_FOUND_ME, RF.BODY_FOUND_OTHER]),
     Dialog("i saw [p] last"),
     Dialog("i saw [p] in [l]"),
+    Dialog("what", max_turns=0, flags=[RF.EMERGENCY_MEET_OTHER]),
 ]
 
 probe: List[Dialog] = [
