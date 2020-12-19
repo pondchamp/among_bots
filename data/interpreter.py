@@ -1,7 +1,8 @@
 import re
 from typing import Optional
 
-from data import enums
+from data import enums, consts
+from data.state import context
 from lib.amongUsParser.gameEngine import PlayerClass
 
 
@@ -17,7 +18,7 @@ class Interpreter:
         if not me:
             print('Player info not loaded.')
             return self.message
-        if self.player.playerId == me.playerId:
+        if not self.game_state.get_game_started() or self.player.playerId == me.playerId:
             return None
         if me.alive and not self.player.alive:
             self.message = '[DEAD CHAT HIDDEN]'
@@ -25,7 +26,7 @@ class Interpreter:
         player_name = self.player.name.decode("utf-8")
         player_colour: str = 'Unknown'
         if self.player.color:
-            player_colour = enums.PlayerColour.__call__(self.player.color).name
+            player_colour = enums.PlayerColour.__call__(self.player.color).name.lower()
         if not me.name:
             print('Self info not loaded.')
             return self.message
@@ -40,15 +41,24 @@ class Interpreter:
                 target_colour = colour
                 break
 
+        offset = None
         verb = None
         if target_name is not None:
             verb = "mentioned"
-            if self._find("sus|vote|vent|it'?s") or self.message_lower == target_colour.name.lower():
+            offset = -0.5
+            if self._find("sus|vote|vent|it'?s?") or self.message_lower == target_colour.name.lower():
                 verb = "sussed"
-            elif self._find("safe"):
+                offset = -1
+            elif self._find("safe|not"):
                 verb = "vouched for"
-        if self.game_state.get_game_started() and verb:
+                offset = 1
+        if verb:
+            context.trust_map_score_offset(player_colour, target_colour.name.lower(), offset)
             print('>>', player_name, verb, target_name, "!", '<<')
+            if consts.debug_chat:
+                print("Trust map:")
+                for x in context.get_trust_map():
+                    print(x, "\t:", context.get_trust_map()[x])
 
         return f'{player_name} ({player_colour}): {self.message}'
 

@@ -100,7 +100,6 @@ class GameState(Thread):
         context.chat_log_reset()
         imp_list = self.get_impostor_list()
         self.set_player_sus(self.get_players_colour(), imp_list)
-        imp_list = imp_list if imp_list is not None else []
         me = self.get_me_colour()
         if imp_list is not None:
             for i in imp_list:
