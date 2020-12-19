@@ -29,19 +29,26 @@ class Interpreter:
         if not me.name:
             print('Self info not loaded.')
             return self.message
-        me_name = me.name.decode("utf-8")
-        me_colour: enums.PlayerColour = enums.PlayerColour.__call__(me.color)
+
+        target_name = target_colour = None
+        for p in self.game_state.get_players(include_me=True):
+            name = p.name.decode("utf-8")
+            colour = enums.PlayerColour.__call__(p.color)
+            if self._find(rf'\b{colour.name.lower()}\b') \
+                    or self._find(name.lower()):
+                target_name = name
+                target_colour = colour
+                break
 
         verb = None
-        if self._find(rf'\b{me_colour.name.lower()}\b') \
-                or self._find(me_name.lower()):
+        if target_name is not None:
             verb = "mentioned"
-            if self._find("sus|vote|vent|it'?s") or self.message_lower == me_colour.name.lower():
+            if self._find("sus|vote|vent|it'?s") or self.message_lower == target_colour.name.lower():
                 verb = "sussed"
             elif self._find("safe"):
                 verb = "vouched for"
         if verb:
-            print('>>', player_name, verb, "you!", '<<')
+            print('>>', player_name, verb, target_name, "!", '<<')
 
         return f'{player_name} ({player_colour}): {self.message}'
 
