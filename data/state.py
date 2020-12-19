@@ -73,13 +73,16 @@ class Context:
     def get_trust_map(self) -> Dict:
         return self._state_trust_map.get_map()
 
-    def set_trust_map_players(self, players: List[str]):
+    def trust_map_players_set(self, players: List[str]):
         self._state_trust_map.update_players(players)
 
-    def reset_trust_map_players(self):
+    def trust_map_players_reset(self):
         self._state_trust_map.update_players([])
 
-    def set_trust_map_score(self, p1: str, p2: str, score: int):
+    def trust_map_score_offset(self, p1: str, p2: str, offset: int):
+        self._state_trust_map.offset_score(p1, p2, offset)
+
+    def trust_map_score_set(self, p1: str, p2: str, score: int):
         self._state_trust_map.update_score(p1, p2, score)
 
 

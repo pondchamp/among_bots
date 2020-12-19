@@ -28,3 +28,6 @@ class TrustMap:
 
     def update_score(self, p1: str, p2: str, score: int):
         self._map[p1][p2] = score
+
+    def offset_score(self, p1: str, p2: str, offset: int):
+        self._map[p1][p2] += offset

@@ -63,12 +63,15 @@ class GameState(Thread):
             return self._game.gameSettings['NumImpostors']
         return None
 
-    def get_players(self, include_me=False) -> Optional[List[str]]:
+    def get_players(self, include_me=False) -> Optional[List[PlayerClass]]:
         me_id = self.get_me().playerId if self.get_me() is not None else -1
         if self._game.players:
-            return [_get_player_colour(p) for p in self._game.players.values()
+            return [p for p in self._game.players.values()
                     if p.alive and (include_me or p.playerId != me_id)]
         return None
+
+    def get_players_colour(self, include_me=False) -> Optional[List[str]]:
+        return [_get_player_colour(p) for p in self.get_players(include_me)]
 
     def get_player_from_id(self, player_id: int) -> Optional[str]:
         if player_id not in self._game.playerIdMap:
@@ -93,25 +96,25 @@ class GameState(Thread):
     def start_meeting_callback(self, _):
         context.chat_log_reset()
         imp_list = self.get_impostor_list()
-        self.set_player_sus(self.get_players(), imp_list)
+        self.set_player_sus(self.get_players_colour(), imp_list)
         imp_list = imp_list if imp_list is not None else []
         me = self.get_me_colour()
         if imp_list is not None:
             for i in imp_list:
-                context.set_trust_map_score(me, i, 1)
+                context.trust_map_score_set(me, i, 1)
         self.set_player_loc()
-        context.set_trust_map_players(self.get_players(include_me=True))
+        context.trust_map_players_set(self.get_players_colour(include_me=True))
         if consts.debug_chat:
             print("Trust map:")
             for x in context.get_trust_map():
                 print(x, "\t:", context.get_trust_map()[x])
 
     def start_game_callback(self, _):
-        context.reset_trust_map_players()
-        context.set_trust_map_players(self.get_players(include_me=True))
+        context.trust_map_players_reset()
+        context.trust_map_players_set(self.get_players_colour(include_me=True))
         me = self.get_me_colour()
-        players = [x for x in self.get_players() if x != me]
-        context.set_trust_map_score(me, players[random.randint(0, len(players) - 1)], -1)
+        players = [x for x in self.get_players_colour() if x != me]
+        context.trust_map_score_set(me, players[random.randint(0, len(players) - 1)], -1)
 
     @staticmethod
     def chat_callback(state):
