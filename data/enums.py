@@ -9,6 +9,7 @@ class KeyCommand(Enum):
     STATEMENT = 'f4'
     REPEAT = 'f5'
     DEBUG = 'f8'
+    EXIT = 'f12'
     HELP = 'esc'
     KEY_CAP = '`'
 

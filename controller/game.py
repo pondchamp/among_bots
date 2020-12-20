@@ -12,7 +12,6 @@ from data.trust import SusScore
 
 
 def start_game():
-    print('\nKEY CAPTURE ENABLED')
     swap_key = enums.KeyCommand.KEY_CAP.value
     print(f'Press the {swap_key} key while in-game to disable key capture.\n')
     keyboard.print_commands()
@@ -23,6 +22,8 @@ def start_game():
             if mode == enums.KeyCommand.HELP:
                 keyboard.print_commands()
                 print()
+            elif mode == enums.KeyCommand.EXIT:
+                break
             elif mode == enums.KeyCommand.DEBUG:
                 debug = context.get_debug()
                 debug = not debug

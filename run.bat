@@ -1,3 +1,4 @@
+@Echo Off
 git submodule init
 git submodule update
 py -m pip install --upgrade pip
