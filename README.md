@@ -30,3 +30,16 @@ C:\...> git clone https://github.com/pondchamp/among_bots.git
 C:\...> cd among_bots
 C:\...\among_bots> run.bat
 ```
+
+## Usage and Copyright
+
+Source code use, reproduction, and distribution rights are managed by the Apache License terms (see `LICENSE`).
+
+You are free to use or modify this bot for livestreams or on-demand video recordings, provided you provide attribution
+to my Twitch channel (JulesCodes) in the content of the video.
+
+## Credits
+
+Thank you to the following people for providing various libraries that I leveraged to create this project!
+* [Among Us Parser by _jordam_](https://github.com/jordam/amongUsParser/tree/main/amongUsParser)
+* [Among Us Protocol Documentation](https://wiki.weewoo.net/)
