@@ -87,7 +87,7 @@ def _get_response_flags() -> List[enums.ResponseFlags]:
     start_by = game_state.get_meeting_started_by()
     if me is not None and me.infected:
         flags.append(enums.ResponseFlags.SELF_IMPOSTOR)
-    if reason and start_by:
+    if reason is not False and start_by is not False:
         if reason == 'Button':
             if me and start_by.playerId == me.playerId:
                 flags.append(enums.ResponseFlags.EMERGENCY_MEET_ME)
