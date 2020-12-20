@@ -80,8 +80,8 @@ class Context:
     def trust_map_score_scale(self, ratio: float):
         self._state_trust_map.scale_scores(ratio)
 
-    def trust_map_score_get(self) -> Dict:
-        return self._state_trust_map.aggregate_scores()
+    def trust_map_score_get(self, me=None) -> Dict[str, float]:
+        return self._state_trust_map.aggregate_scores(me)
 
 
 context: Optional[Context] = None

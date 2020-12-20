@@ -10,8 +10,8 @@ from data.trust import SusScore
 
 def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, me: str,
                       flags: List[enums.ResponseFlags]) -> str:
-    players = context.trust_map_score_get()
-    player_select = [p for p in players if p != me]
+    players = context.trust_map_score_get(me)
+    player_select = [p for p in players]
     if mode == enums.KeyCommand.ATTACK:
         mode_arr = dialogs.attack
         player_select = [p for p in player_select if players[p] == SusScore.SUS.value]

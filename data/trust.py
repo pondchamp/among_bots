@@ -40,12 +40,14 @@ class TrustMap:
             self._map[p1][p2] = 0
         self._map[p1][p2] += offset
 
-    def aggregate_scores(self) -> Dict[str, float]:
+    def aggregate_scores(self, me=None) -> Dict[str, float]:
         out = {x: 0.0 for x in self._map.keys()}
         max_abs = 0.0
         for p1 in self._map.keys():
             for p2 in self._map[p1].keys():
                 out[p2] += self._map[p1][p2]
+        if me is not None and me in out:
+            del out[me]
         for p in out:
             max_abs = max(max_abs, abs(out[p]))
         if max_abs != 0.0 and max_abs != 1.0:

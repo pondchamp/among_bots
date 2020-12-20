@@ -39,6 +39,7 @@ def start_game():
                 if not wait_timer(consts.CHAT_THROTTLE_SECS):
                     continue
                 debug = context.get_debug()
+                me = game_state.get_me_colour() if game_state.get_me() is not None else helpers.get_me().name.lower()
                 if not game_state.get_map():
                     if debug:
                         print('DEBUG: defaulting to Skeld')
@@ -46,7 +47,6 @@ def start_game():
                     else:
                         print('Game state not loaded - wait for next discussion time or game round.')
                         continue
-                me = helpers.get_me().name.lower()
                 if len(context.trust_map_score_get()) == 0:
                     if debug:
                         print('DEBUG: defaulting to all players')
