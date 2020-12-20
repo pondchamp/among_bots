@@ -36,7 +36,7 @@ C:\...\among_bots> run.bat
 Source code use, reproduction, and distribution rights are managed by the Apache License terms (see `LICENSE`).
 
 You are free to use or modify this bot for livestreams or on-demand video recordings, provided you provide attribution
-to my Twitch channel (JulesCodes) in the content of the video.
+to my Twitch channel (**JulesCodes**) in the content of the video.
 
 ## Credits
 
