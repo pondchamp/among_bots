@@ -50,7 +50,7 @@ class Interpreter:
         if target_name is not None:
             verb = "mentioned"
             offset = -0.5
-            if self._find(r"\b(sus|vote|vent|it'?s?|faked?)\b") or self.message_lower == target_colour.name.lower():
+            if self._find(r"\b(sus|vote|vent|it'?s?|faked?|kill(ed)?)\b") or self.message_lower == target_colour.name.lower():
                 verb = "sussed"
                 offset = -1
             elif self._find(r"\b(safe|not|good|clear(ed)?|with)\b"):
