@@ -7,7 +7,6 @@ A chatbot created in Python for Among Us shenanigans.
 ## Prerequisites
 * Windows 10
 * [Python 3](https://www.python.org/downloads/)
-* [PyCharm Community](https://www.jetbrains.com/pycharm/download/)
 * [Npcap](https://nmap.org/npcap/)
 * [Git](https://git-scm.com/download/win)
 * [A GCP account key](https://cloud.google.com/text-to-speech/docs/libraries)
@@ -16,23 +15,16 @@ A chatbot created in Python for Among Us shenanigans.
       \>1M/mth requests, it should be free:
       https://console.developers.google.com/apis/api/texttospeech.googleapis.com/overview?project=<your_project_id>
 
-## Installation
+## Install and Run
 
 1. In Command Prompt, clone this repository into your directory of choice:
 ```cmd
 C:\...> git clone https://github.com/pondchamp/among_bots.git
-C:\...> cd among_bots
-C:\...\among_bots> git submodule init
-C:\...\among_bots> git submodule update
 ```
 
 2. Open the root folder of this repo in PyCharm Community as a project.
-3. Navigate to the terminal tab at the bottom of PyCharm, then run the
-   following commands to install the following Python modules:
+3. Run the `run.bat` file:
 ```cmd
-pip install pynput
-pip install pywin32
-pip install --upgrade google-cloud-texttospeech
-pip install playsound
-pip install scapy
+C:\...> cd among_bots
+C:\...\among_bots> run.bat
 ```
