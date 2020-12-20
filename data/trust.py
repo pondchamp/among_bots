@@ -1,3 +1,4 @@
+import math
 from enum import Enum
 from typing import List, Dict
 
@@ -8,8 +9,11 @@ class SusScore(Enum):
 
 
 class TrustMap:
-    def __init__(self):
+    def __init__(self, trust_max=1.0):
         self._map = {}
+        if trust_max < 0:
+            raise ValueError('trust_max must be non-negative')
+        self.trust_max = trust_max
 
     def get_map(self):
         return self._map
@@ -36,12 +40,13 @@ class TrustMap:
     def update_score(self, p1: str, p2: str, score: float):
         if p2 not in self._map[p1]:
             self._map[p1][p2] = 0
-        self._map[p1][p2] = score
+        self._map[p1][p2] = self._min_sign(score, self.trust_max)
 
     def offset_score(self, p1: str, p2: str, offset: float):
         if p2 not in self._map[p1]:
             self._map[p1][p2] = 0
         self._map[p1][p2] += offset
+        self._map[p1][p2] = self._min_sign(self._map[p1][p2], self.trust_max)
 
     def aggregate_scores(self, me=None) -> Dict[str, float]:
         out = {x: 0.0 for x in self._map.keys()}
@@ -62,3 +67,11 @@ class TrustMap:
         for p1 in self._map.keys():
             for p2 in self._map[p1].keys():
                 self._map[p1][p2] *= ratio
+
+    @staticmethod
+    def _min_sign(a_signed: float, b_unsigned: float) -> float:
+        if b_unsigned < 0:
+            raise ValueError('b_unsigned must be non-negative')
+        sign = math.copysign(1, a_signed)
+        a_unsigned = abs(a_signed)
+        return min(a_unsigned, b_unsigned) * sign

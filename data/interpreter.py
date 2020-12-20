@@ -1,5 +1,5 @@
 import re
-from typing import Optional
+from typing import Optional, Dict
 
 from data import enums
 from data.state import context
@@ -31,16 +31,21 @@ class Interpreter:
         target_name = target_colour = None
         players = {enums.PlayerColour.__call__(p.color).name.lower(): p
                    for p in self.game_state.get_players(include_me=True)}
-        if "purple" in players:
-            players["purp"] = players["purple"]
-        for alias in players:
+        self._alias(players, "purple", "~purp")
+        self._alias(players, "orange", "~orang")
+        self._alias(players, "green", "~dark green")
+        self._alias(players, "lime", "~light green")
+        for alias in [p for p in sorted(players.keys(), reverse=True) if p != player_colour]:
             p = players[alias]
-            if not p.name or not p.color:
+            alias = str(alias).removeprefix('~')
+            if p.name is False or p.color is False:
                 continue
             name = p.name.decode("utf-8")
+            if name.lower() in ["i", "he", "she"]:  # pronoun names
+                name = None
             colour = enums.PlayerColour.__call__(p.color)
             if self._find(rf'\b{alias}\b') \
-                    or self._find(name.lower()):
+                    or (name is not None and self._find(rf'\b{name.lower()}\b')):
                 target_name = name
                 target_colour = colour
                 break
@@ -50,14 +55,17 @@ class Interpreter:
         if target_name is not None:
             verb = "mentioned"
             offset = -0.5
-            if self._find(r"\b(sus|vote|vent|it'?s?|faked?|kill(ed)?)\b") or self.message_lower == target_colour.name.lower():
+            t_col = target_colour.name.lower()
+            if self._find(r"\b(sus|vent|it'?s?|faked?|kill(ed)?|body|self report)\b") or \
+                    self._find(rf"\b(vote) {t_col}\b") or self.message_lower == t_col:
                 verb = "sussed"
                 offset = -1
-            elif self._find(r"\b(safe|not|good|clear(ed)?|with)\b"):
+            elif self._find(r"\b(safe|good|clear(ed)?)\b") or self._find(rf"\b(not|with|me and) {t_col}\b") or \
+                    self._find(rf"{t_col} (and i)\b"):
                 verb = "vouched for"
                 offset = 1
         if verb:
-            if me.alive and player_colour != 'Unknown' and target_colour != 'Unknown' and \
+            if self.player.alive and player_colour != 'Unknown' and target_colour != 'Unknown' and \
                     len(context.get_trust_map()) != 0:
                 context.trust_map_score_offset(player_colour, target_colour.name.lower(), offset)
             print('>>', player_colour, verb, target_colour.name.lower(), "!", '<<')
@@ -65,3 +73,8 @@ class Interpreter:
 
     def _find(self, pattern: str) -> bool:
         return len(re.findall(pattern, self.message_lower)) > 0
+
+    @staticmethod
+    def _alias(players: Dict, colour: str, alias: str):
+        if colour in players:
+            players[alias] = players[colour]
