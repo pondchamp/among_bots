@@ -15,7 +15,7 @@ def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, me: str,
     if mode == enums.KeyCommand.ATTACK:
         mode_arr = dialogs.attack
         filtered = [p for p in player_select if players[p] == SusScore.SUS.value]
-        if len(filtered) == 0:
+        if len(filtered) > 0:
             player_select = filtered
     elif mode == enums.KeyCommand.DEFENCE:
         mode_arr = dialogs.defense
@@ -24,7 +24,7 @@ def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, me: str,
     elif mode == enums.KeyCommand.STATEMENT:
         mode_arr = dialogs.statement
         filtered = [p for p in player_select if players[p] == SusScore.SAFE.value]
-        if len(filtered) == 0:
+        if len(filtered) > 0:
             player_select = filtered
     else:
         return ''
