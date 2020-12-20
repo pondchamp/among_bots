@@ -14,14 +14,18 @@ def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, me: str,
     player_select = [p for p in players]
     if mode == enums.KeyCommand.ATTACK:
         mode_arr = dialogs.attack
-        player_select = [p for p in player_select if players[p] == SusScore.SUS.value]
+        filtered = [p for p in player_select if players[p] == SusScore.SUS.value]
+        if len(filtered) == 0:
+            player_select = filtered
     elif mode == enums.KeyCommand.DEFENCE:
         mode_arr = dialogs.defense
     elif mode == enums.KeyCommand.PROBE:
         mode_arr = dialogs.probe
     elif mode == enums.KeyCommand.STATEMENT:
         mode_arr = dialogs.statement
-        player_select = [p for p in player_select if players[p] == SusScore.SAFE.value]
+        filtered = [p for p in player_select if players[p] == SusScore.SAFE.value]
+        if len(filtered) == 0:
+            player_select = filtered
     else:
         return ''
 
