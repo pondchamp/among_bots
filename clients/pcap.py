@@ -102,7 +102,7 @@ class GameState(Thread):
         prev_player_len = len(context.get_trust_map())
         context.trust_map_players_set(self.get_players_colour(include_me=True))
         context.trust_map_score_scale(0.5)
-        if prev_player_len == 0 and self.get_me().alive:
+        if prev_player_len == 0 and self.get_me() is not None and self.get_me().alive:
             me = self.get_me_colour()
             players = [x for x in self.get_players_colour() if x != me]
             context.trust_map_score_set(me, players[random.randint(0, len(players) - 1)], -0.5)
