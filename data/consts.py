@@ -5,3 +5,4 @@ debug_net = os.getenv('DEBUG_NET', None) == "1"
 
 GAME_TITLE = 'Among Us'
 CHAT_THROTTLE_SECS = 4
+SELF_SABOTAGE_PROB = 0.1

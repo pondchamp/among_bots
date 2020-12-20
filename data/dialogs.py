@@ -64,7 +64,7 @@ defense = [
     Dialog("I was with [p]"),
     Dialog("[p] and i were in [lm]"),
     Dialog("what?"),
-    Dialog("i didnt vent"),
+    Dialog("i didnt vent", flags=[RF.SELF_SABOTAGE]),
     Dialog("i was in [lm]"),
     Dialog("this is my first time", min_turns=3),
     Dialog("my tasks are done"),

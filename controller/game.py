@@ -85,6 +85,8 @@ def _get_response_flags() -> List[enums.ResponseFlags]:
     me = game_state.get_me()
     reason = game_state.get_meeting_reason()
     start_by = game_state.get_meeting_started_by()
+    if random.random() < consts.SELF_SABOTAGE_PROB:
+        flags.append(enums.ResponseFlags.SELF_SABOTAGE)
     if me is not None and me.infected:
         flags.append(enums.ResponseFlags.SELF_IMPOSTOR)
     if reason is not False and start_by is not False:

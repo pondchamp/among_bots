@@ -114,6 +114,7 @@ class GameState(Thread):
             print("Trust map:")
             for x in context.get_trust_map():
                 print(x, "\t:", context.get_trust_map()[x])
+            print()
 
     @staticmethod
     def start_game_callback(_):
