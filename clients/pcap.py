@@ -134,7 +134,7 @@ class GameState(Thread):
 
     @staticmethod
     def remove_player_callback(event):
-        if game_state.get_game_started():
+        if event['player'] is not None and game_state.get_game_started():
             player = enums.PlayerColour.__call__(event['player'].color).name.lower()
             context.trust_map_player_remove(player)
 
