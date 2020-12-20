@@ -11,9 +11,9 @@ A chatbot created in Python for Among Us shenanigans.
 * [Git](https://git-scm.com/download/win)
 * [A GCP account key](https://cloud.google.com/text-to-speech/docs/libraries)
     * You'll also need to visit this link and enter payment info to
-      activate the TTS API, though unless you're planning on making
-      \>1M/mth requests, it should be free:
-      https://console.developers.google.com/apis/api/texttospeech.googleapis.com/overview?project=<your_project_id>
+      activate the TTS API, though unless you're planning on submitting
+      `>1MM chars/mth`, you shouldn't be billed anything:
+      https://console.developers.google.com/apis/api/texttospeech.googleapis.com/overview
 
 ## Install and Run
 
