@@ -1,11 +1,21 @@
+import os
 from google.cloud import texttospeech
 from tempfile import TemporaryDirectory
 from playsound import playsound
 from threading import Thread
 
+from data import consts
+
 
 class Speaker(Thread):
     def __init__(self, text: str, emphasis: bool = False):
+        override = os.getenv(consts.GOOGLE_APPLICATION_CREDS, None)
+        if override is None:
+            creds_path = os.getcwd() + r'\creds.json'
+            if not os.path.isfile(creds_path):
+                print("Missing GCP credentials file: " + creds_path)
+                return
+            os.environ[consts.GOOGLE_APPLICATION_CREDS] = creds_path
         self.text = _string_cleanup(text)
         self.emphasis = emphasis
         Thread.__init__(self)
