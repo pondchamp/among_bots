@@ -10,24 +10,22 @@ from data.trust import SusScore
 
 def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, me: str,
                       flags: List[enums.ResponseFlags]) -> str:
-    players = context.trust_map_score_get(me)
-    player_select = [p for p in players]
     if mode == enums.KeyCommand.ATTACK:
-        mode_arr = dialogs.attack
-        filtered = [p for p in player_select if players[p] == SusScore.SUS.value]
-        if len(filtered) > 0:
-            player_select = filtered
+        mode_arr, score_target = dialogs.attack, SusScore.SUS
     elif mode == enums.KeyCommand.DEFENCE:
-        mode_arr = dialogs.defense
+        mode_arr, score_target = dialogs.defense, None
     elif mode == enums.KeyCommand.PROBE:
-        mode_arr = dialogs.probe
+        mode_arr, score_target = dialogs.probe, None
     elif mode == enums.KeyCommand.STATEMENT:
-        mode_arr = dialogs.statement
-        filtered = [p for p in player_select if players[p] == SusScore.SAFE.value]
-        if len(filtered) > 0:
-            player_select = filtered
+        mode_arr, score_target = dialogs.statement, SusScore.SAFE
     else:
         return ''
+
+    players = context.trust_map_score_get(me)
+    player_select = [p for p in players]
+    if score_target is not None:
+        filtered = list(filter(lambda p: players[p] == score_target.value, player_select))
+        player_select = filtered if len(filtered) > 0 else player_select
 
     chat_log = context.get_chat_log()
     chat_turns = context.get_chat_turns()
