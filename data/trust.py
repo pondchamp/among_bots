@@ -14,6 +14,9 @@ class TrustMap:
     def get_map(self):
         return self._map
 
+    def get_players(self) -> List[str]:
+        return [p for p in self._map]
+
     def update_players(self, players: List[str]):
         if players is None or len(players) == 0:  # reset
             self._map = {}

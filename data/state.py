@@ -68,6 +68,12 @@ class Context:
     def trust_map_players_set(self, players: List[str]):
         self._state_trust_map.update_players(players)
 
+    def trust_map_player_remove(self, player: str):
+        players = self._state_trust_map.get_players()
+        if player in players:
+            players.remove(player)
+            self._state_trust_map.update_players(players)
+
     def trust_map_players_reset(self):
         self._state_trust_map.update_players([])
 

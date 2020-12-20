@@ -1,7 +1,7 @@
 import re
 from typing import Optional
 
-from data import enums, consts
+from data import enums
 from data.state import context
 from lib.amongUsParser.gameEngine import PlayerClass
 
@@ -55,7 +55,7 @@ class Interpreter:
                 verb = "vouched for"
                 offset = 1
         if verb:
-            if player_colour != 'Unknown' and target_colour != 'Unknown':
+            if player_colour != 'Unknown' and target_colour != 'Unknown' and len(context.get_trust_map()) != 0:
                 context.trust_map_score_offset(player_colour, target_colour.name.lower(), offset)
             print('>>', player_colour, verb, target_colour.name.lower(), "!", '<<')
         return f'{player_name} ({player_colour}): {self.message}'

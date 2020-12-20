@@ -24,6 +24,7 @@ class GameState(Thread):
             'StartMeeting': self.start_meeting_callback,
             'StartGame': self.start_game_callback,
             'Chat': self.chat_callback,
+            'RemovePlayer': self.remove_player_callback,
         })
         Thread.__init__(self)
         self.daemon = True
@@ -131,6 +132,11 @@ class GameState(Thread):
                 print("Aggregate:", context.trust_map_score_get())
             print()
 
+    @staticmethod
+    def remove_player_callback(event):
+        if game_state.get_game_started():
+            player = enums.PlayerColour.__call__(event['player'].color).name.lower()
+            context.trust_map_player_remove(player)
 
     def event_callback(self, _):
         if not game_state._game.gameId:
