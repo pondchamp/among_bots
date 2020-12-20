@@ -35,6 +35,8 @@ class Interpreter:
             players["purp"] = players["purple"]
         for alias in players:
             p = players[alias]
+            if not p.name or not p.color:
+                continue
             name = p.name.decode("utf-8")
             colour = enums.PlayerColour.__call__(p.color)
             if self._find(rf'\b{alias}\b') \
