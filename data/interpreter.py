@@ -55,8 +55,8 @@ class Interpreter:
         if target_name is not None:
             verb, offset = "mentioned", -0.5
             t_col = target_colour.name.lower()
-            if self._find(r"\b(sus|vent(ed)?|it'?s?|faked?|kill(ed)?|body|self report)\b") or \
-                    self._find(rf"\b(vote) {t_col}\b") or self.message_lower == t_col:
+            if self._find(r"\b(sus|vent(ed)?|faked?|kill(ed)?|body|self report)\b") or \
+                    self._find(rf"\b(vote|it'?s?) {t_col}\b") or self.message_lower == t_col:
                 verb, offset = "sussed", -1
             elif self._find(r"\b(safe|good|clear(ed)?)\b") or self._find(rf"\b(not|with|me and) {t_col}\b") or \
                     self._find(rf"{t_col} (and i|((had|did|has|do) )?(trash|chute|scan|med))\b"):
