@@ -26,7 +26,7 @@ class Interpreter:
         if self.player.color is not False:
             player_colour = enums.PlayerColour.__call__(self.player.color).name.lower()
         if me.alive and not self.player.alive:
-            print(f'{player_name} ({player_colour}): [DEAD CHAT HIDDEN]')
+            print(player_name, f'({player_colour}): [DEAD CHAT HIDDEN]')
             return None
 
         target_name = target_colour = None
@@ -42,7 +42,7 @@ class Interpreter:
             if p.name is False or p.color is False:
                 continue
             name = p.name.decode("utf-8")
-            if name.lower() in ["i", "he", "she"]:  # pronoun names
+            if name.lower() in ["i", "he", "she", "ok"]:  # pronoun and unhelpful names
                 name = None
             colour = enums.PlayerColour.__call__(p.color)
             if self._find(rf'\b{alias}\b') \
@@ -59,14 +59,14 @@ class Interpreter:
                     self._find(rf"\b(vote) {t_col}\b") or self.message_lower == t_col:
                 verb, offset = "sussed", -1
             elif self._find(r"\b(safe|good|clear(ed)?)\b") or self._find(rf"\b(not|with|me and) {t_col}\b") or \
-                    self._find(rf"{t_col} (and i|(had|did|has|do) (trash|chute|scan|med))\b"):
+                    self._find(rf"{t_col} (and i|((had|did|has|do) )?(trash|chute|scan|med))\b"):
                 verb, offset = "vouched for", 1
         if verb:
             if self.player.alive and player_colour != 'Unknown' and target_colour != 'Unknown' and \
                     len(context.get_trust_map()) != 0:
                 context.trust_map_score_offset(player_colour, target_colour.name.lower(), offset)
             print('>>', player_colour, verb, target_colour.name.lower(), "!", '<<')
-        print(f'{player_name} ({player_colour}): {self.message}')
+        print(player_name, f'({player_colour}):', self.message)
         return self.message
 
     def _find(self, pattern: str) -> bool:

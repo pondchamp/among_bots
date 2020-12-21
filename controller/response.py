@@ -39,7 +39,6 @@ def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, me: str,
         print("Past messages:", chat_log)
         print("Flags:", [x.name for x in flags])
         print("Dialogs:", pri_arr)
-        print()
     select_arr = -1
     for i in range(len(pri_arr)):
         if len(pri_arr_filtered[i]) > 0:
