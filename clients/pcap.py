@@ -125,7 +125,6 @@ class GameState(Thread):
         interpreter = Interpreter(game_state, state['player'], state['message'].decode("utf-8"))
         interpret = interpreter.interpret()
         if interpret is not None:
-            print(interpret)
             if consts.debug_chat:
                 print("Trust map:")
                 for x in context.get_trust_map():

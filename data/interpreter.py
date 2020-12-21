@@ -26,7 +26,8 @@ class Interpreter:
         if self.player.color is not False:
             player_colour = enums.PlayerColour.__call__(self.player.color).name.lower()
         if me.alive and not self.player.alive:
-            return f'{player_name} ({player_colour}): [DEAD CHAT HIDDEN]'
+            print(f'{player_name} ({player_colour}): [DEAD CHAT HIDDEN]')
+            return None
 
         target_name = target_colour = None
         players = {enums.PlayerColour.__call__(p.color).name.lower(): p
@@ -50,26 +51,23 @@ class Interpreter:
                 target_colour = colour
                 break
 
-        offset = None
-        verb = None
+        verb = offset = None
         if target_name is not None:
-            verb = "mentioned"
-            offset = -0.5
+            verb, offset = "mentioned", -0.5
             t_col = target_colour.name.lower()
-            if self._find(r"\b(sus|vent|it'?s?|faked?|kill(ed)?|body|self report)\b") or \
+            if self._find(r"\b(sus|vent(ed)?|it'?s?|faked?|kill(ed)?|body|self report)\b") or \
                     self._find(rf"\b(vote) {t_col}\b") or self.message_lower == t_col:
-                verb = "sussed"
-                offset = -1
+                verb, offset = "sussed", -1
             elif self._find(r"\b(safe|good|clear(ed)?)\b") or self._find(rf"\b(not|with|me and) {t_col}\b") or \
                     self._find(rf"{t_col} (and i)\b"):
-                verb = "vouched for"
-                offset = 1
+                verb, offset = "vouched for", 1
         if verb:
             if self.player.alive and player_colour != 'Unknown' and target_colour != 'Unknown' and \
                     len(context.get_trust_map()) != 0:
                 context.trust_map_score_offset(player_colour, target_colour.name.lower(), offset)
             print('>>', player_colour, verb, target_colour.name.lower(), "!", '<<')
-        return f'{player_name} ({player_colour}): {self.message}'
+        print(f'{player_name} ({player_colour}): {self.message}')
+        return self.message
 
     def _find(self, pattern: str) -> bool:
         return len(re.findall(pattern, self.message_lower)) > 0
