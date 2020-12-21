@@ -23,6 +23,7 @@ statement: List[Dialog] = [
     Dialog("i saw [p] last"),
     Dialog("i saw [p] in [l]"),
     Dialog("what", max_turns=0, flags=[RF.EMERGENCY_MEET_OTHER]),
+    Dialog("orang", max_turns=0, flags=[RF.SELF_SABOTAGE]),
 ]
 
 probe: List[Dialog] = [
@@ -35,6 +36,7 @@ probe: List[Dialog] = [
     Dialog("where?", max_turns=0, flags=[RF.BODY_FOUND_OTHER]),
     Dialog("???", max_turns=0, flags=[RF.EMERGENCY_MEET_OTHER]),
     Dialog("what?", max_turns=0, flags=[RF.EMERGENCY_MEET_OTHER]),
+    Dialog("orang", max_turns=0, flags=[RF.SELF_SABOTAGE]),
 ]
 
 attack: List[Dialog] = [
@@ -53,6 +55,7 @@ attack: List[Dialog] = [
     Dialog("why is [p] stalking me?", max_turns=0, flags=[RF.EMERGENCY_MEET_ME]),
     Dialog("self report", flags=[RF.SELF_REPORT]),
     Dialog("I don't buy [p]'s story", min_turns=1),
+    Dialog("orang", max_turns=0, flags=[RF.SELF_SABOTAGE]),
 ]
 
 defense = [
