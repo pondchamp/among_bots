@@ -5,6 +5,7 @@ import re
 from clients import monitor, tts, keyboard
 from clients.pcap import game_state
 from controller import response, helpers
+from controller.response import get_strategy
 from data import enums, consts, params
 from data.state import context, get_response_flags
 
@@ -56,6 +57,11 @@ def start_game():
                         print('Wait until discussion time before attempting to chat.')
                         continue
                 flags = get_response_flags(game_state)
+                if mode == enums.KeyCommand.AUTO:
+                    mode = get_strategy(game_state)
+                    if mode is None:
+                        print("You can't speak if you're dead!")
+                        continue
                 resp = response.generate_response(mode, game_state.get_map(), me, flags)
                 if resp != '':
                     _output_phrase(resp)

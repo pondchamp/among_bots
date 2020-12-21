@@ -7,7 +7,6 @@ from lib.amongUsParser.gameEngine import GameEngine, PlayerClass
 from scapy.all import *
 from scapy.layers.inet import UDP
 
-from controller.response import get_strategy
 from data import enums, params, consts
 from data.interpreter import Interpreter
 from data.state import context
@@ -126,8 +125,6 @@ class GameState(Thread):
                 for x in context.get_trust_map():
                     print(x, "\t:", context.get_trust_map()[x])
                 print("Aggregate:", context.trust_map_score_get())
-                strat = get_strategy(game_state)
-                print("Strategy:", strat.name.lower() if strat is not None else "Dead")
             print()
 
     @staticmethod

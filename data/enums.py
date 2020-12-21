@@ -3,11 +3,12 @@ from typing import Optional
 
 
 class KeyCommand(Enum):
-    ATTACK = 'f1'
-    DEFENCE = 'f2'
-    PROBE = 'f3'
-    STATEMENT = 'f4'
-    REPEAT = 'f5'
+    AUTO = 'f1'
+    ATTACK = 'f2'
+    DEFENCE = 'f3'
+    PROBE = 'f4'
+    STATEMENT = 'f5'
+    REPEAT = 'f6'
     DEBUG = 'f8'
     EXIT = 'f12'
     HELP = 'esc'

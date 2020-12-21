@@ -73,14 +73,20 @@ def get_strategy(game_state) -> Optional[enums.KeyCommand]:
     chat_turns = context.get_chat_turns()
     if players is not None and len(players) == 2:  # three players left
         return enums.KeyCommand.ATTACK
-    elif chat_turns == 0 and _flags_match(flags, [ResponseFlags.EMERGENCY_MEET_ME, ResponseFlags.BODY_FOUND_ME])\
-            and score_sum < consts.PROBE_SCORE_THRESH:  # opener
-        return enums.KeyCommand.STATEMENT
     elif me_score is not None and me_score == SusScore.SUS:  # counter sus
         return enums.KeyCommand.DEFENCE
     elif score_sum is not None and score_sum < consts.PROBE_SCORE_THRESH:  # not enough info
-        return enums.KeyCommand.PROBE
+        if chat_turns == 0:  # opener
+            if _flags_match(flags, [ResponseFlags.EMERGENCY_MEET_ME, ResponseFlags.BODY_FOUND_ME]):
+                return enums.KeyCommand.STATEMENT
+            elif _flags_match(flags, [ResponseFlags.EMERGENCY_MEET_OTHER, ResponseFlags.BODY_FOUND_OTHER]):
+                return enums.KeyCommand.PROBE
+        return enums.KeyCommand.PROBE if random.randint(0, 1) == 0 else enums.KeyCommand.STATEMENT  # 50-50
+    # enough info at this point
+    elif len([p for p in trust_scores if trust_scores[p] == SusScore.SUS]) > 0:
+        return enums.KeyCommand.ATTACK
     else:
+        print('Unable to determine a strategy - picking at random.')
         return valid[random.randint(0, len(valid) - 1)]
 
 
