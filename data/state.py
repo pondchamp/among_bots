@@ -1,7 +1,10 @@
+import random
 from typing import Optional, List, Dict
 import datetime
 
-from data.trust import TrustMap
+from data import consts
+from data.enums import ResponseFlags
+from data.trust import TrustMap, SusScore
 
 
 class Context:
@@ -88,6 +91,34 @@ class Context:
 
     def trust_map_score_get(self, me=None) -> Dict[str, float]:
         return self._state_trust_map.aggregate_scores(me)
+
+
+def get_response_flags(game_state) -> List[ResponseFlags]:
+    flags = []
+    me = game_state.get_me()
+    reason = game_state.get_meeting_reason()
+    start_by = game_state.get_meeting_started_by()
+    if random.random() < consts.SELF_SABOTAGE_PROB:
+        flags.append(ResponseFlags.SELF_SABOTAGE)
+    if me is not None and me.infected:
+        flags.append(ResponseFlags.SELF_IMPOSTOR)
+    if reason is not False and start_by is not False:
+        if reason == 'Button':
+            if me and start_by.playerId == me.playerId:
+                flags.append(ResponseFlags.EMERGENCY_MEET_ME)
+            else:
+                flags.append(ResponseFlags.EMERGENCY_MEET_OTHER)
+        else:  # Body found
+            if me and start_by.playerId == me.playerId:
+                flags.append(ResponseFlags.BODY_FOUND_ME)
+            else:
+                flags.append(ResponseFlags.BODY_FOUND_OTHER)
+                player_colour = game_state.get_player_from_id(start_by.playerId)
+                trust_scores = context.trust_map_score_get()
+                if player_colour in [p for p in trust_scores if trust_scores[p] == SusScore.SUS.value]:
+                    flags.append(ResponseFlags.SELF_REPORT)
+
+    return flags
 
 
 context: Optional[Context] = None

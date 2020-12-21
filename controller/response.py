@@ -1,11 +1,11 @@
-from typing import List
+from typing import List, Optional
 import random
 import re
 
 from controller.substitute import SubstituteHelper
-from data import dialogs, consts
+from data import dialogs, consts, enums
 from data.enums import KeyCommand, AUMap, ResponseFlags
-from data.state import context
+from data.state import context, get_response_flags
 from data.trust import SusScore
 
 
@@ -51,11 +51,40 @@ def generate_response(mode: KeyCommand, curr_map: AUMap, me: str,
     m = pri_arr_filtered[select_arr]
     r = m[random.randint(0, len(m) - 1)]
     context.chat_log_append(r)
-    resp_sub = sub_placeholders(r, curr_map, player_select)
+    resp_sub = _sub_placeholders(r, curr_map, player_select)
     return resp_sub
 
 
-def sub_placeholders(resp: str, curr_map: AUMap, players: List[str]) -> str:
+def get_strategy(game_state) -> Optional[enums.KeyCommand]:
+    valid = [enums.KeyCommand.PROBE, enums.KeyCommand.STATEMENT, enums.KeyCommand.ATTACK, enums.KeyCommand.DEFENCE]
+    me = game_state.get_me()
+    if not me.alive:
+        return None
+    trust_scores = context.trust_map_score_get()
+    me_score = trust_scores[game_state.get_me_colour()] if len(trust_scores) > 0 else None
+    score_sum = None
+    trust_map = context.get_trust_map()
+    if trust_map is not None:
+        score_sum = 0.0
+        for p in trust_map:
+            score_sum += sum([abs(x) for x in trust_map[p].values()])
+    players = game_state.get_players()
+    flags = get_response_flags(game_state)
+    chat_turns = context.get_chat_turns()
+    if players is not None and len(players) == 2:  # three players left
+        return enums.KeyCommand.ATTACK
+    elif chat_turns == 0 and _flags_match(flags, [ResponseFlags.EMERGENCY_MEET_ME, ResponseFlags.BODY_FOUND_ME])\
+            and score_sum < consts.PROBE_SCORE_THRESH:  # opener
+        return enums.KeyCommand.STATEMENT
+    elif me_score is not None and me_score == SusScore.SUS:  # counter sus
+        return enums.KeyCommand.DEFENCE
+    elif score_sum is not None and score_sum < consts.PROBE_SCORE_THRESH:  # not enough info
+        return enums.KeyCommand.PROBE
+    else:
+        return valid[random.randint(0, len(valid) - 1)]
+
+
+def _sub_placeholders(resp: str, curr_map: AUMap, players: List[str]) -> str:
     subs = SubstituteHelper(players)
     for sub in subs.substitutions:
         res = subs.get(curr_map, sub)
@@ -70,4 +99,8 @@ def _dialog_turns_valid(dialog: dialogs.Dialog, chat_turns: int) -> bool:
 
 
 def _dialog_flags_match(dialog: dialogs.Dialog, flags: List[ResponseFlags]) -> bool:
-    return dialog.flags is not None and len(set(flags) & set(dialog.flags)) > 0
+    return dialog.flags is not None and _flags_match(dialog.flags, flags)
+
+
+def _flags_match(a: List[ResponseFlags], b: List[ResponseFlags]) -> bool:
+    return len(set(a) & set(b)) > 0

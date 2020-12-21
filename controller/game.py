@@ -1,14 +1,12 @@
 import datetime
 import random
 import re
-from typing import List
 
 from clients import monitor, tts, keyboard
 from clients.pcap import game_state
 from controller import response, helpers
 from data import enums, consts, params
-from data.state import context
-from data.trust import SusScore
+from data.state import context, get_response_flags
 
 
 def start_game():
@@ -57,7 +55,7 @@ def start_game():
                     else:
                         print('Wait until discussion time before attempting to chat.')
                         continue
-                flags = _get_response_flags()
+                flags = get_response_flags(game_state)
                 resp = response.generate_response(mode, game_state.get_map(), me, flags)
                 if resp != '':
                     _output_phrase(resp)
@@ -78,34 +76,6 @@ def _output_phrase(resp: str):
 def _in_game() -> bool:
     window_name = monitor.get_foreground_window()
     return window_name == consts.GAME_TITLE
-
-
-def _get_response_flags() -> List[enums.ResponseFlags]:
-    flags = []
-    me = game_state.get_me()
-    reason = game_state.get_meeting_reason()
-    start_by = game_state.get_meeting_started_by()
-    if random.random() < consts.SELF_SABOTAGE_PROB:
-        flags.append(enums.ResponseFlags.SELF_SABOTAGE)
-    if me is not None and me.infected:
-        flags.append(enums.ResponseFlags.SELF_IMPOSTOR)
-    if reason is not False and start_by is not False:
-        if reason == 'Button':
-            if me and start_by.playerId == me.playerId:
-                flags.append(enums.ResponseFlags.EMERGENCY_MEET_ME)
-            else:
-                flags.append(enums.ResponseFlags.EMERGENCY_MEET_OTHER)
-        else:  # Body found
-            if me and start_by.playerId == me.playerId:
-                flags.append(enums.ResponseFlags.BODY_FOUND_ME)
-            else:
-                flags.append(enums.ResponseFlags.BODY_FOUND_OTHER)
-                player_colour = game_state.get_player_from_id(start_by.playerId)
-                trust_scores = context.trust_map_score_get()
-                if player_colour in [p for p in trust_scores if trust_scores[p] == SusScore.SUS.value]:
-                    flags.append(enums.ResponseFlags.SELF_REPORT)
-
-    return flags
 
 
 def wait_timer(wait_secs: int) -> bool:
