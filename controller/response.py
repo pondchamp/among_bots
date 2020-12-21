@@ -3,20 +3,21 @@ import random
 import re
 
 from controller.substitute import SubstituteHelper
-from data import enums, dialogs, consts
+from data import dialogs, consts
+from data.enums import KeyCommand, AUMap, ResponseFlags
 from data.state import context
 from data.trust import SusScore
 
 
-def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, me: str,
-                      flags: List[enums.ResponseFlags]) -> str:
-    if mode == enums.KeyCommand.ATTACK:
+def generate_response(mode: KeyCommand, curr_map: AUMap, me: str,
+                      flags: List[ResponseFlags]) -> str:
+    if mode == KeyCommand.ATTACK:
         mode_arr, score_target = dialogs.attack, SusScore.SUS
-    elif mode == enums.KeyCommand.DEFENCE:
+    elif mode == KeyCommand.DEFENCE:
         mode_arr, score_target = dialogs.defense, None
-    elif mode == enums.KeyCommand.PROBE:
+    elif mode == KeyCommand.PROBE:
         mode_arr, score_target = dialogs.probe, None
-    elif mode == enums.KeyCommand.STATEMENT:
+    elif mode == KeyCommand.STATEMENT:
         mode_arr, score_target = dialogs.statement, SusScore.SAFE
     else:
         return ''
@@ -54,7 +55,7 @@ def generate_response(mode: enums.KeyCommand, curr_map: enums.AUMap, me: str,
     return resp_sub
 
 
-def sub_placeholders(resp: str, curr_map: enums.AUMap, players: List[str]) -> str:
+def sub_placeholders(resp: str, curr_map: AUMap, players: List[str]) -> str:
     subs = SubstituteHelper(players)
     for sub in subs.substitutions:
         res = subs.get(curr_map, sub)
@@ -68,5 +69,5 @@ def _dialog_turns_valid(dialog: dialogs.Dialog, chat_turns: int) -> bool:
        and (dialog.min_turns is None or dialog.min_turns <= chat_turns)
 
 
-def _dialog_flags_match(dialog: dialogs.Dialog, flags: List[enums.ResponseFlags]) -> bool:
+def _dialog_flags_match(dialog: dialogs.Dialog, flags: List[ResponseFlags]) -> bool:
     return dialog.flags is not None and len(set(flags) & set(dialog.flags)) > 0
