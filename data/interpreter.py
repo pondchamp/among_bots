@@ -59,7 +59,7 @@ class Interpreter:
                     self._find(rf"\b(vote) {t_col}\b") or self.message_lower == t_col:
                 verb, offset = "sussed", -1
             elif self._find(r"\b(safe|good|clear(ed)?)\b") or self._find(rf"\b(not|with|me and) {t_col}\b") or \
-                    self._find(rf"{t_col} (and i)\b"):
+                    self._find(rf"{t_col} (and i|(had|did|has|do) (trash|chute|scan|med))\b"):
                 verb, offset = "vouched for", 1
         if verb:
             if self.player.alive and player_colour != 'Unknown' and target_colour != 'Unknown' and \
