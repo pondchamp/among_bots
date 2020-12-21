@@ -126,7 +126,8 @@ class GameState(Thread):
                 for x in context.get_trust_map():
                     print(x, "\t:", context.get_trust_map()[x])
                 print("Aggregate:", context.trust_map_score_get())
-                print("Strategy:", get_strategy(game_state).name.lower())
+                strat = get_strategy(game_state)
+                print("Strategy:", strat.name.lower() if strat is not None else "Dead")
             print()
 
     @staticmethod
