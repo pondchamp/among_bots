@@ -2,6 +2,7 @@
 from datetime import timedelta
 import pickle
 
+from data.types import COORD
 from lib.amongUsParser import parse
 from lib.amongUsParser.gameEngine import GameEngine, PlayerClass
 from scapy.all import *
@@ -25,6 +26,7 @@ class GameState(Thread):
             'StartGame': self.start_game_callback,
             'Chat': self.chat_callback,
             'RemovePlayer': self.remove_player_callback,
+            'PlayerMovement': self.player_movement_callback,
         })
         Thread.__init__(self)
         self.daemon = True
@@ -133,6 +135,19 @@ class GameState(Thread):
             player = enums.PlayerColour.__call__(event['player'].color).name.lower()
             context.trust_map_player_remove(player)
 
+    @staticmethod
+    def player_movement_callback(event):
+        me_id = game_state.get_me().playerId
+        pl_id = event["player"].playerId
+        if me_id == pl_id:
+            return
+        me_x, me_y = game_state.get_player_loc(me_id)
+        pl_x, pl_y = game_state.get_player_loc(pl_id)
+        dist_x = abs(me_x - pl_x)
+        dist_y = abs(me_y - pl_y)
+        in_frame = dist_x < 5 and dist_y < 3
+        # print(f'In frame?: {in_frame}')
+
     def event_callback(self, _):
         if not game_state._game.gameId:
             return
@@ -187,6 +202,10 @@ class GameState(Thread):
             if consts.debug_net and game_state.curr_lobby != game_id:
                 print('Game state created for game ID', game_id)
         game_state.curr_lobby = game_id
+
+    def get_player_loc(self, player_id: int) -> COORD:
+        player = self._game.playerIdMap[player_id]
+        return player.x, player.y
 
     def set_player_loc(self):
         if self.get_map() is None:
