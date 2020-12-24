@@ -2,12 +2,12 @@ import os
 from enum import Enum
 from typing import Optional
 
+from data import consts
 from data.enums import PlayerColour
 
 
 def get_me() -> PlayerColour:
-    file_path = os.environ['USERPROFILE'] + r'\AppData\LocalLow\Innersloth\Among Us\playerPrefs'
-    with open(file_path, 'r') as f:
+    with open(consts.PLAYER_PREFS_FILE_LOC, 'r') as f:
         contents = f.read()
         me_colour = contents.split(',')[2]
         return PlayerColour.__call__(int(me_colour))
