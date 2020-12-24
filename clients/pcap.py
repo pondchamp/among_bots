@@ -172,6 +172,10 @@ class GameState(Thread):
                 state.players[i].game_state = game_state._game
             if len(game_state._game.entities) > 0:
                 state.entities = game_state._game.entities
+            if len(game_state._game.players) > 0:
+                state.players = game_state._game.players
+            if len(game_state._game.playerIdMap) > 0:
+                state.playerIdMap = game_state._game.playerIdMap
             game_state._game = state
             with open(file_path, "wb") as fp:
                 pickle.dump(state, fp)
