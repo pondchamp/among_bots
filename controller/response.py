@@ -58,10 +58,11 @@ def generate_response(mode: KeyCommand, curr_map: AUMap, me: str,
 def get_strategy(game_state) -> Optional[enums.KeyCommand]:
     valid = [enums.KeyCommand.PROBE, enums.KeyCommand.STATEMENT, enums.KeyCommand.ATTACK, enums.KeyCommand.DEFENCE]
     me = game_state.get_me()
-    if not me.alive:
+    if me is not None and not me.alive:
         return None
     trust_scores = context.trust_map_score_get()
-    me_score = trust_scores[game_state.get_me_colour()] if len(trust_scores) > 0 else None
+    me_score = trust_scores[game_state.get_me_colour()] \
+        if len(trust_scores) > 0 and game_state.get_me_colour() else None
     score_sum = None
     trust_map = context.get_trust_map()
     if trust_map is not None:
