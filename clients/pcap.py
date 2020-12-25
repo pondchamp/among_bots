@@ -2,6 +2,7 @@
 from datetime import timedelta
 import pickle
 
+from controller.helpers import get_player_colour
 from data.types import COORD
 from lib.amongUsParser import parse
 from lib.amongUsParser.gameEngine import GameEngine, PlayerClass
@@ -14,10 +15,6 @@ from data.state import context
 
 PROX_LIMIT_X = 5
 PROX_LIMIT_Y = 3
-
-
-def _get_player_colour(p: PlayerClass) -> str:
-    return enums.PlayerColour.__call__(p.color).name.lower()
 
 
 class GameState(Thread):
@@ -51,7 +48,7 @@ class GameState(Thread):
 
     def get_me_colour(self) -> Optional[str]:
         me = self.get_me()
-        return _get_player_colour(me) if me else None
+        return get_player_colour(me) if me else None
 
     def get_map(self) -> Optional[enums.AUMap]:
         if self._game.gameSettings:
@@ -76,7 +73,7 @@ class GameState(Thread):
         return None
 
     def get_players_colour(self, include_me=False) -> Optional[List[str]]:
-        return [_get_player_colour(p) for p in self.get_players(include_me)]
+        return [get_player_colour(p) for p in self.get_players(include_me)]
 
     def get_player_from_id(self, player_id: int) -> Optional[PlayerClass]:
         if player_id not in self._game.playerIdMap:
@@ -86,7 +83,7 @@ class GameState(Thread):
     def get_player_colour_from_id(self, player_id: int) -> Optional[str]:
         if player_id not in self._game.playerIdMap:
             return None
-        return _get_player_colour(self._game.playerIdMap[player_id])
+        return get_player_colour(self._game.playerIdMap[player_id])
 
     def get_is_impostor(self) -> Optional[bool]:
         me = self.get_me()
@@ -94,7 +91,7 @@ class GameState(Thread):
 
     def get_impostor_list(self) -> Optional[List[str]]:
         if self.get_is_impostor() and self._game.players:  # Only show if I'm impostor (no cheating!)
-            return [_get_player_colour(p) for p in self._game.players.values()
+            return [get_player_colour(p) for p in self._game.players.values()
                     if p.infected and p.playerId != self.get_me().playerId]
 
     def get_meeting_started_by(self):
@@ -141,7 +138,7 @@ class GameState(Thread):
     @staticmethod
     def remove_player_callback(event):
         if event['player'] is not None and game_state.get_game_started():
-            player = enums.PlayerColour.__call__(event['player'].color).name.lower()
+            player = get_player_colour(event['player'])
             context.trust_map_player_remove(player)
             players_in_frame = context.get_last_seen()
             if player in players_in_frame:
@@ -154,7 +151,7 @@ class GameState(Thread):
         me_id = me.playerId
         pl_id = event["player"].playerId
         player = self.get_player_from_id(pl_id)
-        player_colour = _get_player_colour(player)
+        player_colour = get_player_colour(player)
         in_frame = self._in_frame(me_id, pl_id)
         players_in_frame = context.get_last_seen()
         if not player.alive:
@@ -166,7 +163,7 @@ class GameState(Thread):
             if players is None:
                 return
             new_pl = \
-                [_get_player_colour(p) for p in players
+                [get_player_colour(p) for p in players
                  if p.playerId != me_id
                  and p.color is not False and p.alive
                  and self._in_frame(me_id, p.playerId)]

@@ -1,6 +1,7 @@
 import re
 from typing import Optional, Dict
 
+from controller.helpers import get_player_colour
 from data import enums
 from data.state import context
 from lib.amongUsParser.gameEngine import PlayerClass
@@ -24,13 +25,13 @@ class Interpreter:
         player_name = self.player.name.decode("utf-8")
         player_colour: str = 'Unknown'
         if self.player.color is not False:
-            player_colour = enums.PlayerColour.__call__(self.player.color).name.lower()
+            player_colour = get_player_colour(self.player)
         if me.alive and not self.player.alive:
             print(player_name, f'({player_colour}): [DEAD CHAT HIDDEN]')
             return None
 
         target_name = target_colour = None
-        players = {enums.PlayerColour.__call__(p.color).name.lower(): p
+        players = {get_player_colour(p): p
                    for p in self.game_state.get_players(include_me=True)}
         self._alias(players, "purple", "~purp")
         self._alias(players, "orange", "~orang")

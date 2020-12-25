@@ -1,8 +1,13 @@
 from enum import Enum
 from typing import Optional
 
-from data import consts
+from data import consts, enums
 from data.enums import PlayerColour
+from lib.amongUsParser.gameEngine import PlayerClass
+
+
+def get_player_colour(p: PlayerClass) -> str:
+    return enums.PlayerColour.__call__(p.color).name.lower()
 
 
 def get_me() -> PlayerColour:
