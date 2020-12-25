@@ -108,7 +108,8 @@ def _sub_placeholders(resp: str, curr_map: AUMap, players: List[str]) -> (str, D
         new_resp = re.sub(fr"\[{sub.value}]", res[i], resp)
         if new_resp != resp:
             sub_dict[sub] = res[i]
-        resp = new_resp    return resp, sub_dict
+        resp = new_resp
+    return resp, sub_dict
 
 
 def _dialog_turns_valid(dialog: dialogs.Dialog, chat_turns: int) -> bool:
