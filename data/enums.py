@@ -24,6 +24,7 @@ def get_key_command(key: str) -> Optional[KeyCommand]:
 
 class Substitution(Enum):
     PLAYER = 'p'
+    PLAYER_NEAREST = 'pn'
     LOCATION = 'l'
     LOCATION_ME = 'lm'
     LOCATION_BODY = 'lb'
