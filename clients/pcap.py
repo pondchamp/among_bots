@@ -12,6 +12,9 @@ from data import enums, params, consts
 from data.interpreter import Interpreter
 from data.state import context
 
+PROX_LIMIT_X = 5
+PROX_LIMIT_Y = 3
+
 
 def _get_player_colour(p: PlayerClass) -> str:
     return enums.PlayerColour.__call__(p.color).name.lower()
@@ -188,7 +191,7 @@ class GameState(Thread):
         pl_x, pl_y = game_state.get_player_loc(pl_id)
         dist_x = abs(me_x - pl_x)
         dist_y = abs(me_y - pl_y)
-        return dist_x < 5 and dist_y < 3
+        return dist_x < PROX_LIMIT_X and dist_y < PROX_LIMIT_Y
 
     def event_callback(self, _):
         if not game_state._game.gameId:
