@@ -1,4 +1,5 @@
 @Echo Off
+cd "%~dp0"
 git submodule init
 git submodule update
 py -m pip install --upgrade pip

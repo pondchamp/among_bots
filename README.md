@@ -32,6 +32,8 @@ C:\...> cd among_bots
 C:\...\among_bots> run.bat
 ```
 
+**NOTE: Text-to-speech only works when the Among Us game window is active.**
+
 ## Usage and Copyright
 
 Source code use, reproduction, and distribution rights are managed by the Apache License terms (see `LICENSE`).
