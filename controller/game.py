@@ -3,11 +3,11 @@ import random
 import re
 
 from clients import monitor, tts, keyboard
-from clients.pcap import game_state
 from controller import response, helpers
 from controller.response import get_strategy
 from data import enums, consts, params
 from data.state import context, get_response_flags
+from data.pcap import game_state
 
 
 def start_game():
