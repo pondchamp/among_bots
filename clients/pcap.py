@@ -181,7 +181,6 @@ class GameState(Thread):
             context.remove_last_seen(player_colour)
         else:
             return
-        print(context.get_last_seen())
 
     @staticmethod
     def _in_frame(me_id: int, pl_id: int) -> bool:

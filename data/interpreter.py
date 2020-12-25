@@ -36,6 +36,8 @@ class Interpreter:
         self._alias(players, "orange", "~orang")
         self._alias(players, "green", "~dark green")
         self._alias(players, "lime", "~light green")
+        self._alias(players, "blue", "~dark blue")
+        self._alias(players, "cyan", "~light blue")
         for alias in [p for p in sorted(players.keys(), reverse=True) if p != player_colour]:
             p = players[alias]
             alias = str(alias).removeprefix('~')
