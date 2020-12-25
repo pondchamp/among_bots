@@ -17,6 +17,7 @@ class Context:
         self._state_last_response: Optional[datetime.datetime] = None
         self._state_player_loc: Optional[Dict[str, str]] = None
         self._state_trust_map: TrustMap = TrustMap()
+        self._state_last_seen: List[str] = []
 
     def get_debug(self) -> bool:
         return self._state_debug
@@ -91,6 +92,18 @@ class Context:
 
     def trust_map_score_get(self, me=None) -> Dict[str, float]:
         return self._state_trust_map.aggregate_scores(me)
+
+    def get_last_seen(self) -> List[str]:
+        return self._state_last_seen.copy()
+
+    def append_last_seen(self, val: str):
+        self._state_last_seen.append(val)
+
+    def remove_last_seen(self, val: str):
+        self._state_last_seen.remove(val)
+
+    def reset_last_seen(self):
+        self._state_last_seen = []
 
 
 def get_response_flags(game_state) -> List[ResponseFlags]:

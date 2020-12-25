@@ -116,6 +116,7 @@ class GameState(Thread):
     @staticmethod
     def start_game_callback(_):
         context.trust_map_players_reset()
+        context.reset_last_seen()
 
     @staticmethod
     def chat_callback(state):
@@ -134,19 +135,49 @@ class GameState(Thread):
         if event['player'] is not None and game_state.get_game_started():
             player = enums.PlayerColour.__call__(event['player'].color).name.lower()
             context.trust_map_player_remove(player)
+            players_in_frame = context.get_last_seen()
+            if player in players_in_frame:
+                context.remove_last_seen(player)
+
+    def player_movement_callback(self, event):
+        me = game_state.get_me()
+        if me is None:
+            return
+        me_id = me.playerId
+        pl_id = event["player"].playerId
+        player = self.get_player_from_id(pl_id)
+        in_frame = self._in_frame(me_id, pl_id)
+        players_in_frame = context.get_last_seen()
+        if me_id == pl_id:
+            players = [p for p in game_state.get_players() if p.color is not False]
+            if players is None:
+                return
+            new_pl = \
+                [_get_player_colour(p) for p in players
+                 if p.playerId != me_id
+                 and self._in_frame(me_id, p.playerId)]
+            for p in players_in_frame.copy():
+                if p not in new_pl:
+                    context.remove_last_seen(p)
+            for p in new_pl.copy():
+                if p in players_in_frame:
+                    new_pl.remove(p)
+            for p in new_pl:
+                context.append_last_seen(p)
+        elif in_frame and player not in players_in_frame:
+            context.append_last_seen(player)
+        elif not in_frame and player in players_in_frame:
+            context.remove_last_seen(player)
+        else:
+            return
 
     @staticmethod
-    def player_movement_callback(event):
-        me_id = game_state.get_me().playerId
-        pl_id = event["player"].playerId
-        if me_id == pl_id:
-            return
+    def _in_frame(me_id: int, pl_id: int) -> bool:
         me_x, me_y = game_state.get_player_loc(me_id)
         pl_x, pl_y = game_state.get_player_loc(pl_id)
         dist_x = abs(me_x - pl_x)
         dist_y = abs(me_y - pl_y)
-        in_frame = dist_x < 5 and dist_y < 3
-        # print(f'In frame?: {in_frame}')
+        return dist_x < 5 and dist_y < 3
 
     def event_callback(self, _):
         if not game_state._game.gameId:
