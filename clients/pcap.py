@@ -141,7 +141,7 @@ class GameState(Thread):
 
     def player_movement_callback(self, event):
         me = game_state.get_me()
-        if me is None:
+        if me is None or game_state.get_meeting_reason() is not False:
             return
         me_id = me.playerId
         pl_id = event["player"].playerId
@@ -149,12 +149,13 @@ class GameState(Thread):
         in_frame = self._in_frame(me_id, pl_id)
         players_in_frame = context.get_last_seen()
         if me_id == pl_id:
-            players = [p for p in game_state.get_players() if p.color is not False]
+            players = [p for p in game_state.get_players()
+                       if p.color is not False and p.alive]
             if players is None:
                 return
             new_pl = \
                 [_get_player_colour(p) for p in players
-                 if p.playerId != me_id
+                 if p.playerId != me_id and p.alive
                  and self._in_frame(me_id, p.playerId)]
             for p in players_in_frame.copy():
                 if p not in new_pl:
