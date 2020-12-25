@@ -189,8 +189,7 @@ class GameState(Thread):
     def _in_frame(me_id: int, pl_id: int) -> bool:
         me_x, me_y = game_state.get_player_loc(me_id)
         pl_x, pl_y = game_state.get_player_loc(pl_id)
-        dist_x = abs(me_x - pl_x)
-        dist_y = abs(me_y - pl_y)
+        dist_x, dist_y = abs(me_x - pl_x), abs(me_y - pl_y)
         return dist_x < PROX_LIMIT_X and dist_y < PROX_LIMIT_Y
 
     def event_callback(self, _):
