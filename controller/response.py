@@ -1,10 +1,10 @@
-from typing import List, Optional
+from typing import List, Optional, Dict
 import random
 import re
 
 from controller.substitute import SubstituteHelper
 from data import dialogs, consts, enums
-from data.enums import KeyCommand, AUMap, ResponseFlags
+from data.enums import KeyCommand, AUMap, ResponseFlags, Substitution
 from data.state import context, get_response_flags
 from data.trust import SusScore
 
@@ -51,7 +51,15 @@ def generate_response(mode: KeyCommand, curr_map: AUMap, me: str,
     m = pri_arr_filtered[select_arr]
     r = m[random.randint(0, len(m) - 1)]
     context.chat_log_append(r)
-    resp_sub = _sub_placeholders(r, curr_map, player_select)
+    resp_sub, sub_dict = _sub_placeholders(r, curr_map, player_select)
+    if mode == KeyCommand.ATTACK:
+        p = None
+        if Substitution.PLAYER in sub_dict:
+            p = sub_dict[Substitution.PLAYER]
+        elif Substitution.PLAYER_NEAREST in sub_dict:
+            p = sub_dict[Substitution.PLAYER_NEAREST]
+        if p is not None:
+            context.trust_map_score_offset(me, p, -1.0)
     return resp_sub
 
 
@@ -91,13 +99,16 @@ def get_strategy(game_state) -> Optional[enums.KeyCommand]:
         return valid[random.randint(0, len(valid) - 1)]
 
 
-def _sub_placeholders(resp: str, curr_map: AUMap, players: List[str]) -> str:
+def _sub_placeholders(resp: str, curr_map: AUMap, players: List[str]) -> (str, Dict):
+    sub_dict = {}
     subs = SubstituteHelper(players)
     for sub in subs.substitutions:
         res = subs.get(curr_map, sub)
         i = random.randint(0, len(res) - 1)
-        resp = re.sub(fr"\[{sub.value}]", res[i], resp)
-    return resp
+        new_resp = re.sub(fr"\[{sub.value}]", res[i], resp)
+        if new_resp != resp:
+            sub_dict[sub] = res[i]
+        resp = new_resp    return resp, sub_dict
 
 
 def _dialog_turns_valid(dialog: dialogs.Dialog, chat_turns: int) -> bool:
