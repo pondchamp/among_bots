@@ -181,6 +181,7 @@ class GameState(Thread):
             context.remove_last_seen(player_colour)
         else:
             return
+        print(context.get_last_seen())
 
     @staticmethod
     def _in_frame(me_id: int, pl_id: int) -> bool:
@@ -227,12 +228,12 @@ class GameState(Thread):
                 state.selfClientID = game_state._game.selfClientID
             for i in state.players.keys():
                 state.players[i].game_state = game_state._game
-            if len(game_state._game.entities) > 0:
-                state.entities = game_state._game.entities
-            if len(game_state._game.players) > 0:
-                state.players = game_state._game.players
-            if len(game_state._game.playerIdMap) > 0:
-                state.playerIdMap = game_state._game.playerIdMap
+
+            # Merge state dictionaries with provided game entities
+            state.entities = {**state.entities, **game_state._game.entities}
+            state.players = {**state.players, **game_state._game.players}
+            state.playerIdMap = {**state.playerIdMap, **game_state._game.playerIdMap}
+
             game_state._game = state
             with open(file_path, "wb") as fp:
                 pickle.dump(state, fp)
