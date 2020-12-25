@@ -126,7 +126,7 @@ def get_response_flags(game_state) -> List[ResponseFlags]:
                 flags.append(ResponseFlags.BODY_FOUND_ME)
             else:
                 flags.append(ResponseFlags.BODY_FOUND_OTHER)
-                player_colour = game_state.get_player_from_id(start_by.playerId)
+                player_colour = game_state.get_player_colour_from_id(start_by.playerId)
                 trust_scores = context.trust_map_score_get()
                 if player_colour in [p for p in trust_scores if trust_scores[p] == SusScore.SUS.value]:
                     flags.append(ResponseFlags.SELF_REPORT)

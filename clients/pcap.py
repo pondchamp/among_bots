@@ -75,7 +75,12 @@ class GameState(Thread):
     def get_players_colour(self, include_me=False) -> Optional[List[str]]:
         return [_get_player_colour(p) for p in self.get_players(include_me)]
 
-    def get_player_from_id(self, player_id: int) -> Optional[str]:
+    def get_player_from_id(self, player_id: int) -> Optional[PlayerClass]:
+        if player_id not in self._game.playerIdMap:
+            return None
+        return self._game.playerIdMap[player_id]
+
+    def get_player_colour_from_id(self, player_id: int) -> Optional[str]:
         if player_id not in self._game.playerIdMap:
             return None
         return _get_player_colour(self._game.playerIdMap[player_id])
@@ -146,8 +151,13 @@ class GameState(Thread):
         me_id = me.playerId
         pl_id = event["player"].playerId
         player = self.get_player_from_id(pl_id)
+        player_colour = _get_player_colour(player)
         in_frame = self._in_frame(me_id, pl_id)
         players_in_frame = context.get_last_seen()
+        if not player.alive:
+            if player_colour in players_in_frame:
+                context.remove_last_seen(player_colour)
+            return
         if me_id == pl_id:
             players = game_state.get_players()
             if players is None:
@@ -165,10 +175,10 @@ class GameState(Thread):
                     new_pl.remove(p)
             for p in new_pl:
                 context.append_last_seen(p)
-        elif in_frame and player not in players_in_frame:
-            context.append_last_seen(player)
-        elif not in_frame and player in players_in_frame:
-            context.remove_last_seen(player)
+        elif in_frame and player_colour not in players_in_frame:
+            context.append_last_seen(player_colour)
+        elif not in_frame and player_colour in players_in_frame:
+            context.remove_last_seen(player_colour)
         else:
             return
 
