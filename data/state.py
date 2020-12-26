@@ -85,6 +85,9 @@ class Context:
     def trust_map_players_set(self, players: List[str]):
         self._state_trust_map.update_players(players)
 
+    def trust_map_players_reset(self):
+        self._state_trust_map.update_players([]
+
     def trust_map_player_remove(self, player: str):
         players = self._state_trust_map.players
         if player in players:
@@ -93,9 +96,6 @@ class Context:
 
     def trust_map_score_get(self, me=None) -> Dict[str, float]:
         return self._state_trust_map.aggregate_scores(me)
-
-    def trust_map_players_reset(self):
-        self._state_trust_map.update_players([])
 
     def trust_map_score_offset(self, p1: str, p2: str, offset: float):
         self._state_trust_map.offset_score(p1, p2, offset)
