@@ -71,5 +71,4 @@ def print_commands():
     for x in [x for x in enums.KeyCommand if x != enums.KeyCommand.KEY_CAP]:
         k = str.upper(x.value)
         v = str.title(x.name).replace('_', ' ')
-        current = None
-        print(f'{k}: {v}{f" (Current: {str(current).title()})" if current is not None else ""}')
+        print(f'{k}\t:', v)
