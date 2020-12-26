@@ -130,7 +130,7 @@ class GameState:
     # GETTERS AND SETTERS
 
     def get_me(self) -> Optional[PlayerClass]:
-        return self._game.players[self._game.selfClientID] if self._game.selfClientID in self._game.players else None
+        return self._game.players.get(self._game.selfClientID)
 
     def get_me_colour(self) -> Optional[str]:
         me = self.get_me()
