@@ -86,7 +86,7 @@ class Context:
         self._state_trust_map.update_players(players)
 
     def trust_map_players_reset(self):
-        self._state_trust_map.update_players([]
+        self._state_trust_map.update_players([])
 
     def trust_map_player_remove(self, player: str):
         players = self._state_trust_map.players
