@@ -13,7 +13,7 @@ class Speaker(Thread):
         if override is None:
             creds_path = os.getcwd() + r'\creds.json'
             if not os.path.isfile(creds_path):
-                print("Missing GCP credentials file: " + creds_path)
+                print("Missing GCP credentials file:", creds_path)
                 return
             os.environ[consts.GOOGLE_APPLICATION_CREDS] = creds_path
         self.text = _string_cleanup(text)

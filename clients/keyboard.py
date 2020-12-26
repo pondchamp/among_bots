@@ -30,7 +30,6 @@ def handle_key(key: str) -> Optional[enums.KeyCommand]:
             print(f'KEY CAPTURE {"ENABLED" if context.capture_keys else "DISABLED"}')
             if context.capture_keys:
                 print_commands()
-            print()
         else:
             return mode
 
