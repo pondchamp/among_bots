@@ -66,7 +66,7 @@ class Interpreter:
                 verb, offset = "vouched for", 1
         if verb:
             if self.player.alive and player_colour != 'Unknown' and target_colour != 'Unknown' and \
-                    len(context.get_trust_map()) != 0:
+                    len(context.trust_map) != 0:
                 context.trust_map_score_offset(player_colour, target_colour.name.lower(), offset)
             print('>>', player_colour, verb, target_colour.name.lower(), "!", '<<')
         print(player_name, f'({player_colour}):', self.message)

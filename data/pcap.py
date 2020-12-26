@@ -51,7 +51,7 @@ class GameState:
     def start_meeting_callback(self, _):
         context.chat_log_reset()
         imp_list = self.impostor_list
-        prev_player_len = len(context.get_trust_map())
+        prev_player_len = len(context.trust_map)
         context.trust_map_players_set(self.get_players_colour(include_me=True))
         context.trust_map_score_scale(0.5)
         if prev_player_len == 0 and self.me is not None and self.me.alive:
@@ -66,7 +66,7 @@ class GameState:
     @staticmethod
     def start_game_callback(_):
         context.trust_map_players_reset()
-        context.reset_last_seen()
+        context.last_seen_reset()
 
     @staticmethod
     def chat_callback(state):
@@ -75,8 +75,8 @@ class GameState:
         if interpret is not None:
             if consts.debug_chat:
                 print("Trust map:")
-                for x in context.get_trust_map():
-                    print(x, "\t:", context.get_trust_map()[x])
+                for x in context.trust_map:
+                    print(x, "\t:", context.trust_map[x])
                 print("Aggregate:", context.trust_map_score_get())
             print()
 
@@ -85,9 +85,9 @@ class GameState:
         if event['player'] is not None and game_state.game_started:
             player = get_player_colour(event['player'])
             context.trust_map_player_remove(player)
-            players_in_frame = context.get_last_seen()
+            players_in_frame = context.last_seen
             if player in players_in_frame:
-                context.remove_last_seen(player)
+                context.last_seen_remove(player)
 
     def player_movement_callback(self, event):
         me = self.me
@@ -98,10 +98,10 @@ class GameState:
         player = self.get_player_from_id(pl_id)
         player_colour = get_player_colour(player)
         in_frame = self._in_frame(me_id, pl_id)
-        players_in_frame = context.get_last_seen()
+        players_in_frame = context.last_seen
         if not player.alive:
             if player_colour in players_in_frame:
-                context.remove_last_seen(player_colour)
+                context.last_seen_remove(player_colour)
             return
         if me_id == pl_id:
             players = game_state.get_players()
@@ -114,16 +114,16 @@ class GameState:
                  and self._in_frame(me_id, p.playerId)]
             for p in players_in_frame.copy():
                 if p not in new_pl:
-                    context.remove_last_seen(p)
+                    context.last_seen_remove(p)
             for p in new_pl.copy():
                 if p in players_in_frame:
                     new_pl.remove(p)
             for p in new_pl:
-                context.append_last_seen(p)
+                context.last_seen_append(p)
         elif in_frame and player_colour not in players_in_frame:
-            context.append_last_seen(player_colour)
+            context.last_seen_append(player_colour)
         elif not in_frame and player_colour in players_in_frame:
-            context.remove_last_seen(player_colour)
+            context.last_seen_remove(player_colour)
         else:
             return
 
@@ -189,7 +189,7 @@ class GameState:
             'me': me_loc,
             'body': body_loc,
         }
-        context.set_player_loc(loc_dict)
+        context.player_loc = loc_dict
         print('Set new location list:',
               [f'{k}: {v}' for k, v in loc_dict.items()])
 

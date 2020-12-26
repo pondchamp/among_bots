@@ -25,7 +25,7 @@ def start_game():
             elif mode == enums.KeyCommand.DEBUG:
                 _toggle_debug()
             elif mode == enums.KeyCommand.REPEAT:
-                last_phrase = context.get_last_phrase()
+                last_phrase = context.last_phrase
                 if last_phrase is not None:
                     _output_phrase(last_phrase)
                 else:
@@ -33,7 +33,7 @@ def start_game():
             elif mode is not None:
                 if not _wait_timer(consts.CHAT_THROTTLE_SECS):
                     continue
-                debug = context.get_debug()
+                debug = context.debug
                 try:
                     me = game_state.me_colour if game_state.me is not None else helpers.get_me().name.lower()
                 except IOError:
@@ -69,9 +69,9 @@ def start_game():
 
 
 def _output_phrase(resp: str):
-    chat_turns = context.get_chat_turns()
+    chat_turns = context.chat_turns
     print(f"Response #{chat_turns}: {resp}")
-    context.set_last_phrase(resp)
+    context.last_phrase = resp
     if not _in_game():
         return
     tts.Speaker(resp, emphasis=keyboard.caps_enabled())
@@ -84,14 +84,14 @@ def _in_game() -> bool:
 
 
 def _wait_timer(wait_secs: int) -> bool:
-    if context.get_debug():
+    if context.debug:
         return True
-    last_response = context.get_last_response()
+    last_response = context.last_response
     wait_time = datetime.timedelta(seconds=wait_secs)
     new_last_response = datetime.datetime.now()
     if last_response is not None and last_response + wait_time > new_last_response:
         return False
-    context.set_last_response(new_last_response)
+    context.last_response = new_last_response
     return True
 
 
@@ -100,7 +100,5 @@ def _strip(text: str) -> str:
 
 
 def _toggle_debug():
-    debug = context.get_debug()
-    debug = not debug
-    context.set_debug(debug)
-    print(f'DEBUG MODE {"ENABLED" if debug else "DISABLED"}')
+    context.debug = not context.debug
+    print(f'DEBUG MODE {"ENABLED" if context.debug else "DISABLED"}')

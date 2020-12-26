@@ -19,22 +19,28 @@ class Context:
         self._state_trust_map: TrustMap = TrustMap()
         self._state_last_seen: List[str] = []
 
-    def get_debug(self) -> bool:
+    @property
+    def debug(self) -> bool:
         return self._state_debug
 
-    def set_debug(self, val: bool):
+    @debug.setter
+    def debug(self, val: bool):
         self._state_debug = val
 
-    def get_capture_keys(self) -> bool:
+    @property
+    def capture_keys(self) -> bool:
         return self._state_capture_keys
 
-    def set_capture_keys(self, val: bool):
+    @capture_keys.setter
+    def capture_keys(self, val: bool):
         self._state_capture_keys = val
 
-    def get_chat_turns(self) -> int:
+    @property
+    def chat_turns(self) -> int:
         return self._state_chat_turns
 
-    def get_chat_log(self) -> List[str]:
+    @property
+    def chat_log(self) -> List[str]:
         return self._state_chat_log
 
     def chat_log_append(self, val: str):
@@ -48,25 +54,32 @@ class Context:
         self.chat_log_clear()
         self._state_chat_turns = 0
 
-    def get_last_response(self) -> Optional[datetime.datetime]:
+    @property
+    def last_response(self) -> Optional[datetime.datetime]:
         return self._state_last_response
 
-    def set_last_response(self, val: Optional[datetime.datetime]):
+    @last_response.setter
+    def last_response(self, val: Optional[datetime.datetime]):
         self._state_last_response = val
 
-    def get_last_phrase(self) -> Optional[str]:
+    @property
+    def last_phrase(self) -> Optional[str]:
         return self._state_last_phrase
 
-    def set_last_phrase(self, val: Optional[str]):
+    @last_phrase.setter
+    def last_phrase(self, val: Optional[str]):
         self._state_last_phrase = val
 
-    def get_player_loc(self) -> Optional[Dict[str, str]]:
+    @property
+    def player_loc(self) -> Optional[Dict[str, str]]:
         return self._state_player_loc
 
-    def set_player_loc(self, val: Optional[Dict[str, str]]):
+    @player_loc.setter
+    def player_loc(self, val: Optional[Dict[str, str]]):
         self._state_player_loc = val
 
-    def get_trust_map(self) -> Dict:
+    @property
+    def trust_map(self) -> Dict:
         return self._state_trust_map.get_map()
 
     def trust_map_players_set(self, players: List[str]):
@@ -77,6 +90,9 @@ class Context:
         if player in players:
             players.remove(player)
             self._state_trust_map.update_players(players)
+
+    def trust_map_score_get(self, me=None) -> Dict[str, float]:
+        return self._state_trust_map.aggregate_scores(me)
 
     def trust_map_players_reset(self):
         self._state_trust_map.update_players([])
@@ -90,19 +106,17 @@ class Context:
     def trust_map_score_scale(self, ratio: float):
         self._state_trust_map.scale_scores(ratio)
 
-    def trust_map_score_get(self, me=None) -> Dict[str, float]:
-        return self._state_trust_map.aggregate_scores(me)
-
-    def get_last_seen(self) -> List[str]:
+    @property
+    def last_seen(self) -> List[str]:
         return self._state_last_seen.copy()
 
-    def append_last_seen(self, val: str):
+    def last_seen_append(self, val: str):
         self._state_last_seen.append(val)
 
-    def remove_last_seen(self, val: str):
+    def last_seen_remove(self, val: str):
         self._state_last_seen.remove(val)
 
-    def reset_last_seen(self):
+    def last_seen_reset(self):
         self._state_last_seen = []
 
 

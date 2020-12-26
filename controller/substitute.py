@@ -8,15 +8,15 @@ from data.state import context
 class SubstituteHelper:
     def __init__(self, players: List[str]):
         self.players = players if players is not None and len(players) > 0 else params.player
-        last_seen = [p for p in context.get_last_seen() if p in self.players]
-        last_seen = last_seen if len(last_seen) > 0 else context.get_last_seen()
+        last_seen = [p for p in context.last_seen if p in self.players]
+        last_seen = last_seen if len(last_seen) > 0 else context.last_seen
         last_seen = last_seen if len(last_seen) > 0 else self.players
         self.substitutions: Dict[Substitution, Dict[AUMap, List[str]]] = {
             Substitution.PLAYER: {AUMap.COMMON: params.player},
             Substitution.PLAYER_NEAREST: {AUMap.COMMON: last_seen},
             Substitution.LOCATION: params.location,
-            Substitution.LOCATION_ME: {AUMap.COMMON: [context.get_player_loc()['me']]},
-            Substitution.LOCATION_BODY: {AUMap.COMMON: [context.get_player_loc()['body']]},
+            Substitution.LOCATION_ME: {AUMap.COMMON: [context.player_loc['me']]},
+            Substitution.LOCATION_BODY: {AUMap.COMMON: [context.player_loc['body']]},
             Substitution.TASK: params.task
         }
 

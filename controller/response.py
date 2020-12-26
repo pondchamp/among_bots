@@ -28,8 +28,8 @@ def generate_response(mode: KeyCommand, curr_map: AUMap, me: str,
         filtered = list(filter(lambda p: players[p] == score_target.value, player_select))
         player_select = filtered if len(filtered) > 0 else player_select
 
-    chat_log = context.get_chat_log()
-    chat_turns = context.get_chat_turns()
+    chat_log = context.chat_log
+    chat_turns = context.chat_turns
     pri_arr = [[x.text for x in mode_arr if _dialog_flags_match(x, flags) and _dialog_turns_valid(x, chat_turns)],
                [x.text for x in mode_arr if _dialog_flags_match(x, flags)
                 and x.min_turns is None and x.max_turns is None],
@@ -72,14 +72,14 @@ def get_strategy(game_state) -> Optional[enums.KeyCommand]:
     me_score = trust_scores[game_state.me_colour] \
         if len(trust_scores) > 0 and game_state.me_colour else None
     score_sum = None
-    trust_map = context.get_trust_map()
+    trust_map = context.trust_map
     if trust_map is not None:
         score_sum = 0.0
         for p in trust_map:
             score_sum += sum([abs(x) for x in trust_map[p].values()])
     players = game_state.get_players()
     flags = get_response_flags(game_state)
-    chat_turns = context.get_chat_turns()
+    chat_turns = context.chat_turns
     if players is not None and len(players) == 2:  # three players left
         return enums.KeyCommand.ATTACK
     elif me_score is not None and me_score == SusScore.SUS:  # counter sus

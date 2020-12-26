@@ -19,19 +19,16 @@ def caps_enabled() -> bool:
 
 
 def handle_key(key: str) -> Optional[enums.KeyCommand]:
-    capture_keys = context.get_capture_keys()
-
     mode = enums.get_key_command(key)
     if mode is None:
         return None
 
-    if capture_keys or mode == enums.KeyCommand.KEY_CAP:
+    if context.capture_keys or mode == enums.KeyCommand.KEY_CAP:
         backspace()
         if mode == enums.KeyCommand.KEY_CAP:
-            capture_keys = not capture_keys
-            context.set_capture_keys(capture_keys)
-            print(f'KEY CAPTURE {"ENABLED" if capture_keys else "DISABLED"}')
-            if capture_keys:
+            context.capture_keys = not context.capture_keys
+            print(f'KEY CAPTURE {"ENABLED" if context.capture_keys else "DISABLED"}')
+            if context.capture_keys:
                 print_commands()
             print()
         else:
