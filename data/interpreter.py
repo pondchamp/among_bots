@@ -15,11 +15,11 @@ class Interpreter:
         self.message_lower = re.sub(r'[^\w\s?]', '', self.message.strip().lower())
 
     def interpret(self) -> Optional[str]:
-        me = self.game_state.get_me()
+        me = self.game_state.me
         if not me:
             print('Player info not loaded.')
             return None
-        if not self.game_state.get_game_started() or self.player.playerId == me.playerId:
+        if not self.game_state.game_started or self.player.playerId == me.playerId:
             return None
 
         player_name = self.player.name.decode("utf-8")

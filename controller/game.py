@@ -35,14 +35,14 @@ def start_game():
                     continue
                 debug = context.get_debug()
                 try:
-                    me = game_state.get_me_colour() if game_state.get_me() is not None else helpers.get_me().name.lower()
+                    me = game_state.me_colour if game_state.me is not None else helpers.get_me().name.lower()
                 except IOError:
                     print('Cannot find player preferences file. Have you installed Among Us?')
                     break
-                if not game_state.get_map():
+                if not game_state.map:
                     if debug:
                         print('DEBUG: defaulting to Skeld')
-                        game_state.set_map(enums.AUMap.SKELD)
+                        game_state.map = enums.AUMap.SKELD
                     else:
                         print('Game state not loaded - wait for next discussion time or game round.')
                         continue
@@ -61,7 +61,7 @@ def start_game():
                     if mode is None:
                         print("You can't speak if you're dead!")
                         continue
-                resp = response.generate_response(mode, game_state.get_map(), me, get_response_flags(game_state))
+                resp = response.generate_response(mode, game_state.map, me, get_response_flags(game_state))
                 if resp is not None:
                     _output_phrase(resp)
                 else:

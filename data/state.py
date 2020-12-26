@@ -108,9 +108,9 @@ class Context:
 
 def get_response_flags(game_state) -> List[ResponseFlags]:
     flags = []
-    me = game_state.get_me()
-    reason = game_state.get_meeting_reason()
-    start_by = game_state.get_meeting_started_by()
+    me = game_state.me
+    reason = game_state.meeting_reason
+    start_by = game_state.meeting_started_by
     if random.random() < consts.SELF_SABOTAGE_PROB:
         flags.append(ResponseFlags.SELF_SABOTAGE)
     if me is not None and me.infected:

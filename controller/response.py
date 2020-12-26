@@ -9,8 +9,8 @@ from data.state import context, get_response_flags
 from data.trust import SusScore
 
 
-def generate_response(mode: KeyCommand, curr_map: AUMap, me: Optional[str],
-                      flags: List[ResponseFlags]) -> str:
+def generate_response(mode: KeyCommand, curr_map: AUMap, me: str,
+                      flags: List[ResponseFlags]) -> Optional[str]:
     if mode == KeyCommand.ATTACK:
         mode_arr, score_target = dialogs.attack, SusScore.SUS
     elif mode == KeyCommand.DEFENCE:
@@ -65,12 +65,12 @@ def generate_response(mode: KeyCommand, curr_map: AUMap, me: Optional[str],
 
 def get_strategy(game_state) -> Optional[enums.KeyCommand]:
     valid = [enums.KeyCommand.PROBE, enums.KeyCommand.STATEMENT, enums.KeyCommand.ATTACK, enums.KeyCommand.DEFENCE]
-    me = game_state.get_me()
+    me = game_state.me
     if me is not None and not me.alive:
         return None
     trust_scores = context.trust_map_score_get()
-    me_score = trust_scores[game_state.get_me_colour()] \
-        if len(trust_scores) > 0 and game_state.get_me_colour() else None
+    me_score = trust_scores[game_state.me_colour] \
+        if len(trust_scores) > 0 and game_state.me_colour else None
     score_sum = None
     trust_map = context.get_trust_map()
     if trust_map is not None:

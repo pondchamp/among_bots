@@ -50,12 +50,12 @@ class GameState:
 
     def start_meeting_callback(self, _):
         context.chat_log_reset()
-        imp_list = self.get_impostor_list()
+        imp_list = self.impostor_list
         prev_player_len = len(context.get_trust_map())
         context.trust_map_players_set(self.get_players_colour(include_me=True))
         context.trust_map_score_scale(0.5)
-        if prev_player_len == 0 and self.get_me() is not None and self.get_me().alive:
-            me = self.get_me_colour()
+        if prev_player_len == 0 and self.me is not None and self.me.alive:
+            me = self.me_colour
             players = [x for x in self.get_players_colour() if x != me]
             context.trust_map_score_set(me, players[random.randint(0, len(players) - 1)], -0.5)
             if imp_list is not None:
@@ -82,7 +82,7 @@ class GameState:
 
     @staticmethod
     def remove_player_callback(event):
-        if event['player'] is not None and game_state.get_game_started():
+        if event['player'] is not None and game_state.game_started:
             player = get_player_colour(event['player'])
             context.trust_map_player_remove(player)
             players_in_frame = context.get_last_seen()
@@ -90,8 +90,8 @@ class GameState:
                 context.remove_last_seen(player)
 
     def player_movement_callback(self, event):
-        me = game_state.get_me()
-        if me is None or game_state.get_meeting_reason() is not False:
+        me = self.me
+        if me is None or game_state.meeting_reason is not False:
             return
         me_id = me.playerId
         pl_id = event["player"].playerId
@@ -129,30 +129,72 @@ class GameState:
 
     # GETTERS AND SETTERS
 
-    def get_me(self) -> Optional[PlayerClass]:
+    @property
+    def me(self) -> Optional[PlayerClass]:
         return self._game.players.get(self._game.selfClientID)
 
-    def get_me_colour(self) -> Optional[str]:
-        me = self.get_me()
+    @property
+    def me_colour(self) -> Optional[str]:
+        me = self.me
         return get_player_colour(me) if me else None
 
-    def get_map(self) -> Optional[enums.AUMap]:
+    @property
+    def map(self) -> Optional[enums.AUMap]:
         if self._game.gameSettings:
             au_map = self._game.gameSettings['MapId']
             return enums.AUMap.__call__(au_map)
         return None
 
     # DEBUG METHOD
-    def set_map(self, val: enums.AUMap):
+    @map.setter
+    def map(self, val: enums.AUMap):
         self._game.gameSettings['MapId'] = val
 
-    def get_impostor_count(self) -> Optional[int]:
-        if self._game.gameSettings:
-            return self._game.gameSettings['NumImpostors']
-        return None
+    @property
+    def is_impostor(self) -> Optional[bool]:
+        me = self.me
+        return me.infected if me else None
+
+    @property
+    def impostor_list(self) -> Optional[List[str]]:
+        if self.is_impostor and self._game.players:  # Only show if I'm impostor (no cheating!)
+            return [get_player_colour(p) for p in self._game.players.values()
+                    if p.infected and p.playerId != self.me.playerId]
+
+    @property
+    def meeting_started_by(self):
+        return self._game.meetingStartedBy
+
+    @property
+    def meeting_reason(self):
+        return self._game.meetingReason
+
+    @property
+    def game_started(self):
+        return self._game.gameHasStarted
+
+    def get_player_loc(self, player_id: int) -> COORD:
+        player = self._game.playerIdMap[player_id]
+        return player.x, player.y
+
+    def set_player_loc(self):
+        if self.map is None:
+            return
+        locations = params.location[self.map].copy()
+        me_loc = locations[random.randint(0, len(locations) - 1)]
+        locations.remove(me_loc)
+        body_loc = locations[random.randint(0, len(locations) - 1)]
+        locations.remove(body_loc)
+        loc_dict = {
+            'me': me_loc,
+            'body': body_loc,
+        }
+        context.set_player_loc(loc_dict)
+        print('Set new location list:',
+              [f'{k}: {v}' for k, v in loc_dict.items()])
 
     def get_players(self, include_me=False) -> Optional[List[PlayerClass]]:
-        me_id = self.get_me().playerId if self.get_me() is not None else -1
+        me_id = self.me.playerId if self.me is not None else -1
         if self._game.players:
             return [p for p in self._game.players.values()
                     if p.alive and (include_me or p.playerId != me_id)]
@@ -170,44 +212,6 @@ class GameState:
         if player_id not in self._game.playerIdMap:
             return None
         return get_player_colour(self._game.playerIdMap[player_id])
-
-    def get_is_impostor(self) -> Optional[bool]:
-        me = self.get_me()
-        return me.infected if me else None
-
-    def get_impostor_list(self) -> Optional[List[str]]:
-        if self.get_is_impostor() and self._game.players:  # Only show if I'm impostor (no cheating!)
-            return [get_player_colour(p) for p in self._game.players.values()
-                    if p.infected and p.playerId != self.get_me().playerId]
-
-    def get_meeting_started_by(self):
-        return self._game.meetingStartedBy
-
-    def get_meeting_reason(self):
-        return self._game.meetingReason
-
-    def get_game_started(self):
-        return self._game.gameHasStarted
-
-    def get_player_loc(self, player_id: int) -> COORD:
-        player = self._game.playerIdMap[player_id]
-        return player.x, player.y
-
-    def set_player_loc(self):
-        if self.get_map() is None:
-            return
-        locations = params.location[self.get_map()].copy()
-        me_loc = locations[random.randint(0, len(locations) - 1)]
-        locations.remove(me_loc)
-        body_loc = locations[random.randint(0, len(locations) - 1)]
-        locations.remove(body_loc)
-        loc_dict = {
-            'me': me_loc,
-            'body': body_loc,
-        }
-        context.set_player_loc(loc_dict)
-        print('Set new location list:',
-              [f'{k}: {v}' for k, v in loc_dict.items()])
 
     # STATE MANAGEMENT
 
