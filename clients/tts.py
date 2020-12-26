@@ -53,5 +53,6 @@ class Speaker(Thread):
 
 def _string_cleanup(text: str) -> str:
     text = text \
-        .replace('sus', 'suss')  # fix pronunciation
+        .replace('sus', 'suss') \
+        .replace('caf', 'caff')
     return text
