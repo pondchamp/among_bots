@@ -5,6 +5,7 @@ import re
 from controller.substitute import SubstituteHelper
 from data import dialogs, consts, enums
 from data.enums import KeyCommand, AUMap, ResponseFlags, Substitution
+from data.pcap import GameState
 from data.state import context, get_response_flags
 from data.trust import SusScore
 
@@ -63,7 +64,7 @@ def generate_response(mode: KeyCommand, curr_map: AUMap, me: str,
     return resp_sub
 
 
-def get_strategy(game_state) -> Optional[enums.KeyCommand]:
+def get_strategy(game_state: GameState) -> Optional[enums.KeyCommand]:
     valid = [enums.KeyCommand.PROBE, enums.KeyCommand.STATEMENT, enums.KeyCommand.ATTACK, enums.KeyCommand.DEFENCE]
     me = game_state.me
     if me is not None and not me.alive:
