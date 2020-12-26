@@ -15,10 +15,12 @@ class TrustMap:
             raise ValueError('trust_max must be non-negative')
         self.trust_max = trust_max
 
-    def get_map(self):
+    @property
+    def map(self):
         return self._map
 
-    def get_players(self) -> List[str]:
+    @property
+    def players(self) -> List[str]:
         return [p for p in self._map]
 
     def update_players(self, players: List[str]):

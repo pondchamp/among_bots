@@ -80,13 +80,13 @@ class Context:
 
     @property
     def trust_map(self) -> Dict:
-        return self._state_trust_map.get_map()
+        return self._state_trust_map.map
 
     def trust_map_players_set(self, players: List[str]):
         self._state_trust_map.update_players(players)
 
     def trust_map_player_remove(self, player: str):
-        players = self._state_trust_map.get_players()
+        players = self._state_trust_map.players
         if player in players:
             players.remove(player)
             self._state_trust_map.update_players(players)
