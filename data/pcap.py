@@ -31,71 +31,22 @@ class GameState:
         })
         PCap(self.pkt_callback)
 
+    # CALLBACKS
+
     def pkt_callback(self, pkt):
         self._game.proc(pkt[UDP].payload.load, pkt.time)
         tree = parse(pkt[UDP].payload.load)
         if consts.debug_net and tree.children[0].commandName == 'ReliableData':
             tree.pprint()
 
-    def get_me(self) -> Optional[PlayerClass]:
-        return self._game.players[self._game.selfClientID] if self._game.selfClientID in self._game.players else None
-
-    def get_me_colour(self) -> Optional[str]:
-        me = self.get_me()
-        return get_player_colour(me) if me else None
-
-    def get_map(self) -> Optional[enums.AUMap]:
-        if self._game.gameSettings:
-            au_map = self._game.gameSettings['MapId']
-            return enums.AUMap.__call__(au_map)
-        return None
-
-    # DEBUG METHOD
-    def set_map(self, val: enums.AUMap):
-        self._game.gameSettings['MapId'] = val
-
-    def get_impostor_count(self) -> Optional[int]:
-        if self._game.gameSettings:
-            return self._game.gameSettings['NumImpostors']
-        return None
-
-    def get_players(self, include_me=False) -> Optional[List[PlayerClass]]:
-        me_id = self.get_me().playerId if self.get_me() is not None else -1
-        if self._game.players:
-            return [p for p in self._game.players.values()
-                    if p.alive and (include_me or p.playerId != me_id)]
-        return None
-
-    def get_players_colour(self, include_me=False) -> Optional[List[str]]:
-        return [get_player_colour(p) for p in self.get_players(include_me)]
-
-    def get_player_from_id(self, player_id: int) -> Optional[PlayerClass]:
-        if player_id not in self._game.playerIdMap:
-            return None
-        return self._game.playerIdMap[player_id]
-
-    def get_player_colour_from_id(self, player_id: int) -> Optional[str]:
-        if player_id not in self._game.playerIdMap:
-            return None
-        return get_player_colour(self._game.playerIdMap[player_id])
-
-    def get_is_impostor(self) -> Optional[bool]:
-        me = self.get_me()
-        return me.infected if me else None
-
-    def get_impostor_list(self) -> Optional[List[str]]:
-        if self.get_is_impostor() and self._game.players:  # Only show if I'm impostor (no cheating!)
-            return [get_player_colour(p) for p in self._game.players.values()
-                    if p.infected and p.playerId != self.get_me().playerId]
-
-    def get_meeting_started_by(self):
-        return self._game.meetingStartedBy
-
-    def get_meeting_reason(self):
-        return self._game.meetingReason
-
-    def get_game_started(self):
-        return self._game.gameHasStarted
+    def event_callback(self, _):
+        if not game_state._game.gameId:
+            return
+        root_dir = tempfile.gettempdir() + '\\among_bots'
+        if not os.path.exists(root_dir):
+            os.makedirs(root_dir)
+        self.cleanup_states(root_dir)
+        self.update_state(root_dir)
 
     def start_meeting_callback(self, _):
         context.chat_log_reset()
@@ -176,21 +127,89 @@ class GameState:
         else:
             return
 
-    @staticmethod
-    def _in_frame(me_id: int, pl_id: int) -> bool:
-        me_x, me_y = game_state.get_player_loc(me_id)
-        pl_x, pl_y = game_state.get_player_loc(pl_id)
-        dist_x, dist_y = abs(me_x - pl_x), abs(me_y - pl_y)
-        return dist_x < PROX_LIMIT_X and dist_y < PROX_LIMIT_Y
+    # GETTERS AND SETTERS
 
-    def event_callback(self, _):
-        if not game_state._game.gameId:
+    def get_me(self) -> Optional[PlayerClass]:
+        return self._game.players[self._game.selfClientID] if self._game.selfClientID in self._game.players else None
+
+    def get_me_colour(self) -> Optional[str]:
+        me = self.get_me()
+        return get_player_colour(me) if me else None
+
+    def get_map(self) -> Optional[enums.AUMap]:
+        if self._game.gameSettings:
+            au_map = self._game.gameSettings['MapId']
+            return enums.AUMap.__call__(au_map)
+        return None
+
+    # DEBUG METHOD
+    def set_map(self, val: enums.AUMap):
+        self._game.gameSettings['MapId'] = val
+
+    def get_impostor_count(self) -> Optional[int]:
+        if self._game.gameSettings:
+            return self._game.gameSettings['NumImpostors']
+        return None
+
+    def get_players(self, include_me=False) -> Optional[List[PlayerClass]]:
+        me_id = self.get_me().playerId if self.get_me() is not None else -1
+        if self._game.players:
+            return [p for p in self._game.players.values()
+                    if p.alive and (include_me or p.playerId != me_id)]
+        return None
+
+    def get_players_colour(self, include_me=False) -> Optional[List[str]]:
+        return [get_player_colour(p) for p in self.get_players(include_me)]
+
+    def get_player_from_id(self, player_id: int) -> Optional[PlayerClass]:
+        if player_id not in self._game.playerIdMap:
+            return None
+        return self._game.playerIdMap[player_id]
+
+    def get_player_colour_from_id(self, player_id: int) -> Optional[str]:
+        if player_id not in self._game.playerIdMap:
+            return None
+        return get_player_colour(self._game.playerIdMap[player_id])
+
+    def get_is_impostor(self) -> Optional[bool]:
+        me = self.get_me()
+        return me.infected if me else None
+
+    def get_impostor_list(self) -> Optional[List[str]]:
+        if self.get_is_impostor() and self._game.players:  # Only show if I'm impostor (no cheating!)
+            return [get_player_colour(p) for p in self._game.players.values()
+                    if p.infected and p.playerId != self.get_me().playerId]
+
+    def get_meeting_started_by(self):
+        return self._game.meetingStartedBy
+
+    def get_meeting_reason(self):
+        return self._game.meetingReason
+
+    def get_game_started(self):
+        return self._game.gameHasStarted
+
+    def get_player_loc(self, player_id: int) -> COORD:
+        player = self._game.playerIdMap[player_id]
+        return player.x, player.y
+
+    def set_player_loc(self):
+        if self.get_map() is None:
             return
-        root_dir = tempfile.gettempdir() + '\\among_bots'
-        if not os.path.exists(root_dir):
-            os.makedirs(root_dir)
-        self.cleanup_states(root_dir)
-        self.update_state(root_dir)
+        locations = params.location[self.get_map()].copy()
+        me_loc = locations[random.randint(0, len(locations) - 1)]
+        locations.remove(me_loc)
+        body_loc = locations[random.randint(0, len(locations) - 1)]
+        locations.remove(body_loc)
+        loc_dict = {
+            'me': me_loc,
+            'body': body_loc,
+        }
+        context.set_player_loc(loc_dict)
+        print('Set new location list:',
+              [f'{k}: {v}' for k, v in loc_dict.items()])
+
+    # STATE MANAGEMENT
 
     @staticmethod
     def cleanup_states(root_dir: str):
@@ -238,25 +257,14 @@ class GameState:
                 print('Game state created for game ID', game_id)
         game_state.curr_lobby = game_id
 
-    def get_player_loc(self, player_id: int) -> COORD:
-        player = self._game.playerIdMap[player_id]
-        return player.x, player.y
+    # HELPERS
 
-    def set_player_loc(self):
-        if self.get_map() is None:
-            return
-        locations = params.location[self.get_map()].copy()
-        me_loc = locations[random.randint(0, len(locations) - 1)]
-        locations.remove(me_loc)
-        body_loc = locations[random.randint(0, len(locations) - 1)]
-        locations.remove(body_loc)
-        loc_dict = {
-            'me': me_loc,
-            'body': body_loc,
-        }
-        context.set_player_loc(loc_dict)
-        print('Set new location list:',
-              [f'{k}: {v}' for k, v in loc_dict.items()])
+    @staticmethod
+    def _in_frame(me_id: int, pl_id: int) -> bool:
+        me_x, me_y = game_state.get_player_loc(me_id)
+        pl_x, pl_y = game_state.get_player_loc(pl_id)
+        dist_x, dist_y = abs(me_x - pl_x), abs(me_y - pl_y)
+        return dist_x < PROX_LIMIT_X and dist_y < PROX_LIMIT_Y
 
 
 game_state: GameState = GameState()

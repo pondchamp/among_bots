@@ -9,7 +9,7 @@ from data.state import context, get_response_flags
 from data.trust import SusScore
 
 
-def generate_response(mode: KeyCommand, curr_map: AUMap, me: str,
+def generate_response(mode: KeyCommand, curr_map: AUMap, me: Optional[str],
                       flags: List[ResponseFlags]) -> str:
     if mode == KeyCommand.ATTACK:
         mode_arr, score_target = dialogs.attack, SusScore.SUS
@@ -20,7 +20,7 @@ def generate_response(mode: KeyCommand, curr_map: AUMap, me: str,
     elif mode == KeyCommand.STATEMENT:
         mode_arr, score_target = dialogs.statement, SusScore.SAFE
     else:
-        return ''
+        return None
 
     players = context.trust_map_score_get(me)
     player_select = [p for p in players]

@@ -20,14 +20,10 @@ def start_game():
             mode = keyboard.handle_key(key)
             if mode == enums.KeyCommand.HELP:
                 keyboard.print_commands()
-                print()
             elif mode == enums.KeyCommand.EXIT:
                 break
             elif mode == enums.KeyCommand.DEBUG:
-                debug = context.get_debug()
-                debug = not debug
-                context.set_debug(debug)
-                print(f'DEBUG MODE {"ENABLED" if debug else "DISABLED"}')
+                _toggle_debug()
             elif mode == enums.KeyCommand.REPEAT:
                 last_phrase = context.get_last_phrase()
                 if last_phrase is not None:
@@ -35,7 +31,7 @@ def start_game():
                 else:
                     print('No chat history to repeat.')
             elif mode is not None:
-                if not wait_timer(consts.CHAT_THROTTLE_SECS):
+                if not _wait_timer(consts.CHAT_THROTTLE_SECS):
                     continue
                 debug = context.get_debug()
                 try:
@@ -60,17 +56,16 @@ def start_game():
                     else:
                         print('Wait until discussion time before attempting to chat.')
                         continue
-                flags = get_response_flags(game_state)
                 if mode == enums.KeyCommand.AUTO:
                     mode = get_strategy(game_state)
                     if mode is None:
                         print("You can't speak if you're dead!")
                         continue
-                resp = response.generate_response(mode, game_state.get_map(), me, flags)
-                if resp != '':
+                resp = response.generate_response(mode, game_state.get_map(), me, get_response_flags(game_state))
+                if resp is not None:
                     _output_phrase(resp)
                 else:
-                    print(f"No responses currently available for this option.")
+                    print("No responses currently available for this option.")
 
 
 def _output_phrase(resp: str):
@@ -88,7 +83,7 @@ def _in_game() -> bool:
     return window_name == consts.GAME_TITLE
 
 
-def wait_timer(wait_secs: int) -> bool:
+def _wait_timer(wait_secs: int) -> bool:
     if context.get_debug():
         return True
     last_response = context.get_last_response()
@@ -102,3 +97,10 @@ def wait_timer(wait_secs: int) -> bool:
 
 def _strip(text: str) -> str:
     return re.sub(r'[^a-z0-9]$', '', text)
+
+
+def _toggle_debug():
+    debug = context.get_debug()
+    debug = not debug
+    context.set_debug(debug)
+    print(f'DEBUG MODE {"ENABLED" if debug else "DISABLED"}')

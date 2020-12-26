@@ -72,3 +72,4 @@ def print_commands():
         k = str.upper(x.value)
         v = str.title(x.name).replace('_', ' ')
         print(f'{k}\t:', v)
+    print()
