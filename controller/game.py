@@ -6,7 +6,7 @@ from clients import monitor, tts, keyboard
 from controller import response, helpers
 from controller.response import get_strategy
 from data import enums, consts, params
-from data.state import context, get_response_flags
+from data.state import context
 from data.pcap import game_state
 
 
@@ -61,7 +61,7 @@ def start_game():
                     if mode is None:
                         print("You can't speak if you're dead!")
                         continue
-                resp = response.generate_response(mode, game_state.map, me, get_response_flags(game_state))
+                resp = response.generate_response(mode, game_state.map, me, game_state.get_response_flags())
                 if resp is not None:
                     _output_phrase(resp)
                 else:

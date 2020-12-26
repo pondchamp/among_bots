@@ -1,18 +1,23 @@
 # Kudos: https://github.com/jordam/amongUsParser
-from datetime import timedelta
+from datetime import datetime, timedelta
+import os
 import pickle
+import random
+import tempfile
+from typing import List, Optional
+
+from lib.amongUsParser import parse
+from lib.amongUsParser.gameEngine import GameEngine, PlayerClass
+from scapy.layers.inet import UDP
 
 from controller.helpers import get_player_colour
 from clients.pcap import PCap
-from data.types import COORD
-from lib.amongUsParser import parse
-from lib.amongUsParser.gameEngine import GameEngine, PlayerClass
-from scapy.all import *
-from scapy.layers.inet import UDP
-
 from data import enums, params, consts
+from data.enums import ResponseFlags as RF
 from data.interpreter import Interpreter
 from data.state import context
+from data.trust import SusScore
+from data.types import COORD
 
 PROX_LIMIT_X = 5
 PROX_LIMIT_Y = 3
@@ -263,10 +268,33 @@ class GameState:
 
     # HELPERS
 
-    @staticmethod
-    def _in_frame(me_id: int, pl_id: int) -> bool:
-        me_x, me_y = game_state.get_player_loc(me_id)
-        pl_x, pl_y = game_state.get_player_loc(pl_id)
+    def get_response_flags(self) -> List[RF]:
+        flags = []
+        me = self.me
+        reason = self.meeting_reason
+        start_by = self.meeting_started_by
+        if random.random() < consts.SELF_SABOTAGE_PROB:
+            flags.append(RF.SELF_SABOTAGE)
+        if me is not None and me.infected:
+            flags.append(RF.SELF_IMPOSTOR)
+        if reason is not False and start_by is not False:
+            start_by_me = me is not None and start_by.playerId == me.playerId
+            if reason == 'Button':
+                flag = RF.EMERGENCY_MEET_ME if start_by_me else RF.EMERGENCY_MEET_OTHER
+            else:  # Body found
+                flag = RF.BODY_FOUND_ME if start_by_me else RF.BODY_FOUND_OTHER
+                if flag == RF.BODY_FOUND_OTHER:
+                    player_colour = self.get_player_colour_from_id(start_by.playerId)
+                    trust_scores = context.trust_map_score_get()
+                    if player_colour in [p for p in trust_scores if trust_scores[p] == SusScore.SUS.value]:
+                        flags.append(RF.SELF_REPORT)
+            flags.append(flag)
+
+        return flags
+
+    def _in_frame(self, me_id: int, pl_id: int) -> bool:
+        me_x, me_y = self.get_player_loc(me_id)
+        pl_x, pl_y = self.get_player_loc(pl_id)
         dist_x, dist_y = abs(me_x - pl_x), abs(me_y - pl_y)
         return dist_x < PROX_LIMIT_X and dist_y < PROX_LIMIT_Y
 

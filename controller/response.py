@@ -6,7 +6,7 @@ from controller.substitute import SubstituteHelper
 from data import dialogs, consts, enums
 from data.enums import KeyCommand, AUMap, ResponseFlags, Substitution
 from data.pcap import GameState
-from data.state import context, get_response_flags
+from data.state import context
 from data.trust import SusScore
 
 
@@ -79,7 +79,7 @@ def get_strategy(game_state: GameState) -> Optional[enums.KeyCommand]:
         for p in trust_map:
             score_sum += sum([abs(x) for x in trust_map[p].values()])
     players = game_state.get_players()
-    flags = get_response_flags(game_state)
+    flags = game_state.get_response_flags()
     chat_turns = context.chat_turns
     if players is not None and len(players) == 2:  # three players left
         return enums.KeyCommand.ATTACK
