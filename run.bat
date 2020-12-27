@@ -1,7 +1,6 @@
 @Echo Off
 cd "%~dp0"
-git submodule init
-git submodule update
+git submodule update --init
 py -m pip install --upgrade pip
 py -m pip install pynput
 py -m pip install pywin32
