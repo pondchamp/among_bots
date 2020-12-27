@@ -25,8 +25,7 @@ A chatbot created in Python for Among Us shenanigans.
 C:\...> git clone https://github.com/pondchamp/among_bots.git
 ```
 
-2. Open the root folder of this repo in PyCharm Community as a project.
-3. Run the `run.bat` file:
+2. Run the `run.bat` file:
 ```cmd
 C:\...> cd among_bots
 C:\...\among_bots> run.bat
