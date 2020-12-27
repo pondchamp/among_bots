@@ -3,7 +3,8 @@ import random
 import re
 
 from controller.substitute import SubstituteHelper
-from data import dialogs, consts, enums
+from data import consts, dialogs, enums
+from data.dialogs import Dialog
 from data.enums import KeyCommand, AUMap, ResponseFlags, Substitution
 from data.pcap import GameState
 from data.state import context
@@ -113,12 +114,12 @@ def _sub_placeholders(resp: str, curr_map: AUMap, players: List[str]) -> (str, D
     return resp, sub_dict
 
 
-def _dialog_turns_valid(dialog: dialogs.Dialog, chat_turns: int) -> bool:
+def _dialog_turns_valid(dialog: Dialog, chat_turns: int) -> bool:
     return (dialog.max_turns is None or dialog.max_turns >= chat_turns) \
        and (dialog.min_turns is None or dialog.min_turns <= chat_turns)
 
 
-def _dialog_flags_match(dialog: dialogs.Dialog, flags: List[ResponseFlags]) -> bool:
+def _dialog_flags_match(dialog: Dialog, flags: List[ResponseFlags]) -> bool:
     return dialog.flags is not None and _flags_match(dialog.flags, flags)
 
 

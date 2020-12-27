@@ -1,10 +1,11 @@
 from threading import Thread
+from typing import Callable
 
 from scapy.sendrecv import sniff
 
 
 class PCap(Thread):
-    def __init__(self, pkt_callback):
+    def __init__(self, pkt_callback: Callable):
         self.pkt_callback = pkt_callback
         Thread.__init__(self)
         self.daemon = True

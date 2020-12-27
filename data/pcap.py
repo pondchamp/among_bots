@@ -45,7 +45,7 @@ class GameState:
             tree.pprint()
 
     def event_callback(self, _):
-        if not game_state._game.gameId:
+        if not self._game.gameId:
             return
         root_dir = tempfile.gettempdir() + '\\among_bots'
         if not os.path.exists(root_dir):
@@ -73,9 +73,8 @@ class GameState:
         context.trust_map_players_reset()
         context.last_seen_reset()
 
-    @staticmethod
-    def chat_callback(state):
-        interpreter = Interpreter(game_state, state['player'], state['message'].decode("utf-8"))
+    def chat_callback(self, state):
+        interpreter = Interpreter(self, state['player'], state['message'].decode("utf-8"))
         interpret = interpreter.interpret()
         if interpret is not None:
             if consts.debug_chat:
@@ -85,9 +84,8 @@ class GameState:
                 print("Aggregate:", context.trust_map_score_get())
             print()
 
-    @staticmethod
-    def remove_player_callback(event):
-        if event['player'] is not None and game_state.game_started:
+    def remove_player_callback(self, event):
+        if event['player'] is not None and self.game_started:
             player = get_player_colour(event['player'])
             context.trust_map_player_remove(player)
             players_in_frame = context.last_seen
@@ -96,7 +94,7 @@ class GameState:
 
     def player_movement_callback(self, event):
         me = self.me
-        if me is None or game_state.meeting_reason is not False:
+        if me is None or self.meeting_reason is not False:
             return
         me_id = me.playerId
         pl_id = event["player"].playerId
@@ -109,7 +107,7 @@ class GameState:
                 context.last_seen_remove(player_colour)
             return
         if me_id == pl_id:
-            players = game_state.get_players()
+            players = self.get_players()
             if players is None:
                 return
             new_pl = \
@@ -230,41 +228,40 @@ class GameState:
             if time_since_mod > expiry:
                 os.remove(file_path)
 
-    @staticmethod
-    def update_state(root_dir: str):
-        game_id = game_state._game.gameId
+    def update_state(self, root_dir: str):
+        game_id = self._game.gameId
         file_path = root_dir + '\\' + str(game_id)
-        if game_state.curr_lobby != game_id and os.path.exists(file_path):
+        if self.curr_lobby != game_id and os.path.exists(file_path):
             with open(file_path, "rb") as fp:
                 try:
                     state: GameEngine = pickle.load(fp)
                 except EOFError:
                     return
-            state.callbackDict = game_state._game.callbackDict
+            state.callbackDict = self._game.callbackDict
             # Update self client ID details
-            if game_state._game.selfClientID:
-                state.players[game_state._game.selfClientID] = state.players[state.selfClientID]
+            if self._game.selfClientID:
+                state.players[self._game.selfClientID] = state.players[state.selfClientID]
                 del state.players[state.selfClientID]
-                state.selfClientID = game_state._game.selfClientID
+                state.selfClientID = self._game.selfClientID
             for i in state.players.keys():
-                state.players[i].game_state = game_state._game
+                state.players[i].self = self._game
 
             # Merge state dictionaries with provided game entities
-            state.entities = {**state.entities, **game_state._game.entities}
-            state.players = {**state.players, **game_state._game.players}
-            state.playerIdMap = {**state.playerIdMap, **game_state._game.playerIdMap}
+            state.entities = {**state.entities, **self._game.entities}
+            state.players = {**state.players, **self._game.players}
+            state.playerIdMap = {**state.playerIdMap, **self._game.playerIdMap}
 
-            game_state._game = state
+            self._game = state
             with open(file_path, "wb") as fp:
                 pickle.dump(state, fp)
             if consts.debug_net:
                 print('Game state reloaded for game ID', game_id)
-        elif game_state._game is not None:
+        elif self._game is not None:
             with open(file_path, "wb") as fp:
-                pickle.dump(game_state._game, fp)
-            if consts.debug_net and game_state.curr_lobby != game_id:
+                pickle.dump(self._game, fp)
+            if consts.debug_net and self.curr_lobby != game_id:
                 print('Game state created for game ID', game_id)
-        game_state.curr_lobby = game_id
+        self.curr_lobby = game_id
 
     # HELPERS
 
@@ -297,6 +294,3 @@ class GameState:
         pl_x, pl_y = self.get_player_loc(pl_id)
         dist_x, dist_y = abs(me_x - pl_x), abs(me_y - pl_y)
         return dist_x < PROX_LIMIT_X and dist_y < PROX_LIMIT_Y
-
-
-game_state: GameState = GameState()

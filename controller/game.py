@@ -7,7 +7,7 @@ from controller import response, helpers
 from controller.response import get_strategy
 from data import enums, consts, params
 from data.state import context
-from data.pcap import game_state
+from data.pcap import GameState
 
 
 def start_game():
@@ -102,3 +102,6 @@ def _strip(text: str) -> str:
 def _toggle_debug():
     context.debug = not context.debug
     print(f'DEBUG MODE {"ENABLED" if context.debug else "DISABLED"}')
+
+
+game_state: GameState = GameState()
