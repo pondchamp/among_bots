@@ -4,9 +4,6 @@ from pynput.keyboard import Controller, Key, Events, Listener
 from win32api import GetKeyState
 from win32con import VK_CAPITAL
 
-from data import enums
-from state.context import context
-
 keyboard_controller = Controller()
 
 
@@ -16,22 +13,6 @@ def new_listener() -> Listener:
 
 def caps_enabled() -> bool:
     return bool(GetKeyState(VK_CAPITAL))
-
-
-def handle_key(key: str) -> Optional[enums.KeyCommand]:
-    mode = enums.get_key_command(key)
-    if mode is None:
-        return None
-
-    if context.capture_keys or mode == enums.KeyCommand.KEY_CAP:
-        backspace()
-        if mode == enums.KeyCommand.KEY_CAP:
-            context.capture_keys = not context.capture_keys
-            print("KEY CAPTURE", "ENABLED" if context.capture_keys else "DISABLED")
-            if context.capture_keys:
-                print_commands()
-        else:
-            return mode
 
 
 def write_text(text: str):
@@ -60,12 +41,3 @@ def key_to_char(key: Key) -> Optional[str]:
     elif hasattr(key, 'name'):
         return key.name
     return None
-
-
-def print_commands():
-    print("COMMANDS")
-    for x in [x for x in enums.KeyCommand if x != enums.KeyCommand.KEY_CAP]:
-        k = str.upper(x.value)
-        v = str.title(x.name).replace('_', ' ')
-        print(f'{k}\t:', v)
-    print()

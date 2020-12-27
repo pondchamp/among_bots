@@ -30,15 +30,20 @@ class Callbacks:
             'RemovePlayer': self.remove_player_callback,
             'PlayerMovement': self.player_movement_callback,
         }
+
+    @property
+    def root_dir(self):
+        return tempfile.gettempdir() + '\\among_bots'
         
     def event_callback(self, _):
         if not self._game.game_id:
             return
-        root_dir = tempfile.gettempdir() + '\\among_bots'
-        if not os.path.exists(root_dir):
-            os.makedirs(root_dir)
-        helpers.cleanup_states(root_dir)
-        self._game.update_state(root_dir)
+        if not os.path.exists(self.root_dir):
+            os.makedirs(self.root_dir)
+        helpers.cleanup_states(self.root_dir)
+        if self._game.game_id is not None:
+            context.update_state(self._game, self.root_dir)
+        self._game.update_state(self.root_dir)
     
     def start_meeting_callback(self, _):
         context.chat_log_reset()

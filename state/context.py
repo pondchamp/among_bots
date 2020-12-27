@@ -1,3 +1,5 @@
+import os
+import pickle
 from typing import Optional, List, Dict
 import datetime
 
@@ -9,6 +11,7 @@ class Context:
         self._state_use_gcp: bool = False
         self._state_debug: bool = False
         self._state_capture_keys: bool = True
+
         self._state_chat_turns: int = 0
         self._state_chat_log: List[str] = []
         self._state_last_phrase: Optional[str] = None
@@ -124,6 +127,26 @@ class Context:
 
     def last_seen_reset(self):
         self._state_last_seen = []
+
+    def update_state(self, game_state, root_dir: str):  # Untyped due to circular reference
+        game_id = game_state.game_id
+        file_path = root_dir + '\\' + str(game_id) + "_ctx"
+        if game_state.curr_lobby != game_id and os.path.exists(file_path):
+            with open(file_path, "rb") as fp:
+                try:
+                    state: Context = pickle.load(fp)
+                except EOFError:
+                    return
+            self._state_chat_turns = state._state_chat_turns
+            self._state_chat_log = state._state_chat_log
+            self._state_last_phrase = state._state_last_phrase
+            self._state_last_response = state._state_last_response
+            self._state_player_loc = state._state_player_loc
+            self._state_trust_map = state._state_trust_map
+            self._state_last_seen = state._state_last_seen
+        else:
+            with open(file_path, "wb") as fp:
+                pickle.dump(self, fp)
 
 
 context: Context = Context()

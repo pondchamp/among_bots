@@ -4,13 +4,12 @@ from tempfile import TemporaryDirectory
 from playsound import playsound
 from threading import Thread
 
-from state.context import context
-
 
 class Speaker(Thread):
-    def __init__(self, text: str, emphasis: bool = False):
+    def __init__(self, text: str, emphasis: bool = False, use_gcp: bool = True):
         self.text = _string_cleanup(text)
         self.emphasis = emphasis
+        self.use_gcp = use_gcp
         Thread.__init__(self)
         self.daemon = True
         self.start()
@@ -21,7 +20,7 @@ class Speaker(Thread):
         d = TemporaryDirectory()
         f = d.name + '\\au.mp3'
         try:
-            if context.use_gcp:
+            if self.use_gcp:
                 self.gcp_run(f)
             else:
                 self.gtts_run(f)

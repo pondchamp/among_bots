@@ -1,6 +1,7 @@
 import datetime
 import random
 import re
+from typing import Optional
 
 from clients import monitor, tts, keyboard
 from controller import response, helpers
@@ -14,13 +15,13 @@ from state.game import GameState
 def start_game():
     swap_key = enums.KeyCommand.KEY_CAP.value
     print(f'Press the {swap_key} key while in-game to disable key capture.\n')
-    keyboard.print_commands()
+    print_commands()
     while True:
         key = keyboard.get_char()
         if key is not None:
-            mode = keyboard.handle_key(key)
+            mode = handle_key(key)
             if mode == enums.KeyCommand.HELP:
-                keyboard.print_commands()
+                print_commands()
             elif mode == enums.KeyCommand.EXIT:
                 break
             elif mode == enums.KeyCommand.DEBUG:
@@ -69,13 +70,30 @@ def start_game():
                     print("No responses currently available for this option.")
 
 
+def handle_key(key: str) -> Optional[enums.KeyCommand]:
+    mode = enums.get_key_command(key)
+    if mode is None:
+        return None
+
+    if context.capture_keys or mode == enums.KeyCommand.KEY_CAP:
+        keyboard.backspace()
+        if mode == enums.KeyCommand.KEY_CAP:
+            context.capture_keys = not context.capture_keys
+            print("KEY CAPTURE", "ENABLED" if context.capture_keys else "DISABLED")
+            if context.capture_keys:
+                print_commands()
+        else:
+            return mode
+
+
 def _output_phrase(resp: str):
     chat_turns = context.chat_turns
     print(f"Response #{chat_turns}: {resp}")
     context.last_phrase = resp
+    context.update_state(game_state, callbacks.root_dir)
     if not _in_game():
         return
-    tts.Speaker(resp, emphasis=keyboard.caps_enabled())
+    tts.Speaker(resp, emphasis=keyboard.caps_enabled(), use_gcp=context.use_gcp)
     keyboard.write_text(_strip(resp))
 
 
@@ -105,5 +123,15 @@ def _toggle_debug():
     print(f'DEBUG MODE {"ENABLED" if context.debug else "DISABLED"}')
 
 
+def print_commands():
+    print("COMMANDS")
+    for x in [x for x in enums.KeyCommand if x != enums.KeyCommand.KEY_CAP]:
+        k = str.upper(x.value)
+        v = str.title(x.name).replace('_', ' ')
+        print(f'{k}\t:', v)
+    print()
+
+
 game_state: GameState = GameState()
-game_state.cb = Callbacks(game_state).cb
+callbacks = Callbacks(game_state)
+game_state.cb = callbacks.cb
