@@ -4,6 +4,7 @@ import re
 
 from clients import monitor, tts, keyboard
 from controller import response, helpers
+from controller.callbacks import Callbacks
 from controller.response import get_strategy
 from data import enums, consts, params
 from data.state import context
@@ -105,3 +106,4 @@ def _toggle_debug():
 
 
 game_state: GameState = GameState()
+game_state.cb = Callbacks(game_state).cb
