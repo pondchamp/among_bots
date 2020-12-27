@@ -3,7 +3,7 @@ import os
 from clients.keyboard import new_listener
 from controller.game import start_game
 from data import consts
-from data.state import context
+from data.context import context
 
 if __name__ == "__main__":
     gpc_cred_loc = os.getenv(consts.GOOGLE_APPLICATION_CREDS, os.getcwd() + r'\creds.json')

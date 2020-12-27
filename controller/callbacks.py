@@ -5,7 +5,7 @@ import tempfile
 from controller.helpers import get_player_colour
 from data import consts
 from data.interpreter import Interpreter
-from data.state import context
+from data.context import context
 
 PROX_LIMIT_X = 5
 PROX_LIMIT_Y = 3

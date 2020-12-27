@@ -3,8 +3,8 @@ from typing import Optional, Dict
 
 from controller.helpers import get_player_colour
 from data import enums
-from data.pcap import GameState
-from data.state import context
+from data.state import GameState
+from data.context import context
 from lib.amongUsParser.gameEngine import PlayerClass
 
 

@@ -6,8 +6,8 @@ from controller.substitute import SubstituteHelper
 from data import consts, dialogs, enums
 from data.dialogs import Dialog
 from data.enums import KeyCommand, AUMap, ResponseFlags, Substitution
-from data.pcap import GameState
-from data.state import context
+from data.state import GameState
+from data.context import context
 from data.trust import SusScore
 
 

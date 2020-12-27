@@ -5,7 +5,7 @@ from win32api import GetKeyState
 from win32con import VK_CAPITAL
 
 from data import enums
-from data.state import context
+from data.context import context
 
 keyboard_controller = Controller()
 

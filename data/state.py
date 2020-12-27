@@ -1,129 +1,204 @@
-from typing import Optional, List, Dict
-import datetime
+# Kudos: https://github.com/jordam/amongUsParser
+from datetime import datetime, timedelta
+import os
+import pickle
+import random
+from typing import List, Optional, Dict, Callable
 
-from data.trust import TrustMap
+from lib.amongUsParser import parse
+from lib.amongUsParser.gameEngine import GameEngine, PlayerClass
+from scapy.layers.inet import UDP
+
+from controller.helpers import get_player_colour
+from clients.pcap import PCap
+from data import enums, params, consts
+from data.enums import ResponseFlags as RF
+from data.context import context
+from data.trust import SusScore
+from data.types import COORD
 
 
-class Context:
+class GameState:
     def __init__(self):
-        self._state_use_gcp: bool = False
-        self._state_debug: bool = False
-        self._state_capture_keys: bool = True
-        self._state_chat_turns: int = 0
-        self._state_chat_log: List[str] = []
-        self._state_last_phrase: Optional[str] = None
-        self._state_last_response: Optional[datetime.datetime] = None
-        self._state_player_loc: Optional[Dict[str, str]] = None
-        self._state_trust_map: TrustMap = TrustMap()
-        self._state_last_seen: List[str] = []
+        self.curr_lobby: int = 0
+        self._game: GameEngine = GameEngine()
+        PCap(self.pkt_callback)
+
+    # CALLBACKS
 
     @property
-    def use_gcp(self) -> bool:
-        return self._state_use_gcp
+    def cb(self):
+        return self._game.callbackDict
 
-    @use_gcp.setter
-    def use_gcp(self, val: bool):
-        self._state_use_gcp = val
+    @cb.setter
+    def cb(self, cb: Dict[str, Callable]):
+        self._game.callbackDict = cb
 
-    @property
-    def debug(self) -> bool:
-        return self._state_debug
+    def pkt_callback(self, pkt):
+        self._game.proc(pkt[UDP].payload.load, pkt.time)
+        tree = parse(pkt[UDP].payload.load)
+        if consts.debug_net and tree.children[0].commandName == 'ReliableData':
+            tree.pprint()
 
-    @debug.setter
-    def debug(self, val: bool):
-        self._state_debug = val
-
-    @property
-    def capture_keys(self) -> bool:
-        return self._state_capture_keys
-
-    @capture_keys.setter
-    def capture_keys(self, val: bool):
-        self._state_capture_keys = val
+    # GETTERS AND SETTERS
 
     @property
-    def chat_turns(self) -> int:
-        return self._state_chat_turns
+    def game_id(self) -> Optional[int]:
+        return self._game.gameId if self._game.gameId else None
 
     @property
-    def chat_log(self) -> List[str]:
-        return self._state_chat_log
-
-    def chat_log_append(self, val: str):
-        self._state_chat_turns += 1
-        self._state_chat_log.append(val)
-
-    def chat_log_clear(self):
-        self._state_chat_log = []
-
-    def chat_log_reset(self):
-        self.chat_log_clear()
-        self._state_chat_turns = 0
+    def me(self) -> Optional[PlayerClass]:
+        return self._game.players.get(self._game.selfClientID)
 
     @property
-    def last_response(self) -> Optional[datetime.datetime]:
-        return self._state_last_response
-
-    @last_response.setter
-    def last_response(self, val: Optional[datetime.datetime]):
-        self._state_last_response = val
+    def me_colour(self) -> Optional[str]:
+        me = self.me
+        return get_player_colour(me) if me else None
 
     @property
-    def last_phrase(self) -> Optional[str]:
-        return self._state_last_phrase
+    def map(self) -> Optional[enums.AUMap]:
+        if self._game.gameSettings:
+            au_map = self._game.gameSettings['MapId']
+            return enums.AUMap.__call__(au_map)
+        return None
 
-    @last_phrase.setter
-    def last_phrase(self, val: Optional[str]):
-        self._state_last_phrase = val
-
-    @property
-    def player_loc(self) -> Optional[Dict[str, str]]:
-        return self._state_player_loc
-
-    @player_loc.setter
-    def player_loc(self, val: Optional[Dict[str, str]]):
-        self._state_player_loc = val
+    # DEBUG METHOD
+    @map.setter
+    def map(self, val: enums.AUMap):
+        self._game.gameSettings['MapId'] = val
 
     @property
-    def trust_map(self) -> Dict:
-        return self._state_trust_map.map
-
-    def trust_map_players_set(self, players: List[str]):
-        self._state_trust_map.update_players(players)
-
-    def trust_map_players_reset(self):
-        self._state_trust_map.update_players([])
-
-    def trust_map_player_remove(self, player: str):
-        players = self._state_trust_map.players
-        if player in players:
-            players.remove(player)
-            self._state_trust_map.update_players(players)
-
-    def trust_map_score_get(self, me: Optional[str] = None) -> Dict[str, float]:
-        return self._state_trust_map.aggregate_scores(me)
-
-    def trust_map_score_offset(self, p1: str, p2: str, offset: float):
-        self._state_trust_map.offset_score(p1, p2, offset)
-
-    def trust_map_score_set(self, p1: str, p2: str, score: float):
-        self._state_trust_map.update_score(p1, p2, score)
-
-    def trust_map_score_scale(self, ratio: float):
-        self._state_trust_map.scale_scores(ratio)
+    def is_impostor(self) -> Optional[bool]:
+        me = self.me
+        return me.infected if me else None
 
     @property
-    def last_seen(self) -> List[str]:
-        return self._state_last_seen.copy()
+    def impostor_list(self) -> Optional[List[str]]:
+        if self.is_impostor and self._game.players:  # Only show if I'm impostor (no cheating!)
+            return [get_player_colour(p) for p in self._game.players.values()
+                    if p.infected and p.playerId != self.me.playerId]
 
-    def last_seen_append(self, val: str):
-        self._state_last_seen.append(val)
+    @property
+    def meeting_started_by(self):
+        return self._game.meetingStartedBy
 
-    def last_seen_remove(self, val: str):
-        self._state_last_seen.remove(val)
+    @property
+    def meeting_reason(self):
+        return self._game.meetingReason
 
-    def last_seen_reset(self):
-        self._state_last_seen = []
+    @property
+    def game_started(self):
+        return self._game.gameHasStarted
 
+    def get_player_loc(self, player_id: int) -> COORD:
+        player = self._game.playerIdMap[player_id]
+        return player.x, player.y
 
-context: Context = Context()
+    def set_player_loc(self):
+        if self.map is None:
+            return
+        locations = params.location[self.map].copy()
+        me_loc = locations[random.randint(0, len(locations) - 1)]
+        locations.remove(me_loc)
+        body_loc = locations[random.randint(0, len(locations) - 1)]
+        locations.remove(body_loc)
+        loc_dict = {
+            'me': me_loc,
+            'body': body_loc,
+        }
+        context.player_loc = loc_dict
+        print('Set new location list:',
+              [f'{k}: {v}' for k, v in loc_dict.items()])
+
+    def get_players(self, include_me=False) -> Optional[List[PlayerClass]]:
+        me_id = self.me.playerId if self.me is not None else -1
+        if self._game.players:
+            return [p for p in self._game.players.values()
+                    if p.alive and (include_me or p.playerId != me_id)]
+        return None
+
+    def get_players_colour(self, include_me=False) -> Optional[List[str]]:
+        return [get_player_colour(p) for p in self.get_players(include_me)]
+
+    def get_player_from_id(self, player_id: int) -> Optional[PlayerClass]:
+        if player_id not in self._game.playerIdMap:
+            return None
+        return self._game.playerIdMap[player_id]
+
+    def get_player_colour_from_id(self, player_id: int) -> Optional[str]:
+        if player_id not in self._game.playerIdMap:
+            return None
+        return get_player_colour(self._game.playerIdMap[player_id])
+
+    # STATE MANAGEMENT
+
+    @staticmethod
+    def cleanup_states(root_dir: str):
+        for file in os.listdir(root_dir):
+            file_path = os.path.join(root_dir, file)
+            last_mod = datetime.fromtimestamp(os.stat(file_path).st_mtime)
+            time_since_mod = datetime.now() - last_mod
+            expiry = timedelta(hours=1)
+            if time_since_mod > expiry:
+                os.remove(file_path)
+
+    def update_state(self, root_dir: str):
+        game_id = self._game.gameId
+        file_path = root_dir + '\\' + str(game_id)
+        if self.curr_lobby != game_id and os.path.exists(file_path):
+            with open(file_path, "rb") as fp:
+                try:
+                    state: GameEngine = pickle.load(fp)
+                except EOFError:
+                    return
+            state.callbackDict = self._game.callbackDict
+            # Update self client ID details
+            if self._game.selfClientID:
+                state.players[self._game.selfClientID] = state.players[state.selfClientID]
+                del state.players[state.selfClientID]
+                state.selfClientID = self._game.selfClientID
+            for i in state.players.keys():
+                state.players[i].self = self._game
+
+            # Merge state dictionaries with provided game entities
+            state.entities = {**state.entities, **self._game.entities}
+            state.players = {**state.players, **self._game.players}
+            state.playerIdMap = {**state.playerIdMap, **self._game.playerIdMap}
+
+            self._game = state
+            with open(file_path, "wb") as fp:
+                pickle.dump(state, fp)
+            if consts.debug_net:
+                print('Game state reloaded for game ID', game_id)
+        elif self._game is not None:
+            with open(file_path, "wb") as fp:
+                pickle.dump(self._game, fp)
+            if consts.debug_net and self.curr_lobby != game_id:
+                print('Game state created for game ID', game_id)
+        self.curr_lobby = game_id
+
+    # HELPERS
+
+    def get_response_flags(self) -> List[RF]:
+        flags = []
+        me = self.me
+        reason = self.meeting_reason
+        start_by = self.meeting_started_by
+        if random.random() < consts.SELF_SABOTAGE_PROB:
+            flags.append(RF.SELF_SABOTAGE)
+        if me is not None and me.infected:
+            flags.append(RF.SELF_IMPOSTOR)
+        if reason is not False and start_by is not False:
+            start_by_me = me is not None and start_by.playerId == me.playerId
+            if reason == 'Button':
+                flag = RF.EMERGENCY_MEET_ME if start_by_me else RF.EMERGENCY_MEET_OTHER
+            else:  # Body found
+                flag = RF.BODY_FOUND_ME if start_by_me else RF.BODY_FOUND_OTHER
+                if flag == RF.BODY_FOUND_OTHER:
+                    player_colour = self.get_player_colour_from_id(start_by.playerId)
+                    trust_scores = context.trust_map_score_get()
+                    if player_colour in [p for p in trust_scores if trust_scores[p] == SusScore.SUS.value]:
+                        flags.append(RF.SELF_REPORT)
+            flags.append(flag)
+
+        return flags
