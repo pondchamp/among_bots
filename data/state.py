@@ -158,7 +158,7 @@ class GameState:
                 del state.players[state.selfClientID]
                 state.selfClientID = self._game.selfClientID
             for i in state.players.keys():
-                state.players[i].self = self._game
+                state.players[i].game_state = self._game
 
             # Merge state dictionaries with provided game entities
             state.entities = {**state.entities, **self._game.entities}
