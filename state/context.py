@@ -130,6 +130,8 @@ class Context:
 
     def update_state(self, game_state, root_dir: str):  # Untyped due to circular reference
         game_id = game_state.game_id
+        if game_id is None:
+            return
         file_path = root_dir + '\\' + str(game_id) + "_ctx"
         if game_state.curr_lobby != game_id and os.path.exists(file_path):
             with open(file_path, "rb") as fp:

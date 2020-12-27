@@ -36,13 +36,10 @@ class Callbacks:
         return tempfile.gettempdir() + '\\among_bots'
         
     def event_callback(self, _):
-        if not self._game.game_id:
-            return
         if not os.path.exists(self.root_dir):
             os.makedirs(self.root_dir)
         helpers.cleanup_states(self.root_dir)
-        if self._game.game_id is not None:
-            context.update_state(self._game, self.root_dir)
+        context.update_state(self._game, self.root_dir)
         self._game.update_state(self.root_dir)
     
     def start_meeting_callback(self, _):
