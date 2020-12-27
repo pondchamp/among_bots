@@ -2,7 +2,7 @@ from typing import Dict, List
 
 from data import params
 from data.enums import AUMap, Substitution
-from data.context import context
+from state.context import context
 
 
 class SubstituteHelper:

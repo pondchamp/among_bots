@@ -7,8 +7,8 @@ from controller import response, helpers
 from controller.callbacks import Callbacks
 from controller.response import get_strategy
 from data import enums, consts, params
-from data.context import context
-from data.state import GameState
+from state.context import context
+from state.game import GameState
 
 
 def start_game():

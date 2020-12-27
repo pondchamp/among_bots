@@ -1,5 +1,4 @@
 # Kudos: https://github.com/jordam/amongUsParser
-from datetime import datetime, timedelta
 import os
 import pickle
 import random
@@ -13,7 +12,7 @@ from controller.helpers import get_player_colour
 from clients.pcap import PCap
 from data import enums, params, consts
 from data.enums import ResponseFlags as RF
-from data.context import context
+from state.context import context
 from data.trust import SusScore
 from data.types import COORD
 
@@ -131,16 +130,6 @@ class GameState:
         return get_player_colour(self._game.playerIdMap[player_id])
 
     # STATE MANAGEMENT
-
-    @staticmethod
-    def cleanup_states(root_dir: str):
-        for file in os.listdir(root_dir):
-            file_path = os.path.join(root_dir, file)
-            last_mod = datetime.fromtimestamp(os.stat(file_path).st_mtime)
-            time_since_mod = datetime.now() - last_mod
-            expiry = timedelta(hours=1)
-            if time_since_mod > expiry:
-                os.remove(file_path)
 
     def update_state(self, root_dir: str):
         game_id = self._game.gameId

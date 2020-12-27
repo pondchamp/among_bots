@@ -5,7 +5,8 @@ import tempfile
 from controller.helpers import get_player_colour
 from data import consts
 from data.interpreter import Interpreter
-from data.context import context
+from state import helpers
+from state.context import context
 
 PROX_LIMIT_X = 5
 PROX_LIMIT_Y = 3
@@ -36,7 +37,7 @@ class Callbacks:
         root_dir = tempfile.gettempdir() + '\\among_bots'
         if not os.path.exists(root_dir):
             os.makedirs(root_dir)
-        self._game.cleanup_states(root_dir)
+        helpers.cleanup_states(root_dir)
         self._game.update_state(root_dir)
     
     def start_meeting_callback(self, _):

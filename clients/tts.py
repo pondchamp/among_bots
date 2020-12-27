@@ -4,7 +4,7 @@ from tempfile import TemporaryDirectory
 from playsound import playsound
 from threading import Thread
 
-from data.context import context
+from state.context import context
 
 
 class Speaker(Thread):
