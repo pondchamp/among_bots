@@ -142,31 +142,30 @@ class GameState:
                     state: GameEngine = pickle.load(fp)
                 except EOFError:
                     return
-            state.callbackDict = self._game.callbackDict
-            # Update self client ID details
-            if self._game.selfClientID:
-                state.players[self._game.selfClientID] = state.players[state.selfClientID]
-                del state.players[state.selfClientID]
-                state.selfClientID = self._game.selfClientID
-            for i in state.players.keys():
-                state.players[i].game_state = self._game
-
-            # Merge state dictionaries with provided game entities
-            state.entities = {**state.entities, **self._game.entities}
-            state.players = {**state.players, **self._game.players}
-            state.playerIdMap = {**state.playerIdMap, **self._game.playerIdMap}
-
-            self._game = state
+            self._update_state(state)
             with open(file_path, "wb") as fp:
                 pickle.dump(state, fp)
-            if consts.debug_net:
-                print('Game state reloaded for game ID', game_id)
         elif self._game is not None:
             with open(file_path, "wb") as fp:
                 pickle.dump(self._game, fp)
-            if consts.debug_net and self.curr_lobby != game_id:
-                print('Game state created for game ID', game_id)
         self.curr_lobby = game_id
+
+    def _update_state(self, state):
+        state.callbackDict = self._game.callbackDict
+        # Update self client ID details
+        if self._game.selfClientID:
+            state.players[self._game.selfClientID] = state.players[state.selfClientID]
+            del state.players[state.selfClientID]
+            state.selfClientID = self._game.selfClientID
+        for i in state.players.keys():
+            state.players[i].game_state = self._game
+
+        # Merge state dictionaries with provided game entities
+        state.entities = {**state.entities, **self._game.entities}
+        state.players = {**state.players, **self._game.players}
+        state.playerIdMap = {**state.playerIdMap, **self._game.playerIdMap}
+
+        self._game = state
 
     # HELPERS
 

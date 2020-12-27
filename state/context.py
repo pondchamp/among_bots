@@ -139,16 +139,21 @@ class Context:
                     state: Context = pickle.load(fp)
                 except EOFError:
                     return
-            self._state_chat_turns = state._state_chat_turns
-            self._state_chat_log = state._state_chat_log
-            self._state_last_phrase = state._state_last_phrase
-            self._state_last_response = state._state_last_response
-            self._state_player_loc = state._state_player_loc
-            self._state_trust_map = state._state_trust_map
-            self._state_last_seen = state._state_last_seen
+            self._update_state(state)
+            with open(file_path, "wb") as fp:
+                pickle.dump(state, fp)
         else:
             with open(file_path, "wb") as fp:
                 pickle.dump(self, fp)
+
+    def _update_state(self, state):
+        self._state_chat_turns = state.chat_turns
+        self._state_chat_log = state.chat_log
+        self._state_last_phrase = state.last_phrase
+        self._state_last_response = state.last_response
+        self._state_player_loc = state.player_loc
+        self._state_trust_map = state.trust_map
+        self._state_last_seen = state.last_seen
 
 
 context: Context = Context()
