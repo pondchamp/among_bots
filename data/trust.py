@@ -1,6 +1,6 @@
 import math
 from enum import Enum
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 
 class SusScore(Enum):
@@ -50,7 +50,7 @@ class TrustMap:
         self._map[p1][p2] += offset
         self._map[p1][p2] = self._min_sign(self._map[p1][p2], self.trust_max)
 
-    def aggregate_scores(self, me=None) -> Dict[str, float]:
+    def aggregate_scores(self, me: Optional[str] = None) -> Dict[str, float]:
         out = {x: 0.0 for x in self._map.keys()}
         max_abs = 0.0
         for p1 in self._map.keys():

@@ -100,7 +100,7 @@ class Context:
             players.remove(player)
             self._state_trust_map.update_players(players)
 
-    def trust_map_score_get(self, me=None) -> Dict[str, float]:
+    def trust_map_score_get(self, me: Optional[str] = None) -> Dict[str, float]:
         return self._state_trust_map.aggregate_scores(me)
 
     def trust_map_score_offset(self, p1: str, p2: str, offset: float):

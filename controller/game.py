@@ -39,7 +39,7 @@ def start_game():
                     me = game_state.me_colour if game_state.me is not None else helpers.get_me().name.lower()
                 except IOError:
                     print('Cannot find player preferences file. Have you installed Among Us?')
-                    break
+                    me = None
                 if not game_state.map:
                     if debug:
                         print('DEBUG: defaulting to Skeld')
