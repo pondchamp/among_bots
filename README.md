@@ -5,7 +5,7 @@
 A chatbot created in Python for Among Us shenanigans.
 
 ## Prerequisites
-* Windows 10
+* Windows 7/8/10
 * [Python 3](https://www.python.org/downloads/)
 * [Npcap](https://nmap.org/npcap/)
 * [Git](https://git-scm.com/download/win)
@@ -44,5 +44,5 @@ to my Twitch channel (**JulesCodes**) in the content of the video.
 ## Credits
 
 Thank you to the following people for providing various libraries that I leveraged to create this project!
-* [Among Us Parser by _jordam_](https://github.com/jordam/amongUsParser/tree/main/amongUsParser)
+* [Among Us Parser by _jordam_](https://github.com/jordam/amongUsParser)
 * [Among Us Protocol Documentation](https://wiki.weewoo.net/)
