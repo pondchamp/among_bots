@@ -3,12 +3,13 @@ from typing import Optional, Dict
 
 from controller.helpers import get_player_colour
 from data import enums
+from data.pcap import GameState
 from data.state import context
 from lib.amongUsParser.gameEngine import PlayerClass
 
 
 class Interpreter:
-    def __init__(self, game_state, player: PlayerClass, message: str):
+    def __init__(self, game_state: GameState, player: PlayerClass, message: str):
         self.game_state = game_state
         self.player = player
         self.message = message

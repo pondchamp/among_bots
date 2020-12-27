@@ -59,8 +59,8 @@ class Callbacks:
         context.trust_map_players_reset()
         context.last_seen_reset()
     
-    def chat_callback(self, state):
-        interpreter = Interpreter(self._game, state['player'], state['message'].decode("utf-8"))
+    def chat_callback(self, event):
+        interpreter = Interpreter(self._game, event['player'], event['message'].decode("utf-8"))
         interpret = interpreter.interpret()
         if interpret is not None:
             if consts.debug_chat:
