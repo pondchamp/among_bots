@@ -11,7 +11,7 @@ from data.state import context
 from data.trust import SusScore
 
 
-def generate_response(mode: KeyCommand, curr_map: AUMap, me: str,
+def generate_response(mode: KeyCommand, curr_map: AUMap, me: Optional[str],
                       flags: List[ResponseFlags]) -> Optional[str]:
     if mode == KeyCommand.ATTACK:
         mode_arr, score_target = dialogs.attack, SusScore.SUS
