@@ -6,6 +6,7 @@ from data.trust import TrustMap
 
 class Context:
     def __init__(self):
+        self._state_use_gcp: bool = False
         self._state_debug: bool = False
         self._state_capture_keys: bool = True
         self._state_chat_turns: int = 0
@@ -15,6 +16,14 @@ class Context:
         self._state_player_loc: Optional[Dict[str, str]] = None
         self._state_trust_map: TrustMap = TrustMap()
         self._state_last_seen: List[str] = []
+
+    @property
+    def use_gcp(self) -> bool:
+        return self._state_use_gcp
+
+    @use_gcp.setter
+    def use_gcp(self, val: bool):
+        self._state_use_gcp = val
 
     @property
     def debug(self) -> bool:

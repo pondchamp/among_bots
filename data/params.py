@@ -74,7 +74,7 @@ task: Dict[AUMap, List[str]] = {
         _jtl("fixing wiring", ["admin", "caf", "electrical", "nav", "security", "storage"]),
         _jtl("fueling engines", ["storage", "lower engine", "upper engine"]),
         _jtl("inspecting samples", ["med bay"]),
-        _jtl("priming shields", ["shields"]),
+        _jtl("priming shields", None),
         _jtl("stabilising steering", ["nav"]),
         _jtl("starting reactor", None),
         _jtl("submitting scan", ["med bay"]),
