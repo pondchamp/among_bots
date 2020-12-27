@@ -60,7 +60,7 @@ def generate_response(mode: KeyCommand, curr_map: AUMap, me: str,
             p = sub_dict[Substitution.PLAYER]
         elif Substitution.PLAYER_NEAREST in sub_dict:
             p = sub_dict[Substitution.PLAYER_NEAREST]
-        if p is not None:
+        if me is not None and p is not None:
             context.trust_map_score_offset(me, p, -1.0)
     return resp_sub
 
