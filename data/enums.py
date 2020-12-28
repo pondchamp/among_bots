@@ -3,15 +3,15 @@ from typing import Optional
 
 
 class KeyCommand(Enum):
-    AUTO = 'f1'
-    ATTACK = 'f2'
-    DEFENCE = 'f3'
-    PROBE = 'f4'
-    STATEMENT = 'f5'
-    REPEAT = 'f6'
+    HELP = 'f1'
+    AUTO = 'f2'
+    ATTACK = 'f3'
+    DEFENCE = 'f4'
+    PROBE = 'f5'
+    STATEMENT = 'f6'
+    REPEAT = 'f7'
     DEBUG = 'f8'
     EXIT = 'f12'
-    HELP = 'esc'
     KEY_CAP = '`'
 
 
