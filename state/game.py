@@ -145,7 +145,6 @@ class GameState:
             self._update_state(state)
         with open(file_path, "wb") as fp:
             pickle.dump(self._game, fp)
-        self.curr_lobby = game_id
 
     def _update_state(self, state):
         state.callbackDict = self._game.callbackDict
