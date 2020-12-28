@@ -13,7 +13,7 @@ class Interpreter:
         self.game_state = game_state
         self.player = player
         self.message = message
-        self.message_lower = re.sub(r'[^\w\s?]', '', self.message.strip().lower())
+        self._message_lower = re.sub(r'[^\w\s?]', '', self.message.strip().lower())
 
     def interpret(self) -> Optional[str]:
         me = self.game_state.me
@@ -34,12 +34,16 @@ class Interpreter:
         target_name = target_colour = None
         players = {get_player_colour(p): p
                    for p in self.game_state.get_players(include_me=True)}
-        self._alias(players, "purple", "~purp")
-        self._alias(players, "orange", "~orang")
-        self._alias(players, "green", "~dark green")
-        self._alias(players, "lime", "~light green")
-        self._alias(players, "blue", "~dark blue")
-        self._alias(players, "cyan", "~light blue")
+        aliases = {
+            "purp": "purple",
+            "orang": "orange",
+            "dark green": "green",
+            "light green": "lime",
+            "dark blue": "blue",
+            "light blue": "cyan",
+        }
+        for k, v in aliases.items():
+            self._message_lower = re.sub(rf'\b{k}\b', v, self._message_lower)
         for alias in [p for p in sorted(players.keys(), reverse=True) if p != player_colour]:
             p = players[alias]
             alias = str(alias).removeprefix('~')
@@ -61,7 +65,7 @@ class Interpreter:
             t_col = target_colour.name.lower()
             if self._find(r"\b(sus|vent(ed)?|faked?|kill(ed)?|body|self report)\b") \
                     or self._find(rf"\b(vote|it'?s?) {t_col}\b") \
-                    or self.message_lower == t_col:
+                    or self._message_lower == t_col:
                 verb, offset = "sussed", -1
             elif self._find(r"\b(safe|good|clear(ed)?)\b") \
                     or self._find(rf"\b(not|with|me and) {t_col}\b") \
@@ -76,9 +80,4 @@ class Interpreter:
         return self.message
 
     def _find(self, pattern: str) -> bool:
-        return len(re.findall(pattern, self.message_lower)) > 0
-
-    @staticmethod
-    def _alias(players: Dict, colour: str, alias: str):
-        if colour in players:
-            players[alias] = players[colour]
+        return len(re.findall(pattern, self._message_lower)) > 0
