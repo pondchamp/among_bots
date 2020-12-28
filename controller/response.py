@@ -120,7 +120,7 @@ def _dialog_turns_valid(dialog: Dialog, chat_turns: int) -> bool:
 
 
 def _dialog_flags_match(dialog: Dialog, flags: List[ResponseFlags]) -> bool:
-    return dialog.flags is not None and _flags_match(dialog.flags, flags)
+    return dialog.flags is not None and (ResponseFlags.PRIORITY in dialog.flags or _flags_match(dialog.flags, flags))
 
 
 def _flags_match(a: List[ResponseFlags], b: List[ResponseFlags]) -> bool:

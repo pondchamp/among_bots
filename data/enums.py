@@ -55,6 +55,7 @@ class PlayerColour(Enum):
 
 
 class ResponseFlags(Enum):
+    PRIORITY = -1
     BODY_FOUND_ME = 0
     BODY_FOUND_OTHER = 1
     EMERGENCY_MEET_ME = 2
