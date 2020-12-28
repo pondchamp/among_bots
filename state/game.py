@@ -11,7 +11,7 @@ from scapy.layers.inet import UDP
 from controller.helpers import get_player_colour
 from clients.pcap import PCap
 from data import enums, params, consts
-from data.enums import ResponseFlags as RF
+from data.enums import ResponseFlags as rF
 from state.context import context
 from data.trust import SusScore
 from data.types import COORD
@@ -165,26 +165,26 @@ class GameState:
 
     # HELPERS
 
-    def get_response_flags(self) -> List[RF]:
+    def get_response_flags(self) -> List[rF]:
         flags = []
         me = self.me
         reason = self.meeting_reason
         start_by = self.meeting_started_by
         if random.random() < consts.SELF_SABOTAGE_PROB:
-            flags.append(RF.SELF_SABOTAGE)
+            flags.append(rF.SELF_SABOTAGE)
         if me is not None and me.infected:
-            flags.append(RF.SELF_IMPOSTOR)
+            flags.append(rF.SELF_IMPOSTOR)
         if reason is not False and start_by is not False:
             start_by_me = me is not None and start_by.playerId == me.playerId
             if reason == 'Button':
-                flag = RF.EMERGENCY_MEET_ME if start_by_me else RF.EMERGENCY_MEET_OTHER
+                flag = rF.EMERGENCY_MEET_ME if start_by_me else rF.EMERGENCY_MEET_OTHER
             else:  # Body found
-                flag = RF.BODY_FOUND_ME if start_by_me else RF.BODY_FOUND_OTHER
-                if flag == RF.BODY_FOUND_OTHER:
+                flag = rF.BODY_FOUND_ME if start_by_me else rF.BODY_FOUND_OTHER
+                if flag == rF.BODY_FOUND_OTHER:
                     player_colour = self.get_player_colour_from_id(start_by.playerId)
                     trust_scores = context.trust_map_score_get()
                     if player_colour in [p for p in trust_scores if trust_scores[p] == SusScore.SUS.value]:
-                        flags.append(RF.SELF_REPORT)
+                        flags.append(rF.SELF_REPORT)
             flags.append(flag)
 
         return flags

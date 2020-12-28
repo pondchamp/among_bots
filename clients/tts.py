@@ -18,7 +18,7 @@ class Speaker(Thread):
         if len(self.text) == 0:
             return
         d = TemporaryDirectory()
-        f = d.name + '\\au.mp3'
+        f = rf'{d.name}\au.mp3'
         try:
             if self.use_gcp:
                 self.gcp_run(f)
