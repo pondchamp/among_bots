@@ -41,7 +41,7 @@ class Callbacks:
         helpers.cleanup_states(self.root_dir)
         context.update_state(self._game, self.root_dir)
         self._game.update_state(self.root_dir)
-        self._game.curr_lobby = self._game.gameId
+        self._game.curr_lobby = self._game.game_id
     
     def start_meeting_callback(self, _):
         context.chat_log_reset()

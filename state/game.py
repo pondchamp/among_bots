@@ -132,7 +132,7 @@ class GameState:
     # STATE MANAGEMENT
 
     def update_state(self, root_dir: str):
-        game_id = self._game.gameId
+        game_id = self.game_id
         if game_id is None:
             return
         file_path = rf'{root_dir}\{game_id}'
@@ -149,7 +149,7 @@ class GameState:
     def _update_state(self, state):
         state.callbackDict = self._game.callbackDict
         # Update self client ID details
-        if self._game.selfClientID:
+        if self._game.selfClientID and state.selfClientID in state.players:
             state.players[self._game.selfClientID] = state.players[state.selfClientID]
             del state.players[state.selfClientID]
             state.selfClientID = self._game.selfClientID
