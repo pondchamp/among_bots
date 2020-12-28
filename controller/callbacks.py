@@ -33,7 +33,7 @@ class Callbacks:
 
     @property
     def root_dir(self):
-        return tempfile.gettempdir() + '\\among_bots'
+        return tempfile.gettempdir() + r'\among_bots'
         
     def event_callback(self, _):
         if not os.path.exists(self.root_dir):

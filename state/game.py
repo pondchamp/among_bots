@@ -135,7 +135,7 @@ class GameState:
         game_id = self._game.gameId
         if game_id is None:
             return
-        file_path = root_dir + '\\' + str(game_id)
+        file_path = rf'{root_dir}\{game_id}'
         if self.curr_lobby != game_id and os.path.exists(file_path):
             with open(file_path, "rb") as fp:
                 try:
