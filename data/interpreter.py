@@ -1,5 +1,5 @@
 import re
-from typing import Optional, Dict
+from typing import Optional
 
 from controller.helpers import get_player_colour
 from data import enums
