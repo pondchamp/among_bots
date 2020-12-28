@@ -89,6 +89,8 @@ class Callbacks:
         me_id = me.playerId
         pl_id = event["player"].playerId
         player = self._game.get_player_from_id(pl_id)
+        if player is None:
+            return
         player_colour = get_player_colour(player)
         in_frame = self._in_frame(me_id, pl_id)
         players_in_frame = context.last_seen
