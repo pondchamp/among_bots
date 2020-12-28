@@ -143,11 +143,8 @@ class GameState:
                 except EOFError:
                     return
             self._update_state(state)
-            with open(file_path, "wb") as fp:
-                pickle.dump(state, fp)
-        elif self._game is not None:
-            with open(file_path, "wb") as fp:
-                pickle.dump(self._game, fp)
+        with open(file_path, "wb") as fp:
+            pickle.dump(self._game, fp)
         self.curr_lobby = game_id
 
     def _update_state(self, state):

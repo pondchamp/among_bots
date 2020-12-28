@@ -140,11 +140,8 @@ class Context:
                 except EOFError:
                     return
             self._update_state(state)
-            with open(file_path, "wb") as fp:
-                pickle.dump(state, fp)
-        else:
-            with open(file_path, "wb") as fp:
-                pickle.dump(self, fp)
+        with open(file_path, "wb") as fp:
+            pickle.dump(self, fp)
 
     def _update_state(self, state):
         self._state_chat_turns = state.chat_turns
