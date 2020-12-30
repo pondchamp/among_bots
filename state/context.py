@@ -88,6 +88,10 @@ class Context:
         self._state_player_loc = val
 
     @property
+    def trust_map_object(self) -> TrustMap:
+        return self._state_trust_map
+
+    @property
     def trust_map(self) -> Dict:
         return self._state_trust_map.map
 
@@ -149,7 +153,7 @@ class Context:
         self._state_last_phrase = state.last_phrase
         self._state_last_response = state.last_response
         self._state_player_loc = state.player_loc
-        self._state_trust_map = state.trust_map
+        self._state_trust_map = state.trust_map_object
         self._state_last_seen = state.last_seen
 
 
