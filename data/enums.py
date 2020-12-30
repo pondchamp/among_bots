@@ -64,3 +64,4 @@ class ResponseFlags(Enum):
     SELF_IMPOSTOR = 5
     SELF_SABOTAGE = 6
     ACCUSED_VENT = 7
+    BODY_NOT_LOCATED = 8

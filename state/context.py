@@ -142,7 +142,8 @@ class Context:
         self._state_response_flags.append(val)
 
     def response_flags_remove(self, val: rF):
-        self._state_response_flags.remove(val)
+        if val in self._state_response_flags:
+            self._state_response_flags.remove(val)
 
     def response_flags_reset(self):
         self._state_response_flags = []

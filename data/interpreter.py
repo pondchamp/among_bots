@@ -2,7 +2,7 @@ import re
 from typing import Optional
 
 from controller.helpers import get_player_colour
-from data import enums
+from data import enums, params
 from data.enums import ResponseFlags as rF
 from state.game import GameState
 from state.context import context
@@ -39,18 +39,37 @@ class Interpreter:
         players = {get_player_colour(p): p
                    for p in self.game_state.get_players(include_me=True)}
         aliases = {
+            # Players
             "purp": "purple",
             "orang": "orange",
             "dark green": "green",
             "light green": "lime",
             "dark blue": "blue",
             "light blue": "cyan",
+
+            # Locations
+            "cafeteria": "caf",
+            "navigation": "nav",
+            "reac": "reactor",
         }
         for k, v in aliases.items():
             self._message_lower = re.sub(rf'\b{k}\b', v, self._message_lower)
+
+        # Check for locations
+        curr_map = self.game_state.map
+        started_by = self.game_state.get_player_colour_from_id(self.game_state.meeting_started_by.playerId) \
+            if self.game_state.meeting_started_by else None
+        if curr_map is not None and rF.BODY_NOT_LOCATED in self.game_state.get_response_flags() \
+                and started_by == player_colour:
+            for loc in params.location[enums.AUMap.COMMON] + params.location[curr_map]:
+                if self._find(rf'\b{loc}\b'):
+                    context.player_loc['body'] = loc
+                    context.response_flags_remove(rF.BODY_NOT_LOCATED)
+                    print("Location identified:", loc)
+
+        # Check for names
         for alias in [p for p in sorted(players.keys(), reverse=True) if p != player_colour]:
             p = players[alias]
-            alias = str(alias).removeprefix('~')
             if p.name is False or p.color is False:
                 continue
             name = p.name.decode("utf-8")

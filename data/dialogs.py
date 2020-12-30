@@ -39,8 +39,8 @@ probe: List[Dialog] = [
 
     Dialog("who did i just see?", max_turns=1, flags=[rF.BODY_FOUND_ME]),
 
-    Dialog("where was the body?", max_turns=0, flags=[rF.BODY_FOUND_OTHER]),
-    Dialog("where?", max_turns=0, flags=[rF.BODY_FOUND_OTHER]),
+    Dialog("where was the body?", max_turns=0, flags=[rF.BODY_NOT_LOCATED]),
+    Dialog("where?", max_turns=0, flags=[rF.BODY_NOT_LOCATED]),
 
     Dialog("who just vented in front of me?", max_turns=0, flags=[rF.EMERGENCY_MEET_ME]),
 
