@@ -69,18 +69,17 @@ class Interpreter:
                     print("Location identified:", loc)
 
         # Check for names
-        for alias in [p for p in sorted(players.keys(), reverse=True) if p != player_colour]:
-            p = players[alias]
+        for colour in [p for p in players if p != player_colour]:
+            p = players[colour]
             if p.name is False or p.color is False:
                 continue
             name = p.name.decode("utf-8")
             if name.lower() in ["i", "he", "she", "ok"]:  # pronoun and unhelpful names
                 name = None
-            colour = enums.PlayerColour.__call__(p.color)
-            if self._find(rf'\b{alias}\b') \
+            if self._find(rf'\b{colour}\b') \
                     or (name is not None and self._find(rf'\b{name.lower()}\b')):
                 target_name = name
-                target_colour = colour.name.lower()
+                target_colour = colour
                 target_is_me = target_colour == self.game_state.me_colour
                 break
 

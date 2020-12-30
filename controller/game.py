@@ -88,7 +88,7 @@ def handle_key(key: str) -> Optional[enums.KeyCommand]:
 
 def _output_phrase(resp: str):
     chat_turns = context.chat_turns
-    print(f"Response #{chat_turns}: {resp}")
+    print(f"Response #{chat_turns}: {resp}", end='\n')
     context.last_phrase = resp
     context.update_state(game_state, callbacks.root_dir)
     if not _in_game():

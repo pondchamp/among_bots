@@ -128,6 +128,9 @@ class Callbacks:
     
     def _in_frame(self, me_id: int, pl_id: int) -> bool:
         me_x, me_y = self._game.get_player_loc(me_id)
-        pl_x, pl_y = self._game.get_player_loc(pl_id)
+        pl_loc = self._game.get_player_loc(pl_id)
+        if pl_loc is None:
+            return False
+        pl_x, pl_y = pl_loc
         dist_x, dist_y = abs(me_x - pl_x), abs(me_y - pl_y)
         return dist_x < PROX_LIMIT_X and dist_y < PROX_LIMIT_Y

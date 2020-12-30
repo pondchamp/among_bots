@@ -89,7 +89,9 @@ class GameState:
     def game_started(self):
         return self._game.gameHasStarted
 
-    def get_player_loc(self, player_id: int) -> COORD:
+    def get_player_loc(self, player_id: int) -> Optional[COORD]:
+        if player_id not in self._game.playerIdMap:
+            return None
         player = self._game.playerIdMap[player_id]
         return player.x, player.y
 
