@@ -23,7 +23,7 @@ class Interpreter:
         if not me:
             print('Player info not loaded - please leave and rejoin the lobby.')
             return None
-        if not self.game_state.meeting_reason or self.player.playerId == me.playerId:
+        if self.game_state.meeting_reason is False or self.player.playerId == me.playerId:
             return None
 
         player_name = self.player.name.decode("utf-8")
