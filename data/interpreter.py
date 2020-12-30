@@ -51,7 +51,11 @@ class Interpreter:
             "cafeteria": "caf",
             "navigation": "nav",
             "reac": "reactor",
-            "medbay": "med bay"
+            "medbay": "med bay",
+
+            # Misspellings
+            "imposter": "impostor",
+            "yallow": "yellow",
         }
         for k, v in aliases.items():
             self._message_lower = re.sub(rf'\b{k}\b', v, self._message_lower)
@@ -74,7 +78,7 @@ class Interpreter:
             if p.name is False or p.color is False:
                 continue
             name = p.name.decode("utf-8")
-            if name.lower() in ["i", "he", "she", "ok"]:  # pronoun and unhelpful names
+            if name.lower() in ["i", "he", "she", "ok", "impostor", "imposter"]:  # pronoun and unhelpful names
                 name = None
             if self._find(rf'\b{colour}\b') \
                     or (name is not None and self._find(rf'\b{name.lower()}\b')):
