@@ -21,7 +21,7 @@ class Interpreter:
     def interpret(self) -> Optional[str]:
         me = self.game_state.me
         if not me:
-            print('Player info not loaded.')
+            print('Player info not loaded - please leave and rejoin the lobby.')
             return None
         if not self.game_state.game_started or self.player.playerId == me.playerId:
             return None
@@ -51,6 +51,7 @@ class Interpreter:
             "cafeteria": "caf",
             "navigation": "nav",
             "reac": "reactor",
+            "medbay": "med bay"
         }
         for k, v in aliases.items():
             self._message_lower = re.sub(rf'\b{k}\b', v, self._message_lower)
@@ -87,7 +88,7 @@ class Interpreter:
         flags = []
         if target_name is not None:
             verb, offset = "mentioned", -0.5
-            if self._find(r"\b(sus|vent(ed)?|faked?|kill(ed)?|body|self report)\b") \
+            if self._find(r"\b(sus|vent(ed)?|faked?|kill(ed)?|body|self report|imp(ostor)?)\b") \
                     or self._find(rf"\b(vote|it'?s?) {target_colour}\b") \
                     or self._message_lower == target_colour:
                 verb, offset = "sussed", -1
