@@ -72,7 +72,7 @@ class Callbacks:
                 print("Trust map:")
                 for x in context.trust_map:
                     print(x, "\t:", context.trust_map[x])
-                print("Aggregate:", [f"{x:0.2f}" for x in context.trust_map_score_get()])
+                print("Aggregate:", {k: f"{v:0.2f}" for k, v in context.trust_map_score_get().items()})
             print()
     
     def remove_player_callback(self, event):
