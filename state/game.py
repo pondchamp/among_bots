@@ -106,8 +106,6 @@ class GameState:
             'body': body_loc,
         }
         context.player_loc = loc_dict
-        print('Set new location list:',
-              [f'{k}: {v}' for k, v in loc_dict.items()])
 
     def get_players(self, include_me=False) -> Optional[List[PlayerClass]]:
         me_id = self.me.playerId if self.me is not None else -1
