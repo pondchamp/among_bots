@@ -186,5 +186,7 @@ class GameState:
                     if player_colour in [p for p in trust_scores if trust_scores[p] == SusScore.SUS.value]:
                         flags.append(rF.SELF_REPORT)
             flags.append(flag)
+        for f in context.response_flags:
+            flags.append(f)
 
         return flags

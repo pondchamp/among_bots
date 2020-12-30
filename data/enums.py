@@ -63,3 +63,4 @@ class ResponseFlags(Enum):
     SELF_REPORT = 4
     SELF_IMPOSTOR = 5
     SELF_SABOTAGE = 6
+    ACCUSED_VENT = 7

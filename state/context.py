@@ -3,6 +3,7 @@ import pickle
 from typing import Optional, List, Dict
 import datetime
 
+from data.enums import ResponseFlags as rF
 from data.trust import TrustMap
 
 
@@ -19,6 +20,7 @@ class Context:
         self._state_player_loc: Optional[Dict[str, str]] = None
         self._state_trust_map: TrustMap = TrustMap()
         self._state_last_seen: List[str] = []
+        self._state_response_flags: List[rF] = []
 
     @property
     def use_gcp(self) -> bool:
@@ -127,6 +129,19 @@ class Context:
 
     def last_seen_reset(self):
         self._state_last_seen = []
+
+    @property
+    def response_flags(self):
+        return self._state_response_flags.copy()
+
+    def response_flags_append(self, val: rF):
+        self._state_response_flags.append(val)
+
+    def response_flags_remove(self, val: rF):
+        self._state_response_flags.remove(val)
+
+    def response_flags_reset(self):
+        self._state_response_flags = []
 
     def update_state(self, game_state, root_dir: str):  # Untyped due to circular reference
         game_id = game_state.game_id

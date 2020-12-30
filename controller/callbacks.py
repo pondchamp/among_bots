@@ -45,6 +45,7 @@ class Callbacks:
     
     def start_meeting_callback(self, _):
         context.chat_log_reset()
+        context.response_flags_reset()
         imp_list = self._game.impostor_list
         prev_player_len = len(context.trust_map)
         context.trust_map_players_set(self._game.get_players_colour(include_me=True))
