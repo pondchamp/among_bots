@@ -34,7 +34,7 @@ class Interpreter:
             print(player_name, f'({player_colour}): [DEAD CHAT HIDDEN]')
             return None
 
-        target_name = target_colour = None
+        target_colour = None
         target_is_me = False
         players = {get_player_colour(p): p
                    for p in self.game_state.get_players(include_me=True)}
