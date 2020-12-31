@@ -75,6 +75,7 @@ defense = [
     Dialog("idk", min_turns=1),
     Dialog("no", min_turns=1),
     Dialog("no u", min_turns=1),
+    Dialog("proof"),
     Dialog("I wasn't there"),
     Dialog("what?"),
     Dialog("i was in [lm]"),

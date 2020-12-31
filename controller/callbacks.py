@@ -56,7 +56,8 @@ class Callbacks:
         if prev_player_len == 0 and self._game.me is not None and self._game.me.alive:
             me = self._game.me_colour
             players = [x for x in self._game.get_players_colour() if x != me]
-            context.trust_map_score_set(me, players[random.randint(0, len(players) - 1)], -0.5)
+            if len(players) > 0:
+                context.trust_map_score_set(me, players[random.randint(0, len(players) - 1)], -0.5)
             if imp_list is not None:
                 for i in imp_list:
                     context.trust_map_score_set(me, i, 1)
