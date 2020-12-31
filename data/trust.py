@@ -45,6 +45,8 @@ class TrustMap:
         self._map[p1][p2] = self._min_sign(score, self.trust_max)
 
     def offset_score(self, p1: str, p2: str, offset: float):
+        if p1 not in self._map:
+            return
         if p2 not in self._map[p1]:
             self._map[p1][p2] = 0
         self._map[p1][p2] += offset
