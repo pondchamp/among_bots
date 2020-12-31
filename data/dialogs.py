@@ -94,4 +94,5 @@ defense = [
     Dialog("I was with [pn]", flags=[rF.ACCUSED_VENT]),
     Dialog("[pn] and i were in [lm]", flags=[rF.ACCUSED_VENT]),
     Dialog("i didn't vent", flags=[rF.SELF_SABOTAGE, rF.ACCUSED_VENT]),
+    Dialog("it literally cannot be me", flags=[rF.ACCUSED_VENT]),
 ]
