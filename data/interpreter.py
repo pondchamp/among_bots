@@ -83,9 +83,12 @@ class Interpreter:
             if self._find(rf'\b{colour}\b') \
                     or (name is not None and self._find(rf'\b{name.lower()}\b')):
                 target_colour = colour
-                target_is_me = target_colour == self.game_state.me_colour
                 break
+        if target_colour is None:  # Determine target implicitly
+            if self._find(r"\b(self( report)?)\b"):
+                target_colour = started_by
 
+        target_is_me = target_colour == self.game_state.me_colour
         verb = offset = None
         flags = []
         if target_colour is not None:
