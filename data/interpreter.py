@@ -52,6 +52,8 @@ class Interpreter:
             "navigation": "nav",
             "reac": "reactor",
             "medbay": "med bay",
+            "elec": "electrical",
+            "elect": "electrical",
 
             # Misspellings
             "imposter": "impostor",
@@ -93,7 +95,7 @@ class Interpreter:
         flags = []
         if target_colour is not None:
             verb, offset = "mentioned", -0.5
-            if self._find(r"\b(sus|vent(ed)?|faked?|kill(ed)?|body|self report|imp(ostor)?)\b") \
+            if self._find(r"\b(sus|vent(ed)?|faked?|kill(ed)?|body|self report(ed)?|imp(ostor)?)\b") \
                     or self._find(rf"\b(vote|it'?s?) {target_colour}\b") \
                     or self._message_lower == target_colour:
                 verb, offset = "sussed", -1
