@@ -97,7 +97,7 @@ class Interpreter:
                 verb, offset = "sussed", -1
             elif self._find(r"\b(safe|good|clear(ed)?)\b") \
                     or self._find(rf"\b(not|with|me and) {target_colour}\b") \
-                    or self._find(rf"{target_colour} (and i|((had|did|has|do) )?(trash|chute|scan|med))\b"):
+                    or self._find(rf"{target_colour} (and i|((had|did|has|do) )?(trash|chute|scan(ned)?|med))\b"):
                 verb, offset = "vouched for", 1
         if verb == "sussed" and target_is_me:
             if self._find(r"\b(vent(ed)?)\b"):
