@@ -82,14 +82,13 @@ class Interpreter:
                 name = None
             if self._find(rf'\b{colour}\b') \
                     or (name is not None and self._find(rf'\b{name.lower()}\b')):
-                target_name = name
                 target_colour = colour
                 target_is_me = target_colour == self.game_state.me_colour
                 break
 
         verb = offset = None
         flags = []
-        if target_name is not None:
+        if target_colour is not None:
             verb, offset = "mentioned", -0.5
             if self._find(r"\b(sus|vent(ed)?|faked?|kill(ed)?|body|self report|imp(ostor)?)\b") \
                     or self._find(rf"\b(vote|it'?s?) {target_colour}\b") \
