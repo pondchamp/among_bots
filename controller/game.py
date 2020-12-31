@@ -76,8 +76,8 @@ def handle_key(key: str) -> Optional[enums.KeyCommand]:
         return None
 
     if context.capture_keys or mode == enums.KeyCommand.KEY_CAP:
-        keyboard.backspace()
         if mode == enums.KeyCommand.KEY_CAP:
+            keyboard.backspace()
             context.capture_keys = not context.capture_keys
             print("KEY CAPTURE", "ENABLED" if context.capture_keys else "DISABLED")
             if context.capture_keys:

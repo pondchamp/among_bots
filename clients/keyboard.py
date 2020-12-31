@@ -17,14 +17,14 @@ def caps_enabled() -> bool:
 
 def write_text(text: str):
     for key in text:
-        time.sleep(0.02)
-        keyboard_controller.press(key)
+        time.sleep(0.01)
+        press(key)
     time.sleep(0.1)
-    keyboard_controller.press(Key.enter)
+    press(Key.enter)
 
 
 def backspace():
-    keyboard_controller.press(Key.backspace)
+    press(Key.backspace)
 
 
 def get_char() -> Optional[str]:
@@ -41,3 +41,8 @@ def key_to_char(key: Key) -> Optional[str]:
     elif hasattr(key, 'name'):
         return key.name
     return None
+
+
+def press(key: Key):
+    keyboard_controller.press(key)
+    keyboard_controller.release(key)
