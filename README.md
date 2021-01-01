@@ -20,16 +20,8 @@ A chatbot created in Python for Among Us shenanigans.
 
 ## Install and Run
 
-1. In Command Prompt, clone this repository into your directory of choice:
-```cmd
-C:\...> git clone https://github.com/pondchamp/among_bots.git
-```
-
-2. Run the `run.bat` file:
-```cmd
-C:\...> cd among_bots
-C:\...\among_bots> run.bat
-```
+Download the EXE from the [repo releases page](https://github.com/pondchamp/among_bots/releases).
+This EXE is unsigned, so you'll need to dismiss security warnings to run the program.
 
 **NOTE: Text-to-speech only works when the Among Us game window is active.**
 
