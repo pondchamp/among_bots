@@ -2,6 +2,7 @@ import datetime
 import random
 import re
 import sys
+import webbrowser
 from typing import Optional
 
 from clients import monitor, tts, keyboard
@@ -18,7 +19,8 @@ def start_game():
     try:
         game_state = GameState()
     except SystemError:
-        print("Npcap is not installed - consult the README for installation instructions.")
+        webbrowser.open("https://nmap.org/npcap/")
+        print("Npcap is not installed - try launching Among Bots again after installing.")
         print("Press Enter to exit...")
         sys.stdin.read(1)
         return
