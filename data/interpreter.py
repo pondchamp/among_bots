@@ -35,7 +35,6 @@ class Interpreter:
             return None
 
         target_colour = None
-        target_is_me = False
         players = {get_player_colour(p): p
                    for p in self.game_state.get_players(include_me=True)}
         aliases = {
@@ -49,6 +48,7 @@ class Interpreter:
 
             # Locations
             "cafeteria": "caf",
+            "coms": "comms",
             "navigation": "nav",
             "reac": "reactor",
             "medbay": "med bay",

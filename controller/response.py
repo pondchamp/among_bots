@@ -84,7 +84,7 @@ def get_strategy(game_state: GameState) -> Optional[enums.KeyCommand]:
     chat_turns = context.chat_turns
     if players is not None and len(players) == 2:  # three players left
         return enums.KeyCommand.ATTACK
-    elif me_score is not None and me_score == SusScore.SUS:  # counter sus
+    elif me_score is not None and me_score == min(trust_scores.values()):  # counter sus
         return enums.KeyCommand.DEFENCE
     elif score_sum is not None and score_sum < consts.PROBE_SCORE_THRESH:  # not enough info
         if chat_turns == 0:  # opener
