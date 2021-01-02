@@ -11,8 +11,9 @@ if __name__ == "__main__":
         os.environ[consts.GOOGLE_APPLICATION_CREDS] = gpc_cred_loc
         context.use_gcp = True
     else:
-        print("Missing GCP credentials file:", gpc_cred_loc)
-        print("Defaulting to gTTS")
+        if consts.debug_talk:
+            print("Missing GCP credentials file:", gpc_cred_loc)
+            print("Defaulting to gTTS")
         context.use_gcp = False
     new_listener().start()
     start_game()

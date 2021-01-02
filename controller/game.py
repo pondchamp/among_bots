@@ -134,13 +134,16 @@ def _strip(text: str) -> str:
 
 
 def _toggle_debug():
+    if not consts.debug_talk:
+        return
     context.debug = not context.debug
     print(f'DEBUG MODE {"ENABLED" if context.debug else "DISABLED"}')
 
 
 def print_commands():
     print("COMMANDS")
-    for x in [x for x in enums.KeyCommand if x != enums.KeyCommand.KEY_CAP]:
+    for x in [x for x in enums.KeyCommand if x != enums.KeyCommand.KEY_CAP and
+              (consts.debug_talk or x != enums.KeyCommand.DEBUG)]:
         k = str.upper(x.value)
         v = str.title(x.name).replace('_', ' ')
         print(f'{k}\t:', v)
