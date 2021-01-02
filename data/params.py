@@ -30,6 +30,7 @@ location: Dict[AUMap, List[str]] = {
         "electrical",
         "shields",
         "weapons",
+        "nav",
     ],
     AUMap.POLUS: [
         "security",
