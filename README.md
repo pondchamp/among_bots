@@ -16,7 +16,7 @@ Among Bots uses gTTS out of the box - no further setup is required.
 However, if you would like a smoother voice with more intonation (plus all-caps mode),
 you will need to set up GCP TTS:
 
-1. [Create a GCP account](https://cloud.google.com/apigee/docs/hybrid/v1.2/precog-gcpaccount).
+1. [Create a GCP account](https://console.cloud.google.com/).
 2. [Create a GCP account key](https://console.cloud.google.com/apis/credentials/serviceaccountkey).
     * Select `New Service Account`.
     * Enter a desired service account name and ID.
