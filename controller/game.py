@@ -1,6 +1,7 @@
 import datetime
 import random
 import re
+import sys
 from typing import Optional
 
 from clients import monitor, tts, keyboard
@@ -13,6 +14,18 @@ from state.game import GameState
 
 
 def start_game():
+    global game_state, callbacks
+    try:
+        game_state = GameState()
+    except SystemError:
+        print("Npcap is not installed - consult the README for installation instructions.")
+        print("Press Enter to exit...")
+        sys.stdin.read(1)
+        return
+
+    callbacks = Callbacks(game_state)
+    game_state.cb = callbacks.cb
+
     swap_key = enums.KeyCommand.KEY_CAP.value
     print(f'Press the {swap_key} key while in-game to disable key capture.\n')
     print_commands()
@@ -132,6 +145,5 @@ def print_commands():
     print()
 
 
-game_state: GameState = GameState()
-callbacks = Callbacks(game_state)
-game_state.cb = callbacks.cb
+game_state: Optional[GameState] = None
+callbacks: Optional[Callbacks] = None
