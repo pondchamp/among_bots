@@ -1,5 +1,5 @@
 import time
-from typing import Optional
+from typing import Optional, Union
 from pynput.keyboard import Controller, Key, Events, Listener
 from win32api import GetKeyState
 from win32con import VK_CAPITAL
@@ -43,6 +43,6 @@ def key_to_char(key: Key) -> Optional[str]:
     return None
 
 
-def press(key: Key):
+def press(key: Union[Key, str]):
     keyboard_controller.press(key)
     keyboard_controller.release(key)
