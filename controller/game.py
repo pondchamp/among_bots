@@ -39,7 +39,7 @@ def start_game():
                 print_commands()
             elif mode == enums.KeyCommand.EXIT:
                 break
-            elif mode == enums.KeyCommand.DEBUG:
+            elif mode == enums.KeyCommand.DEBUG_:
                 _toggle_debug()
             elif mode == enums.KeyCommand.REPEAT:
                 last_phrase = context.last_phrase
@@ -73,7 +73,7 @@ def start_game():
                     else:
                         print('Wait until discussion time before attempting to chat.')
                         continue
-                if mode == enums.KeyCommand.AUTO:
+                if mode == enums.KeyCommand.TALK:
                     mode = get_strategy(game_state)
                     if mode is None:
                         print("You can't speak if you're dead!")
@@ -142,10 +142,10 @@ def _toggle_debug():
 
 def print_commands():
     print("COMMANDS")
-    for x in [x for x in enums.KeyCommand if x != enums.KeyCommand.KEY_CAP and
-              (consts.debug_talk or x != enums.KeyCommand.DEBUG)]:
+    for x in [x for x in enums.get_key_commands() if x != enums.KeyCommand.KEY_CAP and
+              (consts.debug_talk or x != enums.KeyCommand.DEBUG_)]:
         k = str.upper(x.value)
-        v = str.title(x.name).replace('_', ' ')
+        v = str.title(x.name).replace('_', ' ').strip()
         print(f'{k}\t:', v)
     print()
 

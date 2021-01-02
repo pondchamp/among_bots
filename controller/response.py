@@ -13,13 +13,13 @@ from data.trust import SusScore
 
 def generate_response(mode: KeyCommand, curr_map: AUMap, me: Optional[str],
                       flags: List[ResponseFlags]) -> Optional[str]:
-    if mode == KeyCommand.ATTACK:
+    if mode == KeyCommand.ATTACK_:
         mode_arr, score_target = dialogs.attack, SusScore.SUS
-    elif mode == KeyCommand.DEFENCE:
+    elif mode == KeyCommand.DEFENCE_:
         mode_arr, score_target = dialogs.defense, None
-    elif mode == KeyCommand.PROBE:
+    elif mode == KeyCommand.PROBE_:
         mode_arr, score_target = dialogs.probe, None
-    elif mode == KeyCommand.STATEMENT:
+    elif mode == KeyCommand.STATEMENT_:
         mode_arr, score_target = dialogs.statement, SusScore.SAFE
     else:
         return None
@@ -54,7 +54,7 @@ def generate_response(mode: KeyCommand, curr_map: AUMap, me: Optional[str],
     r = m[random.randint(0, len(m) - 1)]
     context.chat_log_append(r)
     resp_sub, sub_dict = _sub_placeholders(r, curr_map, player_select)
-    if mode == KeyCommand.ATTACK:
+    if mode == KeyCommand.ATTACK_:
         p = None
         if Substitution.PLAYER in sub_dict:
             p = sub_dict[Substitution.PLAYER]
@@ -66,7 +66,7 @@ def generate_response(mode: KeyCommand, curr_map: AUMap, me: Optional[str],
 
 
 def get_strategy(game_state: GameState) -> Optional[enums.KeyCommand]:
-    valid = [enums.KeyCommand.PROBE, enums.KeyCommand.STATEMENT, enums.KeyCommand.ATTACK, enums.KeyCommand.DEFENCE]
+    valid = [enums.KeyCommand.PROBE_, enums.KeyCommand.STATEMENT_, enums.KeyCommand.ATTACK_, enums.KeyCommand.DEFENCE_]
     me = game_state.me
     if me is not None and not me.alive:
         return None
@@ -83,21 +83,21 @@ def get_strategy(game_state: GameState) -> Optional[enums.KeyCommand]:
     flags = game_state.get_response_flags()
     chat_turns = context.chat_turns
     if players is not None and len(players) == 2:  # three players left
-        return enums.KeyCommand.ATTACK
+        return enums.KeyCommand.ATTACK_
     elif me_score is not None and me_score < 0 and me_score == min(trust_scores.values()):  # counter sus
-        return enums.KeyCommand.DEFENCE
+        return enums.KeyCommand.DEFENCE_
     elif score_sum is not None and score_sum < consts.PROBE_SCORE_THRESH:  # not enough info
         if chat_turns == 0:  # opener
             if random.random() < 0.1:  # random attack opener
-                return enums.KeyCommand.ATTACK
+                return enums.KeyCommand.ATTACK_
             if _flags_match(flags, [ResponseFlags.EMERGENCY_MEET_ME, ResponseFlags.BODY_FOUND_ME]):
-                return enums.KeyCommand.STATEMENT
+                return enums.KeyCommand.STATEMENT_
             elif _flags_match(flags, [ResponseFlags.EMERGENCY_MEET_OTHER, ResponseFlags.BODY_FOUND_OTHER]):
-                return enums.KeyCommand.PROBE
-        return enums.KeyCommand.PROBE if random.randint(0, 1) == 0 else enums.KeyCommand.STATEMENT  # 50-50
+                return enums.KeyCommand.PROBE_
+        return enums.KeyCommand.PROBE_ if random.randint(0, 1) == 0 else enums.KeyCommand.STATEMENT_  # 50-50
     # enough info at this point
     elif len([p for p in trust_scores if trust_scores[p] == SusScore.SUS.value]) > 0:
-        return enums.KeyCommand.ATTACK
+        return enums.KeyCommand.ATTACK_
     else:
         print('Unable to determine a strategy - picking at random.')
         return valid[random.randint(0, len(valid) - 1)]

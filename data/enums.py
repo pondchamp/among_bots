@@ -1,25 +1,35 @@
 from enum import Enum
-from typing import Optional
+from typing import Optional, List
+from data import consts
 
 
+# Underscore suffix for debug-only enum options
 class KeyCommand(Enum):
     HELP = 'f1'
-    AUTO = 'f2'
-    ATTACK = 'f3'
-    DEFENCE = 'f4'
-    PROBE = 'f5'
-    STATEMENT = 'f6'
+    TALK = 'f2'  # Auto-pick strategy
+    ATTACK_ = 'f3'
+    DEFENCE_ = 'f4'
+    PROBE_ = 'f5'
+    STATEMENT_ = 'f6'
     REPEAT = 'f7'
-    DEBUG = 'f8'
+    DEBUG_ = 'f8'
     EXIT = 'f12'
     KEY_CAP = '`'
 
 
+def get_key_commands() -> List[KeyCommand]:
+    return [k for k in KeyCommand if _debug_only(k)]
+
+
 def get_key_command(key: str) -> Optional[KeyCommand]:
     try:
-        return KeyCommand(key)
+        return KeyCommand(key) if _debug_only(key) else None
     except ValueError:
         return None
+
+
+def _debug_only(key: str):
+    return consts.debug_talk or not str(KeyCommand(key).name).endswith('_')
 
 
 class Substitution(Enum):
