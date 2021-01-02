@@ -160,6 +160,7 @@ class GameState:
         state.entities = {**state.entities, **self._game.entities}
         state.players = {**state.players, **self._game.players}
         state.playerIdMap = {**state.playerIdMap, **self._game.playerIdMap}
+        state.usernameLookup = {**state.usernameLookup, **self._game.usernameLookup}
 
         self._game = state
 
