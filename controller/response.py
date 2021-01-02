@@ -88,7 +88,7 @@ def get_strategy(game_state: GameState) -> Optional[enums.KeyCommand]:
         return enums.KeyCommand.DEFENCE
     elif score_sum is not None and score_sum < consts.PROBE_SCORE_THRESH:  # not enough info
         if chat_turns == 0:  # opener
-            if random.random() < 0.2:  # random attack opener
+            if random.random() < 0.1:  # random attack opener
                 return enums.KeyCommand.ATTACK
             if _flags_match(flags, [ResponseFlags.EMERGENCY_MEET_ME, ResponseFlags.BODY_FOUND_ME]):
                 return enums.KeyCommand.STATEMENT

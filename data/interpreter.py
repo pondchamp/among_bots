@@ -1,5 +1,5 @@
 import re
-from typing import Optional
+from typing import Optional, List
 
 from controller.helpers import get_player_colour
 from data import enums, params
@@ -34,7 +34,6 @@ class Interpreter:
             print(player_name, f'({player_colour}): [DEAD CHAT HIDDEN]')
             return None
 
-        target_colour = None
         players = {get_player_colour(p): p
                    for p in self.game_state.get_players(include_me=True)}
         aliases = {
@@ -75,6 +74,7 @@ class Interpreter:
                     print("Location identified:", loc)
 
         # Check for names
+        target_colours = []
         for colour in [p for p in players if p != player_colour]:
             p = players[colour]
             if p.name is False or p.color is False:
@@ -84,34 +84,35 @@ class Interpreter:
                 name = None
             if self._find(rf'\b{colour}\b') \
                     or (name is not None and self._find(rf'\b{name.lower()}\b')):
-                target_colour = colour
-                break
-        if target_colour is None:  # Determine target implicitly
+                target_colours.append(colour)
+        if len(target_colours) == 0:  # Determine target implicitly
             if self._find(r"\b(self( report)?)\b"):
-                target_colour = started_by
+                target_colours.append(started_by)
 
-        target_is_me = target_colour == self.game_state.me_colour
+        target_is_me = self.game_state.me_colour in target_colours
         verb = offset = None
         flags = []
-        if target_colour is not None:
+        if len(target_colours) > 0:
             verb, offset = "mentioned", -0.5
-            if self._find(r"\b(sus|vent(ed)?|faked?|kill(ed)?|body|self report(ed)?|imp(ostor)?)\b") \
-                    or self._find(rf"\b(vote|it'?s?) {target_colour}\b") \
-                    or self._message_lower == target_colour:
-                verb, offset = "sussed", -1
-            elif self._find(r"\b(safe|good|clear(ed)?)\b") \
-                    or self._find(rf"\b(not|with|me and) {target_colour}\b") \
-                    or self._find(rf"{target_colour} (and i|((had|did|has|do) )?(trash|chute|scan(ned)?|med))\b"):
-                verb, offset = "vouched for", 1
+            for target_colour in target_colours:
+                if self._find(r"\b(sus|vent(ed)?|faked?|kill(ed)?|body|self report(ed)?|imp(ostor)?)\b") \
+                        or self._find(rf"\b(vote|it'?s?) {target_colour}\b") \
+                        or self._message_lower == target_colour:
+                    verb, offset = "sussed", -1
+                    break
+                elif self._find(r"\b(safe|good|clear(ed)?)\b") \
+                        or self._find(rf"\b(not|with|me and) {target_colour}\b") \
+                        or self._find(rf"{target_colour} (and i|((had|did|has|do) )?(trash|chute|scan(ned)?|med))\b"):
+                    verb, offset = "vouched for", 1
+                    break
         if verb == "sussed" and target_is_me:
             if self._find(r"\b(vent(ed)?)\b"):
                 flags.append(rF.ACCUSED_VENT)
         if verb:
-            if self.player.alive and player_colour != UNKNOWN and target_colour != UNKNOWN and \
-                    len(context.trust_map) != 0:
-                context.trust_map_score_offset(player_colour, target_colour, offset)
-            target_label = "you" if target_is_me else target_colour
-            print('>>', player_colour, verb, target_label, '<<')
+            if self.player.alive and player_colour != UNKNOWN and len(context.trust_map) != 0:
+                for target_colour in target_colours:
+                    context.trust_map_score_offset(player_colour, target_colour, offset)
+            print('>>', player_colour, verb, ', '.join(target_colours), '<<')
             print('Adding flags:', flags)
             for f in flags: 
                 context.response_flags_append(f)
@@ -120,3 +121,6 @@ class Interpreter:
 
     def _find(self, pattern: str) -> bool:
         return len(re.findall(pattern, self._message_lower)) > 0
+
+    def _find_all(self, pattern: str) -> List[str]:
+        return re.findall(pattern, self._message_lower)
