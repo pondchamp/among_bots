@@ -8,7 +8,6 @@ A chatbot created in Python for Among Us shenanigans.
 * Windows 7/8/10
 * [Python 3](https://www.python.org/downloads/)
 * [Npcap](https://nmap.org/npcap/)
-* [Git](https://git-scm.com/download/win)
 * (Optional) [A GCP account key](https://cloud.google.com/text-to-speech/docs/libraries#setting_up_authentication)
     * Once you've created an account key, download the file as `creds.json` and save it in the root folder of the repo.
         * Environment variable step in above link is optional if you do this step.
