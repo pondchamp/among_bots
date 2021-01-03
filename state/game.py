@@ -136,13 +136,18 @@ class GameState:
         if game_id is None:
             return
         file_path = rf'{root_dir}\{game_id}'
-        if self.curr_lobby != game_id and os.path.exists(file_path):
-            with open(file_path, "rb") as fp:
-                try:
-                    state: GameEngine = pickle.load(fp)
-                except EOFError:
-                    return
-            self._update_state(state)
+        if self.curr_lobby != game_id:
+            if os.path.exists(file_path):
+                with open(file_path, "rb") as fp:
+                    try:
+                        state: GameEngine = pickle.load(fp)
+                    except EOFError:
+                        return
+                self._update_state(state)
+                if consts.debug_net:
+                    print("State reloaded for game", game_id)
+            elif consts.debug_net:
+                print("State created for game", game_id)
         with open(file_path, "wb") as fp:
             pickle.dump(self._game, fp)
 
