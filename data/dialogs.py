@@ -58,13 +58,13 @@ attack: List[Dialog] = [
     Dialog("I saw [pn] vent", max_turns=0),
     Dialog("[pn] was faking their tasks"),
     Dialog("why weren't you doing task in [l]?", min_turns=1),
-    Dialog("I'm voting [p]"),
-    Dialog("vote [p]"),
+    Dialog("I'm voting [p]", min_turns=1),
+    Dialog("vote [p]", min_turns=1),
     Dialog("I don't buy [p]'s story", min_turns=1),
     Dialog("orang", max_turns=0, flags=[rF.SELF_SABOTAGE]),
 
-    Dialog("why was [pn] near the body?", flags=[rF.BODY_FOUND_OTHER, rF.BODY_FOUND_ME]),
-    Dialog("self report", flags=[rF.SELF_REPORT]),  # implies BODY_FOUND_OTHER
+    Dialog("why was [pn] near the body?", max_turns=2, flags=[rF.BODY_FOUND_OTHER, rF.BODY_FOUND_ME]),
+    Dialog("self report", max_turns=3, flags=[rF.SELF_REPORT]),  # implies BODY_FOUND_OTHER
 
     Dialog("i saw [pn] vent in [lm]", max_turns=1, flags=[rF.EMERGENCY_MEET_ME]),
     Dialog("why is [pn] stalking me?", max_turns=0, flags=[rF.EMERGENCY_MEET_ME]),
