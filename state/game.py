@@ -36,7 +36,7 @@ class GameState:
     def pkt_callback(self, pkt):
         self._game.proc(pkt[UDP].payload.load, pkt.time)
         tree = parse(pkt[UDP].payload.load)
-        if consts.debug_net and tree.children[0].commandName == 'ReliableData':
+        if consts.debug_pcap and tree.children[0].commandName == 'ReliableData':
             tree.pprint()
 
     # GETTERS AND SETTERS

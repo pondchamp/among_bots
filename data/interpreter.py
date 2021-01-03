@@ -2,7 +2,7 @@ import re
 from typing import Optional, List
 
 from controller.helpers import get_player_colour
-from data import enums, params
+from data import enums, params, consts
 from data.enums import ResponseFlags as rF
 from state.game import GameState
 from state.context import context
@@ -19,6 +19,8 @@ class Interpreter:
         self._message_lower = re.sub(r'[^\w\s?]', '', self.message.strip().lower())
 
     def interpret(self) -> Optional[str]:
+        if not self.game_state.game_started:
+            return None
         me = self.game_state.me
         if not me:
             print('Player info not loaded - please leave and rejoin the lobby.')
@@ -113,7 +115,8 @@ class Interpreter:
                 for target_colour in target_colours:
                     context.trust_map_score_offset(player_colour, target_colour, offset)
             print('>>', player_colour, verb, ', '.join(target_colours), '<<')
-            print('Adding flags:', flags)
+            if consts.debug_chat and len(flags) > 0:
+                print('Adding flags:', flags)
             for f in flags: 
                 context.response_flags_append(f)
         print(player_name, f'({player_colour}):', self.message)
