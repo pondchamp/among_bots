@@ -47,7 +47,7 @@ class Callbacks:
     def start_meeting_callback(self, _):
         context.chat_log_reset()
         context.response_flags_reset()
-        if rF.BODY_FOUND_OTHER in self._game.get_response_flags():
+        if len({rF.BODY_FOUND_OTHER, rF.BODY_FOUND_ME}.intersection(self._game.get_response_flags())) > 0:
             context.response_flags_append(rF.BODY_NOT_LOCATED)
         imp_list = self._game.impostor_list
         prev_player_len = len(context.trust_map)
