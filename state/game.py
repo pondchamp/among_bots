@@ -117,7 +117,8 @@ class GameState:
         return None
 
     def get_players_colour(self, include_me=False) -> Optional[List[str]]:
-        return [get_player_colour(p) for p in self.get_players(include_me)]
+        return [get_player_colour(p) for p in self.get_players(include_me)] \
+            if self.get_players(include_me) is not None else None
 
     def get_player_from_id(self, player_id: int) -> Optional[PlayerClass]:
         if player_id not in self._game.playerIdMap:

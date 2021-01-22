@@ -93,6 +93,9 @@ class Callbacks:
             return
         me_id = me.playerId
         pl_id = event["player"].playerId
+        if me_id == pl_id:
+            me_x, me_y = self._game.get_player_loc(me_id)
+            # print(me_x, me_y)
         player = self._game.get_player_from_id(pl_id)
         if player is None:
             return
