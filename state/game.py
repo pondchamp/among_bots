@@ -12,6 +12,7 @@ from controller.helpers import get_player_colour
 from clients.pcap import PCap
 from data import enums, params, consts
 from data.enums import ResponseFlags as rF
+from lib.amongUsParser.helpers import intToGameCode
 from state.context import context
 from data.trust import SusScore
 from data.types import COORD
@@ -146,9 +147,9 @@ class GameState:
                         return
                 self._update_state(state)
                 if consts.debug_net:
-                    print("State reloaded for game", game_id)
+                    print("State reloaded for game", intToGameCode(game_id))
             elif consts.debug_net:
-                print("State created for game", game_id)
+                print("State created for game", intToGameCode(game_id))
         with open(file_path, "wb") as fp:
             pickle.dump(self._game, fp)
 
