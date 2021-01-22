@@ -98,6 +98,8 @@ def get_strategy(game_state: GameState) -> Optional[enums.KeyCommand]:
     # enough info at this point
     elif len([p for p in trust_scores if trust_scores[p] == SusScore.SUS.value]) > 0:
         return enums.KeyCommand.ATTACK_
+    elif len([p for p in trust_scores if trust_scores[p] == SusScore.SAFE.value]) > 0:
+        return enums.KeyCommand.DEFENCE_
     else:
         print('Unable to determine a strategy - picking at random.')
         return valid[random.randint(0, len(valid) - 1)]
