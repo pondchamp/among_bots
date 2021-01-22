@@ -81,8 +81,9 @@ class Interpreter:
             p = players[colour]
             if p.name is False or p.color is False:
                 continue
-            name = p.name.decode("utf-8")
-            if name.lower() in ["i", "he", "she", "ok", "impostor", "imposter"]:  # pronoun and unhelpful names
+            name = p.name.decode("utf-8").strip()
+            if name.lower() in ["i", "he", "she", "ok", "impostor", "imposter"] \
+                    or len(name) == 0:  # pronoun and unhelpful names
                 name = None
             if self._find(rf'\b{colour}\b') \
                     or (name is not None and self._find(rf'\b{name.lower()}\b')):
