@@ -23,7 +23,7 @@ statement: List[Dialog] = [
 
     Dialog("[lb]", max_turns=0, flags=[rF.BODY_FOUND_ME]),
     Dialog("the body is in [lb]", max_turns=0, flags=[rF.BODY_FOUND_ME]),
-    Dialog("I saw a vent but didn't see who", flags=[rF.BODY_FOUND_ME]),
+    Dialog("I saw a vent but didn't see who", min_turns=1, flags=[rF.BODY_FOUND_ME]),
 
     Dialog("task check", max_turns=0, flags=[rF.EMERGENCY_MEET_ME]),
 
