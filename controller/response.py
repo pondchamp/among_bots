@@ -86,7 +86,7 @@ def get_strategy(game_state: GameState) -> Optional[enums.KeyCommand]:
         return enums.KeyCommand.ATTACK_
     elif me_score is not None and me_score < 0 and me_score == min(trust_scores.values()):  # counter sus
         return enums.KeyCommand.DEFENCE_
-    elif score_sum is not None and score_sum < consts.PROBE_SCORE_THRESH:  # not enough info
+    elif score_sum is not None and score_sum < consts.PROBE_SCORE_THRESH * len(players):  # not enough info
         if chat_turns == 0:  # opener
             if random.random() < 0.1:  # random attack opener
                 return enums.KeyCommand.ATTACK_

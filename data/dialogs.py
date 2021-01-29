@@ -49,7 +49,7 @@ probe: List[Dialog] = [
 ]
 
 attack: List[Dialog] = [
-    Dialog("[pn]", max_turns=0, flags=[rF.PRIORITY]),
+    Dialog("[p]", max_turns=0, flags=[rF.PRIORITY]),
 
     Dialog("where was [p]?", max_turns=1),
     Dialog("[p] seems sus"),
@@ -63,6 +63,7 @@ attack: List[Dialog] = [
     Dialog("I don't buy [p]'s story", min_turns=1),
     Dialog("orang", max_turns=0, flags=[rF.SELF_SABOTAGE]),
 
+    Dialog("[pn]", max_turns=0, flags=[rF.BODY_FOUND_ME]),
     Dialog("why was [pn] near the body?", max_turns=2, flags=[rF.BODY_FOUND_OTHER, rF.BODY_FOUND_ME]),
     Dialog("self report", max_turns=3, flags=[rF.SELF_REPORT]),  # implies BODY_FOUND_OTHER
 
