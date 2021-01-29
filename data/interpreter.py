@@ -40,12 +40,13 @@ class Interpreter:
                    for p in self.game_state.get_players(include_me=True)}
         aliases = {
             # Players
-            "purp": "purple",
-            "orang": "orange",
             "dark green": "green",
             "light green": "lime",
             "dark blue": "blue",
             "light blue": "cyan",
+            "purp": "purple",
+            "orang": "orange",
+            "yallow": "yellow",
 
             # Locations
             "cafeteria": "caf",
@@ -58,7 +59,6 @@ class Interpreter:
 
             # Misspellings
             "imposter": "impostor",
-            "yallow": "yellow",
         }
         for k, v in aliases.items():
             self._message_lower = re.sub(rf'\b{k}\b', v, self._message_lower)
